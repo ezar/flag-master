@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FlagMaster · Brief técnico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f5edd6;
+    --paper-2:#efe4c4;
+    --paper-3:#e8d9b0;
+    --ink:#1a1209;
+    --ink-2:#3a2a18;
+    --ink-soft:#5c4528;
+    --gold:#b8872a;
+    --gold-light:#d9b366;
+    --rule: rgba(26,18,9,0.18);
+    --ok:#2d8c55;
+    --err:#8b2222;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:'Libre Baskerville', Georgia, serif;
+    color:var(--ink);
+    background:var(--paper);
+    background-image:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.10 0 0 0 0 0.07 0 0 0 0 0.04 0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
+      radial-gradient(120% 70% at 50% 0%, #faf2da 0%, #f5edd6 40%, #e8d9b0 100%);
+    background-blend-mode: multiply, normal;
+    -webkit-font-smoothing: antialiased;
+    line-height:1.55;
+  }
+  .doc{
+    max-width: 880px; margin: 0 auto;
+    padding: 56px 40px 80px;
+  }
+  @media (max-width:640px){ .doc{ padding: 36px 22px 60px } }
+
+  /* Header */
+  .doc-h{
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 22px; margin-bottom: 36px;
+    position: relative;
+  }
+  .doc-h::after{
+    content:""; position:absolute; left:0; right:0; bottom:-7px;
+    height:1px; background: var(--ink); opacity:0.4;
+  }
+  .doc-h .eyebrow{
+    font-family:'DM Mono', monospace; font-size:11px;
+    letter-spacing:0.32em; color: var(--gold); text-transform:uppercase;
+  }
+  .doc-h h1{
+    font-family:'Playfair Display', serif; font-style:italic; font-weight:900;
+    font-size: clamp(40px, 6vw, 60px); line-height: 0.95;
+    margin-top: 12px; color: var(--ink);
+  }
+  .doc-h h1 .ac{ color: var(--gold) }
+  .doc-h .lede{
+    font-family:'Libre Baskerville', serif; font-style:italic;
+    font-size: 17px; color: var(--ink-soft);
+    margin-top: 14px; max-width: 640px;
+  }
+  .doc-h .meta{
+    display:flex; gap: 28px; flex-wrap:wrap; margin-top: 22px;
+    font-family:'DM Mono', monospace; font-size:10px;
+    letter-spacing:0.24em; text-transform:uppercase; color: var(--ink-soft);
+  }
+  .doc-h .meta b{ display:block; color: var(--ink); font-size:13px; letter-spacing:0.16em; margin-top:3px; font-family:'Playfair Display', serif; font-style:italic; font-weight:700 }
+
+  /* Section */
+  section{ margin: 56px 0 }
+  .sec-num{
+    font-family:'Playfair Display', serif; font-style:italic; font-weight:700;
+    color: var(--gold); font-size: 14px; letter-spacing:0.1em;
+  }
+  h2{
+    font-family:'Playfair Display', serif; font-style:italic; font-weight:900;
+    font-size: clamp(28px, 4vw, 36px); line-height:1; color: var(--ink);
+    margin: 4px 0 8px;
+  }
+  .sec-rule{
+    height: 1px; background: var(--ink); opacity: 0.25; margin: 14px 0 22px;
+  }
+  h3{
+    font-family:'Playfair Display', serif; font-weight:700;
+    font-size: 20px; color: var(--ink-2); margin: 24px 0 10px;
+  }
+  h3 .num{
+    display:inline-block; width:24px; height:24px; line-height:23px; text-align:center;
+    border:1.5px solid var(--gold); color: var(--gold); border-radius:50%;
+    font-family:'Playfair Display', serif; font-style:italic; font-weight:700;
+    font-size: 13px; margin-right:8px; vertical-align: 1px;
+  }
+  p{ margin: 0 0 12px; color: var(--ink-2); font-size: 15.5px }
+  p.note{ font-style: italic; color: var(--ink-soft); font-size: 14px }
+  ul, ol{ margin: 6px 0 14px 22px; color: var(--ink-2); font-size: 15px }
+  ul li, ol li{ margin: 4px 0 }
+  ul li::marker{ color: var(--gold) }
+  ol li::marker{ color: var(--gold); font-family:'Playfair Display', serif; font-style:italic; font-weight:700 }
+
+  /* Inline code & tokens */
+  code, kbd, .tok{
+    font-family:'DM Mono', monospace; font-size: 12.5px;
+    background: rgba(184,135,42,0.12); color: var(--ink-2);
+    padding: 1px 6px; border-radius: 2px;
+    border: 1px solid rgba(184,135,42,0.28);
+  }
+  pre{
+    background: #1d150b; color: #f1e2bf;
+    padding: 16px 18px; border-radius: 3px;
+    font-family:'DM Mono', monospace; font-size: 12.5px;
+    line-height: 1.55; overflow-x: auto;
+    margin: 12px 0 16px;
+    border: 1px solid rgba(184,135,42,0.4);
+    box-shadow: 0 12px 30px -18px rgba(26,18,9,0.4);
+  }
+  pre .c{ color: #b8872a }
+  pre .k{ color: #d9b366 }
+  pre .s{ color: #c3deba }
+  pre .n{ color: #9fb3e0 }
+
+  /* Cards */
+  .cards{ display:grid; gap: 14px; margin: 14px 0 18px }
+  .cards.c2{ grid-template-columns: 1fr 1fr }
+  .cards.c3{ grid-template-columns: repeat(3, 1fr) }
+  @media (max-width:680px){ .cards.c2, .cards.c3{ grid-template-columns: 1fr } }
+  .card{
+    background: rgba(245,237,214,0.65);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--gold);
+    padding: 14px 16px;
+    border-radius: 2px;
+  }
+  .card .t{ font-family:'Playfair Display', serif; font-weight:700; font-size:16px; color: var(--ink); margin-bottom:6px }
+  .card .t .em{ font-style:italic }
+  .card .t .num{
+    display:inline-block; min-width:22px; height:22px; line-height:21px; text-align:center;
+    border:1px solid var(--ink); color: var(--ink); font-family:'DM Mono', monospace;
+    font-size: 11px; letter-spacing:0.06em; margin-right:8px; padding: 0 4px;
+  }
+  .card p{ font-size:14px; color: var(--ink-soft); margin: 0 0 6px }
+  .card .meta{ font-family:'DM Mono', monospace; font-size:10px; letter-spacing:0.18em; color:var(--gold); text-transform:uppercase; margin-top:8px }
+
+  /* Color swatches */
+  .swatches{ display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin:14px 0 18px }
+  @media (max-width:680px){ .swatches{ grid-template-columns: repeat(2, 1fr) } }
+  .sw{ border:1px solid var(--rule); background: var(--paper); padding: 10px; border-radius:2px }
+  .sw .chip{ height:54px; border-radius:2px; border:1px solid rgba(26,18,9,0.18); margin-bottom:8px }
+  .sw .n{ font-family:'Playfair Display', serif; font-weight:700; font-size:13px; color: var(--ink) }
+  .sw .v{ font-family:'DM Mono', monospace; font-size:10.5px; color: var(--ink-soft); margin-top:2px }
+
+  /* Map preview (continents) */
+  .map-wrap{
+    background: linear-gradient(180deg, rgba(245,237,214,0.6), rgba(232,217,176,0.4));
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 18px;
+    margin: 18px 0 22px;
+    position: relative;
+    overflow:hidden;
+  }
+  .map-wrap::before{
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background-image:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 320'><g fill='none' stroke='%231a1209' stroke-width='0.5' opacity='0.07'><path d='M0,80 Q150,40 300,90 T600,80'/><path d='M0,140 Q150,100 300,150 T600,140'/><path d='M0,200 Q150,160 300,210 T600,200'/><path d='M0,260 Q150,220 300,270 T600,260'/></g></svg>");
+    background-size: 100% 100%;
+  }
+  .map-svg{ width:100%; height:auto; display:block; position:relative; z-index:1 }
+  .cont{ cursor:default; transition: opacity .2s }
+  .cont .shape{ stroke: var(--ink); stroke-width: 1.2; fill: var(--paper-3) }
+  .cont .lbl{ font-family:'Playfair Display', serif; font-style:italic; font-weight:700; font-size: 14px; fill: var(--ink); text-anchor: middle }
+  .cont .sub{ font-family:'DM Mono', monospace; font-size: 8px; letter-spacing:0.14em; fill: var(--ink-soft); text-anchor: middle; text-transform: uppercase }
+  .cont.unlocked .shape{ fill: var(--gold-light) }
+  .cont.current .shape{ fill: var(--gold); stroke-width:1.6 }
+  .cont.current .lbl{ fill: var(--paper) }
+  .cont.locked .shape{ fill: var(--paper-3); opacity: 0.55; stroke-dasharray: 3,3 }
+  .cont.locked .lbl{ opacity: 0.5 }
+  .cont.locked .sub{ opacity: 0.5 }
+
+  .legend{
+    display:flex; gap: 18px; flex-wrap:wrap;
+    font-family:'DM Mono', monospace; font-size: 10px;
+    letter-spacing:0.2em; color: var(--ink-soft); text-transform:uppercase;
+    margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--rule);
+    position:relative; z-index:1;
+  }
+  .legend .it{ display:flex; align-items:center; gap:8px }
+  .legend .sq{ width:14px; height:14px; border:1px solid var(--ink) }
+  .legend .sq.l{ background: var(--paper-3); opacity:.55; border-style:dashed }
+  .legend .sq.u{ background: var(--gold-light) }
+  .legend .sq.c{ background: var(--gold) }
+
+  /* Table */
+  .tbl-wrap{ overflow-x: auto; margin: 12px 0 18px }
+  table{
+    width: 100%; border-collapse: collapse; font-size: 14px;
+    background: rgba(245,237,214,0.5);
+    border: 1px solid var(--rule);
+  }
+  th, td{
+    text-align: left; padding: 10px 12px;
+    border-bottom: 1px solid var(--rule);
+  }
+  th{
+    font-family:'DM Mono', monospace; font-size: 10.5px;
+    letter-spacing: 0.22em; color: var(--ink-soft);
+    text-transform: uppercase; background: rgba(184,135,42,0.08);
+    border-bottom: 1.5px solid var(--ink);
+  }
+  td .em{ font-style:italic; color: var(--ink-soft) }
+  td b{ font-family:'Playfair Display', serif; font-weight:700 }
+  td .pill{
+    display:inline-block; padding: 1px 8px; border-radius:10px;
+    font-family:'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em;
+    text-transform: uppercase; border: 1px solid currentColor;
+  }
+  td .pill.easy{ color: var(--ok) }
+  td .pill.med{ color: var(--gold) }
+  td .pill.hard{ color: var(--err) }
+  td .pill.new{ background: var(--ink); color: var(--paper); border-color: var(--ink) }
+
+  /* Pull quote */
+  .pull{
+    border-left: 4px solid var(--gold);
+    padding: 14px 0 14px 22px;
+    margin: 24px 0;
+    font-family:'Playfair Display', serif; font-style: italic;
+    font-size: clamp(20px, 2.6vw, 26px); line-height: 1.3;
+    color: var(--ink);
+  }
+  .pull .au{
+    display:block; margin-top: 10px;
+    font-family:'DM Mono', monospace; font-style: normal; font-size: 10px;
+    letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold);
+  }
+
+  /* Phases / roadmap */
+  .phases{ display:grid; gap: 10px; margin: 18px 0 }
+  .ph{
+    display:flex; gap: 14px; align-items: stretch;
+    background: rgba(245,237,214,0.6);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    overflow:hidden;
+  }
+  .ph .ix{
+    width: 64px; flex-shrink:0;
+    background: var(--ink); color: var(--paper);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-family:'Playfair Display', serif; font-style:italic;
+  }
+  .ph .ix .r{ font-size:24px; line-height:1; font-weight:900 }
+  .ph .ix .w{ font-family:'DM Mono', monospace; font-style:normal; font-size:8.5px; letter-spacing:0.2em; margin-top:4px; color: var(--gold-light); text-transform:uppercase }
+  .ph .bd{ padding: 12px 16px; flex: 1 }
+  .ph .bd .t{ font-family:'Playfair Display', serif; font-weight:700; font-size:18px; color: var(--ink); margin-bottom: 4px }
+  .ph .bd .t .em{ font-style:italic; color: var(--gold) }
+  .ph .bd .d{ font-size:14px; color: var(--ink-soft) }
+  .ph .bd .li{
+    margin-top:8px; display:flex; flex-wrap:wrap; gap: 6px;
+    font-family:'DM Mono', monospace; font-size:10px; letter-spacing:0.16em;
+    text-transform:uppercase; color: var(--ink-soft);
+  }
+  .ph .bd .li span{ border: 1px solid var(--rule); padding: 2px 7px; border-radius: 2px }
+
+  /* Resource list */
+  .res-grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0 18px }
+  @media (max-width:680px){ .res-grid{ grid-template-columns: 1fr } }
+  .res{
+    border: 1px solid var(--rule); padding: 12px 14px; background: rgba(245,237,214,0.45);
+    border-radius: 2px;
+  }
+  .res .h{ display:flex; gap:10px; align-items:center; margin-bottom: 4px }
+  .res .ic{
+    width: 28px; height: 28px; border:1.5px solid var(--ink); border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Playfair Display', serif; font-style:italic; font-weight:700;
+    font-size: 14px; color: var(--ink);
+  }
+  .res .t{ font-family:'Playfair Display', serif; font-weight:700; font-size: 15.5px; color: var(--ink) }
+  .res .d{ font-size: 13.5px; color: var(--ink-soft); margin: 4px 0 0 }
+  .res .links{
+    margin-top: 8px; display:flex; flex-wrap:wrap; gap: 6px;
+    font-family:'DM Mono', monospace; font-size: 10.5px; letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .res .links a{
+    color: var(--ink); text-decoration:none;
+    border-bottom: 1px solid var(--gold);
+  }
+  .res .links a:hover{ color: var(--gold) }
+
+  /* Decorative ornament */
+  .orn{
+    text-align:center; font-family:'Playfair Display', serif;
+    color: var(--gold); font-size: 14px; letter-spacing: 1em;
+    margin: 28px 0 14px;
+  }
+
+  /* Open prototype */
+  .cta-row{
+    display:flex; gap: 10px; flex-wrap:wrap; margin: 20px 0 4px;
+  }
+  .cta{
+    font-family:'DM Mono', monospace; font-size: 11px;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    padding: 10px 14px; border: 1.5px solid var(--ink); color: var(--ink);
+    text-decoration: none; background: var(--paper);
+    transition: all .15s;
+  }
+  .cta:hover{ background: var(--ink); color: var(--paper) }
+  .cta.gold{ border-color: var(--gold); color: var(--gold) }
+  .cta.gold:hover{ background: var(--gold); color: var(--paper) }
+</style>
+</head>
+<body>
+
+<div class="doc">
+
+  <header class="doc-h">
+    <div class="eyebrow">Brief · Producción · Atlas editorial</div>
+    <h1>FlagMaster<br><span class="ac"><em>Hoja de ruta</em></span></h1>
+    <div class="lede">Recursos, datos, modos y la nueva mecánica de <em>continentes desbloqueables</em> para llevar el Atlas editorial de prototipo a producto.</div>
+    <div class="meta">
+      <div>Dirección<b><em>I · Atlas editorial</em></b></div>
+      <div>Plataforma<b>Web · móvil-first</b></div>
+      <div>Stack<b>HTML · CSS · JS vanilla</b></div>
+      <div>Tiempo estimado<b>2–3 sprints</b></div>
+    </div>
+    <div class="cta-row">
+      <a class="cta gold" href="FlagMaster.html" target="_blank">▶︎ Jugar prototipo</a>
+      <a class="cta" href="FlagMaster Canvas.html" target="_blank">Ver canvas comparativo</a>
+    </div>
+  </header>
+
+  <!-- 01 NORTE -->
+  <section>
+    <div class="sec-num">§ 01</div>
+    <h2><em>Norte</em> · qué estamos construyendo</h2>
+    <div class="sec-rule"></div>
+    <p>FlagMaster es un juego ligero de banderas pensado para jugar en familia. La dirección <em>Atlas editorial</em> apuesta por la estética de libro de exploradores del XIX: papel, sello, brújula, Playfair en cursiva.</p>
+    <p>La novedad de esta hoja de ruta es transformar el flujo lineal (elegir modo → 10 preguntas → resultado) en un <b>viaje por continentes</b>: empiezas con Europa desbloqueada y vas conquistando el resto del mundo a base de aciertos. Cada continente es un capítulo del atlas.</p>
+    <div class="pull">
+      «Un atlas no se lee de seguido — se viaja. Cada continente es una expedición, cada acierto es un kilómetro recorrido.»
+      <span class="au">Norte editorial</span>
+    </div>
+  </section>
+
+  <!-- 02 SISTEMA VISUAL -->
+  <section>
+    <div class="sec-num">§ 02</div>
+    <h2><em>Sistema</em> visual</h2>
+    <div class="sec-rule"></div>
+
+    <h3><span class="num">A</span>Paleta de tintas</h3>
+    <p class="note">Extraída del prototipo Atlas. Funciona como tokens CSS en <code>:root</code>.</p>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#f5edd6"></div><div class="n">Papel</div><div class="v">--paper · #f5edd6</div></div>
+      <div class="sw"><div class="chip" style="background:#efe4c4"></div><div class="n">Papel 2</div><div class="v">--paper-2 · #efe4c4</div></div>
+      <div class="sw"><div class="chip" style="background:#e8d9b0"></div><div class="n">Papel 3</div><div class="v">--paper-3 · #e8d9b0</div></div>
+      <div class="sw"><div class="chip" style="background:#1a1209"></div><div class="n">Tinta</div><div class="v">--ink · #1a1209</div></div>
+      <div class="sw"><div class="chip" style="background:#3a2a18"></div><div class="n">Tinta 2</div><div class="v">--ink-2 · #3a2a18</div></div>
+      <div class="sw"><div class="chip" style="background:#5c4528"></div><div class="n">Tinta suave</div><div class="v">--ink-soft · #5c4528</div></div>
+      <div class="sw"><div class="chip" style="background:#b8872a"></div><div class="n">Oro</div><div class="v">--gold · #b8872a</div></div>
+      <div class="sw"><div class="chip" style="background:#2d8c55"></div><div class="n">Acierto</div><div class="v">--ok · #2d8c55</div></div>
+    </div>
+
+    <h3><span class="num">B</span>Tipografías</h3>
+    <div class="cards c3">
+      <div class="card">
+        <div class="t"><span class="num">A</span><em>Playfair</em> Display</div>
+        <p>Títulos, números, acentos editoriales. Cursiva 900 para los hero.</p>
+        <div class="meta">Google Fonts · 400/700/900 + italic</div>
+      </div>
+      <div class="card">
+        <div class="t"><span class="num">B</span>Libre Baskerville</div>
+        <p>Texto corrido, párrafos, descripciones. Mantiene la voz literaria.</p>
+        <div class="meta">Google Fonts · 400/700 + italic</div>
+      </div>
+      <div class="card">
+        <div class="t"><span class="num">C</span>DM Mono</div>
+        <p>Metadatos, etiquetas, "smallcaps". Da textura de imprenta antigua.</p>
+        <div class="meta">Google Fonts · 400/500</div>
+      </div>
+    </div>
+
+    <h3><span class="num">C</span>Componentes clave</h3>
+    <ul>
+      <li><b>Rosa de los vientos</b> · SVG inline 170×170, rotación lenta (40s)</li>
+      <li><b>Filete decorativo</b> · borde superior con líneas de cuadernos</li>
+      <li><b>Sello editorial</b> · stamp con borde, transformación rotada</li>
+      <li><b>Cards de modo</b> · número romano + título cursiva + descripción</li>
+      <li><b>Líneas topográficas</b> · SVG decorativo de fondo (8% opacidad)</li>
+      <li><b>Mascota explorador</b> · SVG inline reactivo (happy/sad/neutral)</li>
+    </ul>
+  </section>
+
+  <!-- 03 DATOS -->
+  <section>
+    <div class="sec-num">§ 03</div>
+    <h2><em>Cartografía</em> · modelo de datos</h2>
+    <div class="sec-rule"></div>
+
+    <p>El dataset actual tiene <b>86 países</b> con bandera, nombre, capital y dificultad. Para activar la mecánica de continentes hay que añadir un campo <code>r</code> (región).</p>
+
+<pre><span class="c">// flagmaster-data.js — modelo extendido</span>
+<span class="k">window</span>.FM_COUNTRIES = [
+  { f:<span class="s">"🇪🇸"</span>, n:<span class="s">"España"</span>, c:<span class="s">"Madrid"</span>, s:<span class="s">"easy"</span>, r:<span class="s">"eu"</span> },
+  { f:<span class="s">"🇲🇽"</span>, n:<span class="s">"México"</span>, c:<span class="s">"Ciudad de México"</span>, s:<span class="s">"easy"</span>, r:<span class="s">"am"</span> },
+  { f:<span class="s">"🇯🇵"</span>, n:<span class="s">"Japón"</span>, c:<span class="s">"Tokio"</span>, s:<span class="s">"easy"</span>, r:<span class="s">"as"</span> },
+  <span class="c">// … 83 más</span>
+];
+
+<span class="k">window</span>.FM_REGIONS = {
+  eu: { n:<span class="s">"Europa"</span>,    order:<span class="n">1</span>, lock:<span class="n">null</span> },
+  am: { n:<span class="s">"Américas"</span>,  order:<span class="n">2</span>, lock:{ region:<span class="s">"eu"</span>, mastery:<span class="n">0.6</span> } },
+  as: { n:<span class="s">"Asia"</span>,      order:<span class="n">3</span>, lock:{ region:<span class="s">"am"</span>, mastery:<span class="n">0.6</span> } },
+  af: { n:<span class="s">"África"</span>,    order:<span class="n">4</span>, lock:{ region:<span class="s">"as"</span>, mastery:<span class="n">0.5</span> } },
+  oc: { n:<span class="s">"Oceanía"</span>,   order:<span class="n">5</span>, lock:{ region:<span class="s">"af"</span>, mastery:<span class="n">0.5</span> } },
+  is: { n:<span class="s">"Islas"</span>,     order:<span class="n">6</span>, lock:{ region:<span class="s">"oc"</span>, mastery:<span class="n">0.7</span> } },
+};</pre>
+
+    <p class="note">Códigos sugeridos: <code>eu</code> Europa · <code>am</code> Américas · <code>as</code> Asia · <code>af</code> África · <code>oc</code> Oceanía · <code>is</code> Islas (challenge final). Si prefieres separar Norte/Sudamérica, divide en <code>na</code> y <code>sa</code>.</p>
+
+    <h3><span class="num">D</span>Mapa de progresión sugerido</h3>
+    <p>Empiezas con Europa abierta. Cada continente necesita <b>≥ 60% de aciertos sobre sus banderas</b> para desbloquear el siguiente. El Continente Islas es el reto final.</p>
+
+    <div class="map-wrap">
+      <svg class="map-svg" viewBox="0 0 600 320" xmlns="http://www.w3.org/2000/svg">
+        <!-- America -->
+        <g class="cont current" transform="translate(110,150)">
+          <path class="shape" d="M-50,-40 Q-60,-10 -45,30 Q-30,55 0,55 Q35,50 40,15 Q50,-15 25,-45 Q0,-60 -50,-40 Z"/>
+          <text class="lbl" y="-2">Américas</text>
+          <text class="sub" y="14">EN CURSO · 12/22</text>
+        </g>
+        <!-- Europa -->
+        <g class="cont unlocked" transform="translate(295,110)">
+          <path class="shape" d="M-35,-25 Q-40,-5 -25,15 Q-5,28 25,20 Q40,5 30,-20 Q10,-35 -35,-25 Z"/>
+          <text class="lbl" y="-4">Europa</text>
+          <text class="sub" y="10">23/23 ✓</text>
+        </g>
+        <!-- Asia -->
+        <g class="cont locked" transform="translate(420,135)">
+          <path class="shape" d="M-65,-35 Q-75,-5 -55,30 Q-25,50 25,45 Q70,30 65,-15 Q45,-45 -10,-50 Q-50,-50 -65,-35 Z"/>
+          <text class="lbl" y="0">Asia</text>
+          <text class="sub" y="16">BLOQUEADO</text>
+        </g>
+        <!-- África -->
+        <g class="cont locked" transform="translate(300,220)">
+          <path class="shape" d="M-40,-40 Q-45,-10 -30,25 Q-10,55 15,50 Q40,30 35,-10 Q25,-45 -5,-50 Q-30,-50 -40,-40 Z"/>
+          <text class="lbl" y="0">África</text>
+          <text class="sub" y="16">BLOQUEADO</text>
+        </g>
+        <!-- Oceanía -->
+        <g class="cont locked" transform="translate(510,245)">
+          <ellipse class="shape" cx="0" cy="0" rx="55" ry="32"/>
+          <text class="lbl" y="-3">Oceanía</text>
+          <text class="sub" y="13">BLOQUEADO</text>
+        </g>
+        <!-- Polo / Islas -->
+        <g class="cont locked" transform="translate(85,265)">
+          <circle class="shape" cx="0" cy="0" r="32"/>
+          <text class="lbl" y="0">Islas</text>
+          <text class="sub" y="14">FINAL</text>
+        </g>
+      </svg>
+      <div class="legend">
+        <div class="it"><span class="sq u"></span>Conquistado</div>
+        <div class="it"><span class="sq c"></span>En curso</div>
+        <div class="it"><span class="sq l"></span>Bloqueado</div>
+      </div>
+    </div>
+
+    <p class="note">El SVG real puede ser una representación abstracta como ésta o un mapa Mercator simplificado. Lo abstracto envejece mejor y es más fácil de licenciar.</p>
+  </section>
+
+  <!-- 04 MECÁNICA -->
+  <section>
+    <div class="sec-num">§ 04</div>
+    <h2><em>Mecánica</em> de desbloqueo</h2>
+    <div class="sec-rule"></div>
+
+    <p>Cada continente conserva su estado en <code>localStorage</code> bajo una clave única. Por país guardamos cuántas veces se ha visto y cuántas se ha acertado.</p>
+
+<pre><span class="c">// Persistencia del progreso</span>
+<span class="k">const</span> PK = <span class="s">"flagmaster_world_v1"</span>;
+<span class="k">const</span> world = {
+  countries: { <span class="s">"España"</span>: { seen:<span class="n">8</span>, hits:<span class="n">7</span> }, <span class="c">/* … */</span> },
+  regions:   { eu:{ unlocked:<span class="k">true</span> }, am:{ unlocked:<span class="k">true</span> }, as:{ unlocked:<span class="k">false</span> } },
+  totalXP:   <span class="n">420</span>,
+  stamps:    [ <span class="s">"first-perfect"</span>, <span class="s">"europe-cleared"</span> ],
+};
+
+<span class="c">// Maestría por región</span>
+<span class="k">function</span> regionMastery(regionId){
+  <span class="k">const</span> countries = FM_COUNTRIES.filter(c =&gt; c.r === regionId);
+  <span class="k">const</span> mastered = countries.filter(c =&gt; {
+    <span class="k">const</span> p = world.countries[c.n];
+    <span class="k">return</span> p &amp;&amp; p.seen &gt;= <span class="n">3</span> &amp;&amp; p.hits / p.seen &gt;= <span class="n">0.66</span>;
+  });
+  <span class="k">return</span> mastered.length / countries.length;
+}</pre>
+
+    <h3><span class="num">E</span>Reglas propuestas</h3>
+    <ol>
+      <li><b>Europa</b> arranca desbloqueada (sin <code>lock</code>).</li>
+      <li>Cada continente se desbloquea cuando <em>mastery</em> del anterior ≥ umbral (60% para los 3 primeros, 50% para los siguientes, 70% para Islas).</li>
+      <li>Una bandera está "dominada" tras <b>3 vistas con ≥ 66% de acierto</b>.</li>
+      <li>Las partidas tiran preferentemente de la región <em>en curso</em>, pero un 20% del pool viene de regiones ya conquistadas (anti-olvido).</li>
+      <li>Al desbloquear un continente: animación de sello "EXPEDICIÓN ABIERTA" + sonido + entrada en el diario.</li>
+    </ol>
+
+    <h3><span class="num">F</span>Sellos / logros</h3>
+    <div class="cards c2">
+      <div class="card"><div class="t"><em>Primer viaje</em></div><p>Completa tu primera partida con cualquier puntuación.</p><div class="meta">first-game</div></div>
+      <div class="card"><div class="t"><em>Sin fallos</em></div><p>10/10 aciertos en una partida.</p><div class="meta">perfect-run</div></div>
+      <div class="card"><div class="t"><em>Conquistador</em></div><p>Desbloquea los 6 continentes.</p><div class="meta">world-cleared</div></div>
+      <div class="card"><div class="t"><em>Cartógrafo</em></div><p>Domina las 86 banderas (3 vistas con 66%+).</p><div class="meta">all-mastered</div></div>
+      <div class="card"><div class="t"><em>Racha de 15</em></div><p>15 aciertos seguidos sin fallar.</p><div class="meta">streak-15</div></div>
+      <div class="card"><div class="t"><em>Velocista</em></div><p>10/10 en modo Relámpago.</p><div class="meta">lightning-master</div></div>
+    </div>
+  </section>
+
+  <!-- 05 MODOS -->
+  <section>
+    <div class="sec-num">§ 05</div>
+    <h2><em>Modos</em> de juego</h2>
+    <div class="sec-rule"></div>
+    <p>Los 6 modos ya implementados en el prototipo. La integración con continentes consiste solo en filtrar <code>FM_COUNTRIES</code> por la región activa antes de lanzar la partida.</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Modo</th><th>Mecánica</th><th>Estado</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>I</b></td><td><b>¿Qué país?</b></td><td>Bandera grande · 4 nombres</td><td><span class="pill easy">listo</span></td></tr>
+          <tr><td><b>II</b></td><td><b>¿Qué bandera?</b></td><td>Nombre · 4 banderas en grid 2×2</td><td><span class="pill easy">listo</span></td></tr>
+          <tr><td><b>III</b></td><td><b>Pistas</b></td><td>Letras enmascaradas — reveladas según dificultad</td><td><span class="pill easy">listo</span></td></tr>
+          <tr><td><b>IV</b></td><td><b>Capitales</b></td><td>Bandera + país · 4 capitales</td><td><span class="pill easy">listo</span></td></tr>
+          <tr><td><b>V</b></td><td><b>Escríbelo</b></td><td>Sin opciones · input + normalización</td><td><span class="pill easy">listo</span></td></tr>
+          <tr><td><b>VI</b></td><td><b>Relámpago</b></td><td>10 s por bandera · timer circular</td><td><span class="pill easy">listo</span></td></tr>
+          <tr><td><b>VII</b></td><td><b>Travesía</b> <span class="pill new">nuevo</span></td><td>Ruta de 5 banderas dentro de un continente · vidas</td><td><span class="pill med">propuesta</span></td></tr>
+          <tr><td><b>VIII</b></td><td><b>Diario</b> <span class="pill new">nuevo</span></td><td>1 reto al día · misma para todos · racha diaria</td><td><span class="pill hard">backlog</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Modos VII y VIII se proponen para aprovechar la mecánica de continentes y crear retorno diario.</p>
+  </section>
+
+  <!-- 06 ARCHIVOS -->
+  <section>
+    <div class="sec-num">§ 06</div>
+    <h2><em>Archivos</em> y estructura</h2>
+    <div class="sec-rule"></div>
+
+<pre>flagmaster/
+├── index.html                  <span class="c">// home con mapa-mundi · entrada</span>
+├── play.html                   <span class="c">// pantalla de partida (reusa Atlas)</span>
+├── data/
+│   ├── countries.js            <span class="c">// FM_COUNTRIES + FM_REGIONS</span>
+│   └── achievements.js         <span class="c">// FM_STAMPS</span>
+├── styles/
+│   ├── tokens.css              <span class="c">// :root · paleta + tipos</span>
+│   ├── atlas.css               <span class="c">// papel, brújula, líneas</span>
+│   ├── map.css                 <span class="c">// SVG mundo, estados de continente</span>
+│   └── game.css                <span class="c">// HUD, opciones, sello</span>
+├── scripts/
+│   ├── state.js                <span class="c">// localStorage + maestría</span>
+│   ├── map.js                  <span class="c">// render mapa interactivo</span>
+│   ├── game.js                 <span class="c">// loop, 6 modos, scoring</span>
+│   └── audio.js                <span class="c">// helpers FM_tone, sellos, ding</span>
+└── assets/
+    ├── compass.svg             <span class="c">// rosa de los vientos</span>
+    ├── mascot.svg              <span class="c">// explorador (3 estados)</span>
+    └── world.svg               <span class="c">// mapa con paths por continente</span></pre>
+  </section>
+
+  <!-- 07 RECURSOS -->
+  <section>
+    <div class="sec-num">§ 07</div>
+    <h2><em>Recursos</em> externos</h2>
+    <div class="sec-rule"></div>
+    <p>Lo necesario para construir la versión pulida. Todo gratuito o con licencia abierta.</p>
+
+    <div class="res-grid">
+      <div class="res">
+        <div class="h"><div class="ic">A</div><div class="t">Banderas</div></div>
+        <div class="d">Usamos emoji Unicode (renderizado nativo del sistema). Cubren los 86 países sin descargar nada. Si quieres SVG vectoriales reales, usa <em>flag-icons</em> (CC0) o <em>country-flag-icons</em>.</div>
+        <div class="links"><a href="https://flagicons.lipis.dev" target="_blank">flagicons.lipis.dev</a><a href="https://github.com/lipis/flag-icons" target="_blank">github · lipis/flag-icons</a></div>
+      </div>
+      <div class="res">
+        <div class="h"><div class="ic">B</div><div class="t">Mapa del mundo</div></div>
+        <div class="d">Topojson/GeoJSON simplificado para el mapa interactivo. <em>Natural Earth</em> (dominio público) + <em>topojson-client</em> para render ligero con D3 o SVG plano.</div>
+        <div class="links"><a href="https://www.naturalearthdata.com" target="_blank">naturalearthdata.com</a><a href="https://github.com/topojson/world-atlas" target="_blank">topojson · world-atlas</a></div>
+      </div>
+      <div class="res">
+        <div class="h"><div class="ic">C</div><div class="t">Capitales y datos</div></div>
+        <div class="d">Si amplías más allá de 86, los datasets de <em>REST Countries</em> y <em>Country.io</em> dan nombre, capital, región, idioma y código ISO en JSON.</div>
+        <div class="links"><a href="https://restcountries.com" target="_blank">restcountries.com</a><a href="http://country.io/data/" target="_blank">country.io</a></div>
+      </div>
+      <div class="res">
+        <div class="h"><div class="ic">D</div><div class="t">Tipografías</div></div>
+        <div class="d">Playfair Display + Libre Baskerville + DM Mono. Todas en Google Fonts (Open Font License). Preconnect + display=swap recomendado.</div>
+        <div class="links"><a href="https://fonts.google.com/specimen/Playfair+Display" target="_blank">Playfair</a><a href="https://fonts.google.com/specimen/Libre+Baskerville" target="_blank">Baskerville</a><a href="https://fonts.google.com/specimen/DM+Mono" target="_blank">DM Mono</a></div>
+      </div>
+      <div class="res">
+        <div class="h"><div class="ic">E</div><div class="t">Sonidos</div></div>
+        <div class="d">Generados con WebAudio en tiempo real (<code>FM_tone</code>): cero bytes a descargar. Si queremos foley real, <em>Freesound</em> tiene sellos, papel y ding bajo CC0/CC-BY.</div>
+        <div class="links"><a href="https://freesound.org" target="_blank">freesound.org</a></div>
+      </div>
+      <div class="res">
+        <div class="h"><div class="ic">F</div><div class="t">Iconografía</div></div>
+        <div class="d">Brújula, rosa de los vientos, sellos: SVG propios. Para enriquecer (compás de proporciones, animales heráldicos), <em>Tabler Icons</em> o <em>Phosphor</em> aportan trazo elegante.</div>
+        <div class="links"><a href="https://tabler.io/icons" target="_blank">tabler.io</a><a href="https://phosphoricons.com" target="_blank">phosphoricons.com</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 ROADMAP -->
+  <section>
+    <div class="sec-num">§ 08</div>
+    <h2><em>Rumbo</em> · fases de producción</h2>
+    <div class="sec-rule"></div>
+
+    <div class="phases">
+      <div class="ph">
+        <div class="ix"><div class="r">I</div><div class="w">Sprint 1</div></div>
+        <div class="bd">
+          <div class="t"><em>Cimientos</em> · datos + estado</div>
+          <div class="d">Refactor del HTML actual a la estructura final. Añadir <code>r</code> región a cada país. Sistema de <em>localStorage</em> con maestría por país.</div>
+          <div class="li"><span>countries.js + r</span><span>state.js</span><span>FM_REGIONS</span><span>tokens.css</span></div>
+        </div>
+      </div>
+      <div class="ph">
+        <div class="ix"><div class="r">II</div><div class="w">Sprint 2</div></div>
+        <div class="bd">
+          <div class="t"><em>Mapa</em> y desbloqueo</div>
+          <div class="d">Nueva home con mapa-mundi SVG y estados (bloqueado / en curso / conquistado). Animación de sello al desbloquear. Filtro de pool por región.</div>
+          <div class="li"><span>world.svg</span><span>map.js</span><span>animación sello</span><span>filtro pool</span></div>
+        </div>
+      </div>
+      <div class="ph">
+        <div class="ix"><div class="r">III</div><div class="w">Sprint 3</div></div>
+        <div class="bd">
+          <div class="t"><em>Diario</em> y retención</div>
+          <div class="d">Modo Travesía + reto diario. Sistema de logros visible en el atlas. Polish: transición entre pantallas, audio definitivo, micro-interacciones del mapa.</div>
+          <div class="li"><span>Travesía</span><span>Reto diario</span><span>Sellos</span><span>Polish</span></div>
+        </div>
+      </div>
+      <div class="ph">
+        <div class="ix"><div class="r">IV</div><div class="w">Después</div></div>
+        <div class="bd">
+          <div class="t"><em>Multijugador</em> familiar</div>
+          <div class="d">Modo por turnos en mismo dispositivo. Avatar de explorador por jugador. Ranking interno de la familia. Imprimible: diploma editorial al completar el mundo.</div>
+          <div class="li"><span>Pase y juega</span><span>Avatares</span><span>Ranking</span><span>Diploma PDF</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 DECISIONES -->
+  <section>
+    <div class="sec-num">§ 09</div>
+    <h2><em>Decisiones</em> pendientes</h2>
+    <div class="sec-rule"></div>
+    <p>Antes de empezar el Sprint 1 necesitamos cerrar 4 puntos:</p>
+    <ol>
+      <li><b>Subdivisión de Américas:</b> ¿un solo continente o Norte / Centro+Caribe / Sur?</li>
+      <li><b>Orden de desbloqueo:</b> ¿lineal fijo (Europa → Américas → Asia…) o el usuario elige cuál abrir tras el primero?</li>
+      <li><b>Umbrales:</b> ¿60% es el filo correcto? Más bajo = más fluido; más alto = más reto.</li>
+      <li><b>Reset:</b> ¿permitimos "rehacer" un continente para subir el dominio sin perder progreso?</li>
+    </ol>
+  </section>
+
+  <div class="orn">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+  <div class="cta-row" style="justify-content:center">
+    <a class="cta gold" href="FlagMaster.html" target="_blank">▶︎ Jugar prototipo</a>
+    <a class="cta" href="FlagMaster Canvas.html" target="_blank">Ver canvas</a>
+  </div>
+
+</div>
+
+</body>
+</html>

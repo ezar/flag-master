@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>FlagMaster — Atlas de Banderas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f5edd6;
+    --paper-2:#efe4c4;
+    --paper-3:#e8d9b0;
+    --ink:#1a1209;
+    --ink-2:#3a2a18;
+    --ink-soft:#5c4528;
+    --gold:#b8872a;
+    --gold-2:#946a1d;
+    --gold-light:#d9b366;
+    --ok-bg:#0d3320;
+    --ok:#2d8c55;
+    --err-bg:#2d0a0a;
+    --err:#8b2222;
+    --rule: rgba(26,18,9,0.18);
+    --shadow: 0 1px 0 rgba(26,18,9,0.06), 0 18px 30px -22px rgba(26,18,9,0.35);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:'Libre Baskerville', Georgia, serif;
+    color:var(--ink);
+    background:var(--paper);
+    background-image:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.10 0 0 0 0 0.07 0 0 0 0 0.04 0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
+      radial-gradient(140% 90% at 20% 0%, #faf2da 0%, #f5edd6 38%, #ecdfbd 100%);
+    background-blend-mode: multiply, normal;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x:hidden;
+  }
+
+  /* App shell — mobile-first; capped at 430px; desktop frame around it */
+  .app{
+    width:100%;
+    max-width:430px;
+    min-height:100dvh;
+    margin:0 auto;
+    position:relative;
+    padding-bottom:28px;
+  }
+  @media (min-width: 720px){
+    body{
+      background:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.10 0 0 0 0 0.07 0 0 0 0 0.04 0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
+        radial-gradient(60% 60% at 50% 30%, #e8d9b0 0%, #d8c391 70%, #b89a5e 100%);
+      background-blend-mode: multiply, normal;
+      min-height:100dvh;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:36px 16px;
+    }
+    .app{
+      background:var(--paper);
+      background-image:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.10 0 0 0 0 0.07 0 0 0 0 0.04 0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
+        radial-gradient(140% 90% at 20% 0%, #faf2da 0%, #f5edd6 38%, #ecdfbd 100%);
+      background-blend-mode: multiply, normal;
+      box-shadow:
+        0 0 0 1px rgba(26,18,9,0.14),
+        0 30px 60px -24px rgba(26,18,9,0.45),
+        0 8px 16px -8px rgba(26,18,9,0.25);
+      border-radius:4px;
+      overflow:hidden;
+      min-height:780px;
+    }
+  }
+
+  /* ---------- Typography helpers ---------- */
+  .serif{font-family:'Playfair Display', 'Libre Baskerville', Georgia, serif}
+  .mono{font-family:'DM Mono', ui-monospace, Menlo, monospace; letter-spacing:0.08em; text-transform:uppercase}
+  .smallcaps{font-family:'DM Mono', monospace; font-size:10.5px; letter-spacing:0.22em; text-transform:uppercase; color:var(--ink-soft)}
+
+  /* ---------- Decorative chart lines (home background) ---------- */
+  .chart-lines{
+    position:absolute; inset:0; width:100%; height:100%;
+    pointer-events:none; z-index:0; opacity:0.9;
+  }
+  .chart-lines svg{width:100%; height:100%; display:block}
+  .chart-lines path, .chart-lines circle, .chart-lines line{
+    stroke:var(--ink); fill:none; stroke-width:0.6;
+    opacity:0.07;
+  }
+
+  /* ---------- Compass rose ---------- */
+  .compass-wrap{
+    display:flex; align-items:center; justify-content:center;
+    margin: 6px auto 0;
+    width:170px; height:170px;
+    position:relative;
+  }
+  .compass{
+    width:100%; height:100%;
+    animation: spin-slow 40s linear infinite;
+    transform-origin:50% 50%;
+    filter: drop-shadow(0 6px 14px rgba(26,18,9,0.18));
+  }
+  @keyframes spin-slow{ from{transform:rotate(0)} to{transform:rotate(360deg)} }
+  .compass .ring{ stroke:var(--ink); fill:none; stroke-width:1 }
+  .compass .ring-soft{ stroke:var(--ink); opacity:0.35 }
+  .compass .tick{ stroke:var(--ink); stroke-width:0.8 }
+  .compass .star-n{ fill:var(--ink) }
+  .compass .star-l{ fill:var(--gold) }
+  .compass .letter{ font-family:'Playfair Display', serif; font-size:10px; fill:var(--ink); font-weight:700; letter-spacing:0.1em }
+  .compass-center{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:18px; height:18px; border-radius:50%;
+    background:var(--gold); box-shadow:0 0 0 3px var(--paper), 0 0 0 4px var(--ink);
+  }
+
+  /* ---------- Home ---------- */
+  .home{ position:relative; z-index:1; padding: 22px 22px 28px; }
+  .ornament{
+    display:flex; align-items:center; gap:10px;
+    color:var(--ink-soft);
+    margin: 14px 0 6px;
+  }
+  .ornament .line{ flex:1; height:1px; background:linear-gradient(to right, transparent, var(--rule) 30%, var(--rule) 70%, transparent) }
+  .ornament .dot{ width:5px; height:5px; background:var(--gold); transform:rotate(45deg) }
+
+  .brand{
+    text-align:center;
+    margin-top: 4px;
+  }
+  .brand .eyebrow{
+    font-family:'DM Mono', monospace;
+    font-size:10.5px; letter-spacing:0.36em; color:var(--ink-soft);
+    text-transform:uppercase;
+  }
+  .brand h1{
+    font-family:'Playfair Display', serif;
+    font-weight:900; font-style:italic;
+    font-size:46px; line-height:1; letter-spacing:-0.01em;
+    color:var(--ink);
+    margin: 6px 0 4px;
+  }
+  .brand h1 .amp{ color:var(--gold); font-style:italic; font-weight:400 }
+  .brand .sub{
+    font-family:'Libre Baskerville', serif; font-style:italic;
+    color:var(--ink-soft); font-size:13.5px;
+    margin-top:2px;
+  }
+
+  /* Decorative double rule */
+  .double-rule{
+    height:7px; position:relative; margin: 16px 6px;
+  }
+  .double-rule::before, .double-rule::after{
+    content:""; position:absolute; left:0; right:0; height:1px; background:var(--ink); opacity:0.55;
+  }
+  .double-rule::before{ top:0 }
+  .double-rule::after{ bottom:0; opacity:0.25 }
+  .double-rule .diamond{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) rotate(45deg);
+    width:7px; height:7px; background:var(--gold);
+  }
+
+  /* Stats card */
+  .stats-card{
+    border:1px solid var(--rule);
+    background: rgba(255,253,243,0.45);
+    padding:14px 14px 12px;
+    margin-top: 4px;
+    position:relative;
+    box-shadow: var(--shadow);
+  }
+  .stats-card::before, .stats-card::after{
+    content:""; position:absolute; width:10px; height:10px;
+    border:1px solid var(--ink); opacity:0.55;
+  }
+  .stats-card::before{ left:-1px; top:-1px; border-right:none; border-bottom:none }
+  .stats-card::after{ right:-1px; bottom:-1px; border-left:none; border-top:none }
+
+  .stats-title{
+    display:flex; align-items:center; gap:8px;
+    font-family:'DM Mono', monospace; font-size:10px; letter-spacing:0.28em; color:var(--ink-soft);
+    text-transform:uppercase; margin-bottom:10px;
+  }
+  .stats-title .star{ color:var(--gold) }
+  .stats-grid{
+    display:grid; grid-template-columns: repeat(4, 1fr);
+    gap:8px;
+  }
+  .stat{
+    text-align:center;
+    padding:6px 4px;
+    border-right:1px dashed var(--rule);
+  }
+  .stat:last-child{ border-right:none }
+  .stat .num{
+    font-family:'Playfair Display', serif; font-weight:700;
+    font-size:22px; line-height:1; color:var(--ink);
+  }
+  .stat .num.gold{ color:var(--gold) }
+  .stat .lbl{
+    font-family:'DM Mono', monospace; font-size:9px; letter-spacing:0.18em;
+    color:var(--ink-soft); text-transform:uppercase; margin-top:6px;
+  }
+
+  /* Section header */
+  .section-h{
+    display:flex; align-items:baseline; justify-content:space-between;
+    margin: 22px 2px 10px;
+  }
+  .section-h h2{
+    font-family:'Playfair Display', serif; font-weight:700;
+    font-size:18px; letter-spacing:0.01em;
+  }
+  .section-h .hint{
+    font-family:'DM Mono', monospace; font-size:9.5px; letter-spacing:0.22em;
+    color:var(--ink-soft); text-transform:uppercase;
+  }
+
+  /* Difficulty selector */
+  .diff{
+    display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;
+  }
+  .diff-btn{
+    background:transparent; border:1px solid var(--rule);
+    padding:12px 8px 10px; cursor:pointer; text-align:center;
+    color:var(--ink); transition:all .18s ease;
+    position:relative;
+  }
+  .diff-btn .ico{ font-size:20px; line-height:1 }
+  .diff-btn .nm{ font-family:'Playfair Display', serif; font-weight:700; font-size:14px; margin-top:6px }
+  .diff-btn .ct{ font-family:'DM Mono', monospace; font-size:9px; letter-spacing:0.18em; color:var(--ink-soft); margin-top:3px }
+  .diff-btn:hover{ background: rgba(184,135,42,0.07); border-color: var(--gold) }
+  .diff-btn.active{
+    background: var(--ink); color: var(--paper); border-color: var(--ink);
+    box-shadow: 0 6px 18px -10px rgba(26,18,9,0.6);
+  }
+  .diff-btn.active .ct{ color: rgba(245,237,214,0.7) }
+
+  /* Mode list */
+  .modes{ display:grid; gap:9px }
+  .mode{
+    display:flex; align-items:center; gap:14px;
+    padding:14px 14px;
+    border:1px solid var(--rule);
+    background: rgba(255,253,243,0.55);
+    cursor:pointer; text-align:left;
+    color:var(--ink);
+    font-family:'Libre Baskerville', serif;
+    transition: all .18s ease;
+    position:relative;
+  }
+  .mode:hover{ border-color:var(--gold); transform: translateY(-1px); background: rgba(255,253,243,0.85) }
+  .mode .num{
+    font-family:'Playfair Display', serif; font-style:italic;
+    font-size:24px; color:var(--gold); width:28px; text-align:center; line-height:1;
+  }
+  .mode .body{ flex:1 }
+  .mode .ti{ font-family:'Playfair Display', serif; font-weight:700; font-size:16px; letter-spacing:0.01em }
+  .mode .de{ font-size:12px; color:var(--ink-soft); margin-top:2px; font-style:italic }
+  .mode .ic{ font-size:22px; opacity:0.95 }
+  .mode .arrow{
+    font-family:'Playfair Display', serif; font-size:22px; color:var(--ink-soft);
+    transition: transform .2s ease;
+  }
+  .mode:hover .arrow{ transform: translateX(3px); color:var(--gold) }
+
+  .footer-line{
+    margin-top: 26px;
+    text-align:center;
+    font-family:'DM Mono', monospace; font-size:9.5px; letter-spacing:0.32em;
+    color:var(--ink-soft); text-transform:uppercase;
+  }
+  .footer-line .gold{ color:var(--gold) }
+
+  /* ---------- Game screen ---------- */
+  .screen{ display:none }
+  .screen.active{ display:block }
+
+  .game-header{
+    background:var(--ink);
+    color:var(--paper);
+    padding: 14px 16px 12px;
+    position:relative;
+    box-shadow: 0 2px 0 var(--gold);
+  }
+  .gh-top{
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .gh-back{
+    background:none; border:none; color:var(--paper);
+    font-family:'DM Mono', monospace; font-size:10px; letter-spacing:0.2em;
+    cursor:pointer; padding:6px 0; text-transform:uppercase;
+    display:flex; align-items:center; gap:6px;
+  }
+  .gh-back:hover{ color:var(--gold-light) }
+  .gh-mode{
+    font-family:'Playfair Display', serif; font-style:italic;
+    font-size:14px; color:var(--gold-light);
+  }
+  .gh-stats{
+    display:flex; align-items:center; gap:16px; margin-top:10px;
+  }
+  .gh-stat{ display:flex; flex-direction:column; gap:2px }
+  .gh-stat .v{
+    font-family:'Playfair Display', serif; font-weight:700;
+    font-size:20px; line-height:1; color:var(--paper);
+  }
+  .gh-stat .v.gold{ color:var(--gold-light) }
+  .gh-stat .l{
+    font-family:'DM Mono', monospace; font-size:9px;
+    letter-spacing:0.18em; color: rgba(245,237,214,0.55);
+    text-transform:uppercase;
+  }
+  .gh-stat.streak .v{ display:flex; align-items:center; gap:4px }
+  .gh-stat.streak .fl{
+    color: var(--gold-light); font-size:14px;
+    animation: flicker 1.4s ease-in-out infinite;
+  }
+  @keyframes flicker{ 0%,100%{opacity:1} 50%{opacity:0.55} }
+
+  .progress-bar{
+    height:3px; background: rgba(245,237,214,0.12);
+    position:relative; margin-top:12px; overflow:hidden;
+  }
+  .progress-fill{
+    position:absolute; left:0; top:0; bottom:0;
+    background: linear-gradient(to right, var(--gold-2), var(--gold), var(--gold-light));
+    width:0%; transition: width .35s ease;
+  }
+
+  /* Question area */
+  .q-area{ padding: 22px 22px 26px; position:relative; z-index:1 }
+  .q-label{
+    font-family:'DM Mono', monospace; font-size:10px;
+    letter-spacing:0.28em; color:var(--ink-soft);
+    text-transform:uppercase; text-align:center;
+    margin-bottom: 12px;
+  }
+  .q-label .num{ color:var(--gold) }
+
+  .flag-card{
+    border:1px solid var(--rule);
+    background: rgba(255,253,243,0.7);
+    padding: 22px 16px;
+    text-align:center;
+    position:relative;
+    box-shadow: var(--shadow);
+    animation: flag-in .55s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .flag-card::before, .flag-card::after{
+    content:""; position:absolute; width:8px; height:8px; border:1px solid var(--gold);
+  }
+  .flag-card::before{ left:-1px; top:-1px; border-right:none; border-bottom:none }
+  .flag-card::after{ right:-1px; bottom:-1px; border-left:none; border-top:none }
+  .flag-big{
+    font-size: 90px; line-height:1.1;
+    filter: drop-shadow(0 6px 14px rgba(26,18,9,0.18));
+    user-select:none;
+  }
+  @keyframes flag-in{
+    0%{ transform: scale(0.4) rotate(-6deg); opacity:0 }
+    100%{ transform: scale(1) rotate(0); opacity:1 }
+  }
+  .flag-card .country-name{
+    font-family:'Playfair Display', serif; font-weight:700; font-size:24px;
+    margin-top:14px;
+    letter-spacing:0.01em;
+  }
+  .flag-card .country-name.hidden-letters{
+    font-family:'DM Mono', monospace; letter-spacing:0.18em;
+    font-size:20px; color:var(--ink-2);
+  }
+  .flag-card .with-name{
+    font-family:'Playfair Display', serif; font-weight:700; font-size:22px;
+    margin-top:14px; color:var(--ink);
+  }
+  .flag-card .ask-capital{
+    margin-top:10px;
+    font-family:'Libre Baskerville', serif; font-style:italic;
+    color:var(--ink-soft); font-size:13px;
+  }
+
+  /* Options */
+  .options{ display:grid; gap:10px; margin-top:20px; }
+  .opt{
+    position:relative;
+    border:1px solid var(--rule);
+    background: rgba(255,253,243,0.65);
+    padding: 14px 44px 14px 16px;
+    cursor:pointer; text-align:left;
+    color:var(--ink);
+    font-family:'Libre Baskerville', serif;
+    font-size:15px; font-weight:700;
+    transition: all .18s ease;
+  }
+  .opt::before{
+    content: attr(data-letter);
+    position:absolute; right:14px; top:50%; transform:translateY(-50%);
+    font-family:'DM Mono', monospace; font-size:10px; letter-spacing:0.18em;
+    color:var(--ink-soft);
+    border:1px solid var(--rule);
+    width:22px; height:22px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .opt:hover{ border-color:var(--gold); background: rgba(255,253,243,0.95) }
+  .opt:hover::before{ border-color:var(--gold); color:var(--gold) }
+  .opt:disabled{ cursor:default }
+  .opt.correct{
+    background: var(--ok-bg); color:#eef7ed; border-color: var(--ok);
+  }
+  .opt.correct::before{ background:var(--ok); color:#fff; border-color:var(--ok) }
+  .opt.wrong{
+    background: var(--err-bg); color:#fbe9e9; border-color: var(--err);
+  }
+  .opt.wrong::before{ background:var(--err); color:#fff; border-color:var(--err) }
+
+  /* Flag grid (mode 2) */
+  .opt-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:20px;
+  }
+  .opt-flag{
+    position:relative;
+    border:1px solid var(--rule);
+    background: rgba(255,253,243,0.65);
+    padding: 22px 10px 14px;
+    cursor:pointer; text-align:center;
+    transition: all .18s ease;
+  }
+  .opt-flag::before{
+    content: attr(data-letter);
+    position:absolute; right:8px; top:8px;
+    font-family:'DM Mono', monospace; font-size:9px; letter-spacing:0.18em;
+    color:var(--ink-soft);
+    border:1px solid var(--rule);
+    width:20px; height:20px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .opt-flag .ef{ font-size:46px; line-height:1.1 }
+  .opt-flag:hover{ border-color:var(--gold) }
+  .opt-flag.correct{ background: var(--ok-bg); border-color: var(--ok) }
+  .opt-flag.correct::before{ background:var(--ok); color:#fff; border-color:var(--ok) }
+  .opt-flag.wrong{ background: var(--err-bg); border-color: var(--err) }
+  .opt-flag.wrong::before{ background:var(--err); color:#fff; border-color:var(--err) }
+
+  /* Write mode */
+  .write-input-wrap{
+    margin-top: 22px;
+    border:1px solid var(--rule);
+    background: rgba(255,253,243,0.85);
+    padding: 12px 12px;
+    display:flex; gap:10px; align-items:center;
+  }
+  .write-input{
+    flex:1; background:transparent; border:none; outline:none;
+    font-family:'Playfair Display', serif; font-weight:700; font-size:18px;
+    color:var(--ink); padding:6px 4px;
+    border-bottom:1px solid var(--rule);
+  }
+  .write-input::placeholder{ color:var(--ink-soft); font-weight:400; font-style:italic; font-size:14px }
+  .write-submit{
+    background:var(--ink); color:var(--paper);
+    border:none; padding:10px 14px; cursor:pointer;
+    font-family:'DM Mono', monospace; font-size:10px; letter-spacing:0.2em;
+    text-transform:uppercase;
+  }
+  .write-submit:hover{ background:var(--gold-2) }
+  .write-feedback{ margin-top:14px; text-align:center; font-family:'Playfair Display', serif; font-style:italic; font-size:15px; color:var(--ink-soft); min-height:22px }
+  .write-feedback.ok{ color:var(--ok) }
+  .write-feedback.no{ color:var(--err) }
+
+  /* Lightning timer */
+  .lightning-wrap{
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    margin: 4px 0 12px;
+  }
+  .lightning-ring{
+    width:54px; height:54px; position:relative;
+  }
+  .lightning-ring svg{ width:100%; height:100%; transform: rotate(-90deg) }
+  .lr-track{ stroke: var(--rule); stroke-width:4; fill:none }
+  .lr-bar{
+    stroke: var(--gold); stroke-width:4; fill:none;
+    stroke-linecap: round;
+    transition: stroke 0.3s ease;
+  }
+  .lr-bar.danger{ stroke: var(--err) }
+  .lightning-ring .t{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-family:'Playfair Display', serif; font-weight:700; font-size:18px; color:var(--ink);
+  }
+  .lightning-ring .t.danger{ color: var(--err) }
+  .lightning-ring .t.danger{ animation: pulse 0.5s ease-in-out infinite }
+  @keyframes pulse{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
+
+  /* Next button (after answering) */
+  .next-row{
+    display:flex; justify-content:center; margin-top:18px;
+  }
+  .btn-next{
+    background:var(--ink); color:var(--paper); border:none;
+    padding:13px 26px; cursor:pointer;
+    font-family:'DM Mono', monospace; font-size:10.5px; letter-spacing:0.28em;
+    text-transform:uppercase;
+    box-shadow: 0 6px 18px -10px rgba(26,18,9,0.6);
+    display:none;
+  }
+  .btn-next.show{ display:inline-block; animation: pop-in .25s ease }
+  .btn-next:hover{ background: var(--gold-2) }
+  @keyframes pop-in{ from{transform:translateY(6px); opacity:0} to{transform:translateY(0); opacity:1} }
+
+  /* ---------- Results ---------- */
+  .results{ padding: 26px 22px 28px; text-align:center }
+  .res-emoji{ font-size: 64px; line-height:1; animation: pop-in .6s cubic-bezier(0.34, 1.56, 0.64, 1) }
+  .res-title{ font-family:'Playfair Display', serif; font-style:italic; font-weight:900; font-size:34px; margin-top:8px; color:var(--ink) }
+  .res-sub{ font-family:'Libre Baskerville', serif; font-style:italic; color:var(--ink-soft); margin-top:4px }
+  .res-divider{ height:1px; background: var(--rule); margin: 18px 0 16px }
+  .res-stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin: 4px 0 }
+  .res-stat{ padding:10px 6px; border:1px solid var(--rule); background: rgba(255,253,243,0.55) }
+  .res-stat .n{ font-family:'Playfair Display', serif; font-weight:700; font-size:24px; color:var(--ink) }
+  .res-stat .l{ font-family:'DM Mono', monospace; font-size:9px; letter-spacing:0.2em; color:var(--ink-soft); margin-top:4px; text-transform:uppercase }
+  .res-stat.gold .n{ color:var(--gold) }
+
+  .res-failed-h{
+    text-align:left; margin: 22px 0 8px;
+    font-family:'DM Mono', monospace; font-size:10px; letter-spacing:0.24em; color:var(--ink-soft); text-transform:uppercase;
+  }
+  .res-failed{ display:grid; gap:6px; text-align:left }
+  .res-row{
+    display:flex; align-items:center; gap:12px;
+    border:1px solid var(--rule); padding:8px 12px;
+    background: rgba(255,253,243,0.55);
+  }
+  .res-row .ef{ font-size:26px }
+  .res-row .nm{ font-family:'Playfair Display', serif; font-weight:700; font-size:14px; line-height:1.1 }
+  .res-row .cap{ font-family:'Libre Baskerville', serif; font-style:italic; font-size:11.5px; color:var(--ink-soft) }
+
+  .res-actions{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:22px }
+  .btn-primary, .btn-ghost{
+    padding:14px 8px; border:1px solid var(--ink);
+    font-family:'DM Mono', monospace; font-size:10.5px; letter-spacing:0.28em;
+    text-transform:uppercase; cursor:pointer;
+  }
+  .btn-primary{ background:var(--ink); color:var(--paper) }
+  .btn-primary:hover{ background:var(--gold-2); border-color:var(--gold-2) }
+  .btn-ghost{ background:transparent; color:var(--ink) }
+  .btn-ghost:hover{ background: rgba(184,135,42,0.1) }
+
+  /* Subtle reveal for cards */
+  .reveal{ animation: reveal .45s ease both }
+  @keyframes reveal{ from{opacity:0; transform: translateY(6px)} to{opacity:1; transform:none} }
+
+  /* Scrollbars (subtle) */
+  ::-webkit-scrollbar{ width:6px; height:6px }
+  ::-webkit-scrollbar-thumb{ background: rgba(26,18,9,0.18); border-radius:6px }
+
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- ============== HOME ============== -->
+  <section class="screen active" id="home">
+    <div class="chart-lines" aria-hidden="true">
+      <svg viewBox="0 0 430 900" preserveAspectRatio="xMidYMid slice">
+        <!-- rhumb lines and curves -->
+        <circle cx="215" cy="180" r="240"/>
+        <circle cx="215" cy="180" r="180" class="ring-soft"/>
+        <circle cx="215" cy="180" r="120"/>
+        <circle cx="215" cy="180" r="60" class="ring-soft"/>
+        <path d="M -50 180 Q 215 80 480 180" />
+        <path d="M -50 220 Q 215 320 480 220" />
+        <path d="M -50 140 Q 215 -20 480 140" />
+        <path d="M 0 700 Q 215 600 430 700" />
+        <path d="M 0 760 Q 215 820 430 760" />
+        <line x1="215" y1="-20" x2="215" y2="900"/>
+        <line x1="-20" y1="180" x2="450" y2="180"/>
+        <line x1="-20" y1="450" x2="450" y2="450"/>
+        <line x1="40" y1="-20" x2="380" y2="900"/>
+        <line x1="380" y1="-20" x2="40" y2="900"/>
+      </svg>
+    </div>
+
+    <div class="home">
+      <!-- Compass rose -->
+      <div class="compass-wrap" aria-hidden="true">
+        <svg class="compass" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="92" class="ring"/>
+          <circle cx="100" cy="100" r="78" class="ring ring-soft"/>
+          <circle cx="100" cy="100" r="55" class="ring"/>
+          <!-- ticks -->
+          <g>
+            <!-- 32 minor ticks -->
+            <g id="ticks"></g>
+          </g>
+          <!-- main star (N/E/S/W large points) -->
+          <polygon class="star-n" points="100,12 105,95 100,100 95,95"/>
+          <polygon class="star-n" points="100,188 105,105 100,100 95,105"/>
+          <polygon class="star-n" points="12,100 95,95 100,100 95,105"/>
+          <polygon class="star-n" points="188,100 105,95 100,100 105,105"/>
+          <!-- diagonal smaller -->
+          <polygon class="star-l" points="100,30 130,100 100,100"/>
+          <polygon class="star-l" points="100,30 70,100 100,100"/>
+          <polygon class="star-l" points="100,170 130,100 100,100"/>
+          <polygon class="star-l" points="100,170 70,100 100,100"/>
+          <polygon class="star-l" points="30,100 100,70 100,100"/>
+          <polygon class="star-l" points="30,100 100,130 100,100"/>
+          <polygon class="star-l" points="170,100 100,70 100,100"/>
+          <polygon class="star-l" points="170,100 100,130 100,100"/>
+          <!-- letters N E S O -->
+          <text x="100" y="9" class="letter" text-anchor="middle" dominant-baseline="middle">N</text>
+          <text x="194" y="103" class="letter" text-anchor="middle" dominant-baseline="middle">E</text>
+          <text x="100" y="198" class="letter" text-anchor="middle" dominant-baseline="middle">S</text>
+          <text x="6" y="103" class="letter" text-anchor="middle" dominant-baseline="middle">O</text>
+          <circle cx="100" cy="100" r="4" fill="#b8872a"/>
+        </svg>
+        <div class="compass-center"></div>
+      </div>
+
+      <div class="brand">
+        <div class="eyebrow">Compendium · MMXXVI</div>
+        <h1>Flag<span class="amp">·</span>Master</h1>
+        <div class="sub">Un atlas ilustrado para jóvenes exploradores</div>
+      </div>
+
+      <div class="double-rule"><div class="diamond"></div></div>
+
+      <!-- Stats -->
+      <div class="stats-card">
+        <div class="stats-title"><span class="star">✦</span> Bitácora del navegante</div>
+        <div class="stats-grid">
+          <div class="stat"><div class="num gold" id="st-best">0</div><div class="lbl">Mejor<br>Racha</div></div>
+          <div class="stat"><div class="num" id="st-games">0</div><div class="lbl">Partidas</div></div>
+          <div class="stat"><div class="num" id="st-hits">0</div><div class="lbl">Aciertos</div></div>
+          <div class="stat"><div class="num" id="st-acc">—</div><div class="lbl">Precisión</div></div>
+        </div>
+      </div>
+
+      <!-- Difficulty -->
+      <div class="section-h">
+        <h2>Dificultad</h2>
+        <div class="hint" id="diff-count">— países</div>
+      </div>
+      <div class="diff" id="diff">
+        <button class="diff-btn" data-diff="easy"><div class="ico">🌿</div><div class="nm">Fácil</div><div class="ct">Iniciado</div></button>
+        <button class="diff-btn active" data-diff="medium"><div class="ico">⚓</div><div class="nm">Medio</div><div class="ct">Navegante</div></button>
+        <button class="diff-btn" data-diff="hard"><div class="ico">🗺️</div><div class="nm">Experto</div><div class="ct">Cartógrafo</div></button>
+      </div>
+
+      <!-- Modes -->
+      <div class="section-h"><h2>Modos de juego</h2><div class="hint">Elige uno</div></div>
+      <div class="modes" id="modes">
+        <button class="mode" data-mode="country">
+          <div class="num">I</div>
+          <div class="body">
+            <div class="ti">🏳️ ¿Qué país?</div>
+            <div class="de">Ves la bandera, eliges el nombre</div>
+          </div>
+          <div class="arrow">→</div>
+        </button>
+        <button class="mode" data-mode="flag">
+          <div class="num">II</div>
+          <div class="body">
+            <div class="ti">🔍 ¿Qué bandera?</div>
+            <div class="de">Ves el nombre, eliges la bandera</div>
+          </div>
+          <div class="arrow">→</div>
+        </button>
+        <button class="mode" data-mode="hints">
+          <div class="num">III</div>
+          <div class="body">
+            <div class="ti">🔤 Pistas</div>
+            <div class="de">Letras ocultas — descifra el nombre</div>
+          </div>
+          <div class="arrow">→</div>
+        </button>
+        <button class="mode" data-mode="capital">
+          <div class="num">IV</div>
+          <div class="body">
+            <div class="ti">🏛️ Capitales</div>
+            <div class="de">Identifica la capital correcta</div>
+          </div>
+          <div class="arrow">→</div>
+        </button>
+        <button class="mode" data-mode="write">
+          <div class="num">V</div>
+          <div class="body">
+            <div class="ti">✍️ Escríbelo</div>
+            <div class="de">Sin opciones — solo tu memoria</div>
+          </div>
+          <div class="arrow">→</div>
+        </button>
+        <button class="mode" data-mode="lightning">
+          <div class="num">VI</div>
+          <div class="body">
+            <div class="ti">⚡ Relámpago</div>
+            <div class="de">10 segundos por bandera</div>
+          </div>
+          <div class="arrow">→</div>
+        </button>
+      </div>
+
+      <div class="footer-line">✦ <span class="gold">Septentrionem</span> · <span class="gold">Meridiem</span> · <span class="gold">Orientem</span> · <span class="gold">Occidentem</span> ✦</div>
+    </div>
+  </section>
+
+  <!-- ============== GAME ============== -->
+  <section class="screen" id="game">
+    <header class="game-header">
+      <div class="gh-top">
+        <button class="gh-back" id="back">‹ Menú</button>
+        <div class="gh-mode" id="gh-mode">Modo</div>
+        <div style="width:54px"></div>
+      </div>
+      <div class="gh-stats">
+        <div class="gh-stat"><div class="v gold" id="gh-score">0</div><div class="l">Puntos</div></div>
+        <div class="gh-stat streak"><div class="v"><span class="fl">✦</span><span id="gh-streak">0</span></div><div class="l">Racha</div></div>
+        <div class="gh-stat" style="margin-left:auto; text-align:right"><div class="v" id="gh-prog">1/10</div><div class="l">Pregunta</div></div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="gh-fill"></div></div>
+    </header>
+
+    <div class="q-area" id="q-area">
+      <!-- injected by JS -->
+    </div>
+  </section>
+
+  <!-- ============== RESULTS ============== -->
+  <section class="screen" id="results">
+    <div class="results">
+      <div class="res-emoji" id="r-emoji">🏆</div>
+      <div class="res-title" id="r-title">Perfecto</div>
+      <div class="res-sub" id="r-sub">Has dominado los siete mares.</div>
+      <div class="res-divider"></div>
+      <div class="res-stats">
+        <div class="res-stat gold"><div class="n" id="r-pts">0</div><div class="l">Puntos</div></div>
+        <div class="res-stat"><div class="n" id="r-hits">0/10</div><div class="l">Aciertos</div></div>
+        <div class="res-stat"><div class="n" id="r-streak">0</div><div class="l">Mejor Racha</div></div>
+      </div>
+      <div id="r-failed-wrap" style="display:none">
+        <div class="res-failed-h">✦ Banderas para repasar</div>
+        <div class="res-failed" id="r-failed"></div>
+      </div>
+      <div class="res-actions">
+        <button class="btn-ghost" id="r-menu">Menú</button>
+        <button class="btn-primary" id="r-again">Repetir</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* ============================================================
+   Country data — {f: flag, n: nombre, c: capital, s: stage}
+   s: 'easy' | 'medium' | 'hard'  (cumulative — easy ⊂ medium ⊂ hard)
+   ============================================================ */
+const COUNTRIES = [
+  // ---------- EASY (Europa Occ. + grandes potencias) — 22
+  {f:"🇪🇸", n:"España",          c:"Madrid",        s:"easy"},
+  {f:"🇫🇷", n:"Francia",         c:"París",         s:"easy"},
+  {f:"🇩🇪", n:"Alemania",        c:"Berlín",        s:"easy"},
+  {f:"🇮🇹", n:"Italia",          c:"Roma",          s:"easy"},
+  {f:"🇵🇹", n:"Portugal",        c:"Lisboa",        s:"easy"},
+  {f:"🇬🇧", n:"Reino Unido",     c:"Londres",       s:"easy"},
+  {f:"🇮🇪", n:"Irlanda",         c:"Dublín",        s:"easy"},
+  {f:"🇳🇱", n:"Países Bajos",    c:"Ámsterdam",     s:"easy"},
+  {f:"🇧🇪", n:"Bélgica",         c:"Bruselas",      s:"easy"},
+  {f:"🇨🇭", n:"Suiza",           c:"Berna",         s:"easy"},
+  {f:"🇦🇹", n:"Austria",         c:"Viena",         s:"easy"},
+  {f:"🇸🇪", n:"Suecia",          c:"Estocolmo",     s:"easy"},
+  {f:"🇳🇴", n:"Noruega",         c:"Oslo",          s:"easy"},
+  {f:"🇩🇰", n:"Dinamarca",       c:"Copenhague",    s:"easy"},
+  {f:"🇫🇮", n:"Finlandia",       c:"Helsinki",      s:"easy"},
+  {f:"🇺🇸", n:"Estados Unidos",  c:"Washington",    s:"easy"},
+  {f:"🇨🇦", n:"Canadá",          c:"Ottawa",        s:"easy"},
+  {f:"🇲🇽", n:"México",          c:"Ciudad de México", s:"easy"},
+  {f:"🇧🇷", n:"Brasil",          c:"Brasilia",      s:"easy"},
+  {f:"🇦🇷", n:"Argentina",       c:"Buenos Aires",  s:"easy"},
+  {f:"🇯🇵", n:"Japón",           c:"Tokio",         s:"easy"},
+  {f:"🇨🇳", n:"China",           c:"Pekín",         s:"easy"},
+  {f:"🇦🇺", n:"Australia",       c:"Canberra",      s:"easy"},
+
+  // ---------- MEDIUM (+Europa Este, Asia, África conocidos) — 22
+  {f:"🇵🇱", n:"Polonia",         c:"Varsovia",      s:"medium"},
+  {f:"🇨🇿", n:"República Checa", c:"Praga",         s:"medium"},
+  {f:"🇭🇺", n:"Hungría",         c:"Budapest",      s:"medium"},
+  {f:"🇷🇴", n:"Rumanía",         c:"Bucarest",      s:"medium"},
+  {f:"🇬🇷", n:"Grecia",          c:"Atenas",        s:"medium"},
+  {f:"🇷🇺", n:"Rusia",           c:"Moscú",         s:"medium"},
+  {f:"🇺🇦", n:"Ucrania",         c:"Kiev",          s:"medium"},
+  {f:"🇹🇷", n:"Turquía",         c:"Ankara",        s:"medium"},
+  {f:"🇮🇳", n:"India",           c:"Nueva Delhi",   s:"medium"},
+  {f:"🇰🇷", n:"Corea del Sur",   c:"Seúl",          s:"medium"},
+  {f:"🇹🇭", n:"Tailandia",       c:"Bangkok",       s:"medium"},
+  {f:"🇻🇳", n:"Vietnam",         c:"Hanói",         s:"medium"},
+  {f:"🇮🇩", n:"Indonesia",       c:"Yakarta",       s:"medium"},
+  {f:"🇵🇭", n:"Filipinas",       c:"Manila",        s:"medium"},
+  {f:"🇪🇬", n:"Egipto",          c:"El Cairo",      s:"medium"},
+  {f:"🇿🇦", n:"Sudáfrica",       c:"Pretoria",      s:"medium"},
+  {f:"🇲🇦", n:"Marruecos",       c:"Rabat",         s:"medium"},
+  {f:"🇳🇬", n:"Nigeria",         c:"Abuya",         s:"medium"},
+  {f:"🇰🇪", n:"Kenia",           c:"Nairobi",       s:"medium"},
+  {f:"🇨🇱", n:"Chile",           c:"Santiago",      s:"medium"},
+  {f:"🇨🇴", n:"Colombia",        c:"Bogotá",        s:"medium"},
+  {f:"🇵🇪", n:"Perú",            c:"Lima",          s:"medium"},
+  {f:"🇻🇪", n:"Venezuela",       c:"Caracas",       s:"medium"},
+  {f:"🇨🇺", n:"Cuba",            c:"La Habana",     s:"medium"},
+  {f:"🇮🇱", n:"Israel",          c:"Jerusalén",     s:"medium"},
+  {f:"🇸🇦", n:"Arabia Saudita",  c:"Riad",          s:"medium"},
+  {f:"🇦🇪", n:"Emiratos Árabes Unidos", c:"Abu Dabi", s:"medium"},
+  {f:"🇳🇿", n:"Nueva Zelanda",   c:"Wellington",    s:"medium"},
+
+  // ---------- HARD (Balcanes, Cáucaso, Asia Central, África subsah.) — 28+
+  {f:"🇷🇸", n:"Serbia",          c:"Belgrado",      s:"hard"},
+  {f:"🇭🇷", n:"Croacia",         c:"Zagreb",        s:"hard"},
+  {f:"🇧🇦", n:"Bosnia y Herzegovina", c:"Sarajevo", s:"hard"},
+  {f:"🇸🇮", n:"Eslovenia",       c:"Liubliana",     s:"hard"},
+  {f:"🇲🇰", n:"Macedonia del Norte", c:"Skopie",    s:"hard"},
+  {f:"🇲🇪", n:"Montenegro",      c:"Podgorica",     s:"hard"},
+  {f:"🇦🇱", n:"Albania",         c:"Tirana",        s:"hard"},
+  {f:"🇧🇬", n:"Bulgaria",        c:"Sofía",         s:"hard"},
+  {f:"🇸🇰", n:"Eslovaquia",      c:"Bratislava",    s:"hard"},
+  {f:"🇪🇪", n:"Estonia",         c:"Tallin",        s:"hard"},
+  {f:"🇱🇻", n:"Letonia",         c:"Riga",          s:"hard"},
+  {f:"🇱🇹", n:"Lituania",        c:"Vilna",         s:"hard"},
+  {f:"🇧🇾", n:"Bielorrusia",     c:"Minsk",         s:"hard"},
+  {f:"🇲🇩", n:"Moldavia",        c:"Chisináu",      s:"hard"},
+  {f:"🇬🇪", n:"Georgia",         c:"Tiflis",        s:"hard"},
+  {f:"🇦🇲", n:"Armenia",         c:"Ereván",        s:"hard"},
+  {f:"🇦🇿", n:"Azerbaiyán",      c:"Bakú",          s:"hard"},
+  {f:"🇰🇿", n:"Kazajistán",      c:"Astaná",        s:"hard"},
+  {f:"🇺🇿", n:"Uzbekistán",      c:"Taskent",       s:"hard"},
+  {f:"🇰🇬", n:"Kirguistán",      c:"Biskek",        s:"hard"},
+  {f:"🇲🇳", n:"Mongolia",        c:"Ulán Bator",    s:"hard"},
+  {f:"🇵🇰", n:"Pakistán",        c:"Islamabad",     s:"hard"},
+  {f:"🇧🇩", n:"Bangladés",       c:"Daca",          s:"hard"},
+  {f:"🇱🇰", n:"Sri Lanka",       c:"Colombo",       s:"hard"},
+  {f:"🇳🇵", n:"Nepal",           c:"Katmandú",      s:"hard"},
+  {f:"🇪🇹", n:"Etiopía",         c:"Adís Abeba",    s:"hard"},
+  {f:"🇬🇭", n:"Ghana",           c:"Acra",          s:"hard"},
+  {f:"🇸🇳", n:"Senegal",         c:"Dakar",         s:"hard"},
+  {f:"🇹🇿", n:"Tanzania",        c:"Dodoma",        s:"hard"},
+  {f:"🇺🇬", n:"Uganda",          c:"Kampala",       s:"hard"},
+  {f:"🇦🇴", n:"Angola",          c:"Luanda",        s:"hard"},
+  {f:"🇩🇿", n:"Argelia",         c:"Argel",         s:"hard"},
+  {f:"🇹🇳", n:"Túnez",           c:"Túnez",         s:"hard"},
+  {f:"🇨🇲", n:"Camerún",         c:"Yaundé",        s:"hard"},
+  {f:"🇨🇮", n:"Costa de Marfil", c:"Yamusukro",     s:"hard"},
+];
+
+/* ============================================================
+   State
+   ============================================================ */
+const STAGES = {
+  easy:   ["easy"],
+  medium: ["easy","medium"],
+  hard:   ["easy","medium","hard"],
+};
+const POINTS = { easy:10, medium:15, hard:20 };
+const QUESTIONS_PER_ROUND = 10;
+const LIGHTNING_SECONDS = 10;
+
+const state = {
+  diff: "medium",
+  mode: null,
+  pool: [],
+  qIdx: 0,
+  score: 0,
+  streak: 0,
+  bestStreakRound: 0,
+  hits: 0,
+  failed: [],     // {f, n, c}
+  current: null,  // {country, options}
+  answered: false,
+  timerId: null,
+  timeLeft: 0,
+};
+
+const persist = loadPersist();
+
+function loadPersist(){
+  try{
+    const raw = localStorage.getItem("flagmaster_v1");
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return { bestStreak:0, games:0, totalHits:0, totalQs:0 };
+}
+function savePersist(){
+  try{ localStorage.setItem("flagmaster_v1", JSON.stringify(persist)); }catch(e){}
+}
+
+/* ============================================================
+   Helpers
+   ============================================================ */
+function $(sel, root=document){ return root.querySelector(sel); }
+function $$(sel, root=document){ return [...root.querySelectorAll(sel)]; }
+function shuffle(a){ const r=[...a]; for(let i=r.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [r[i],r[j]]=[r[j],r[i]]; } return r; }
+function pickN(arr, n, exclude=new Set()){
+  const pool = arr.filter(x => !exclude.has(x.n));
+  return shuffle(pool).slice(0, n);
+}
+function norm(s){
+  return (s||"").toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z0-9]+/g," ")
+    .replace(/\s+/g," ").trim();
+}
+function poolFor(diff){
+  const allowed = new Set(STAGES[diff]);
+  return COUNTRIES.filter(c => allowed.has(c.s));
+}
+
+/* ============================================================
+   Compass ticks (decorative)
+   ============================================================ */
+(function buildTicks(){
+  const g = document.getElementById("ticks");
+  if(!g) return;
+  const N = 32;
+  for(let i=0;i<N;i++){
+    const a = (i*360/N) * Math.PI/180;
+    const r1 = 92, r2 = (i%8===0)? 78 : 84;
+    const x1 = 100 + Math.sin(a)*r1, y1 = 100 - Math.cos(a)*r1;
+    const x2 = 100 + Math.sin(a)*r2, y2 = 100 - Math.cos(a)*r2;
+    const ln = document.createElementNS("http://www.w3.org/2000/svg","line");
+    ln.setAttribute("x1",x1); ln.setAttribute("y1",y1);
+    ln.setAttribute("x2",x2); ln.setAttribute("y2",y2);
+    ln.setAttribute("class","tick");
+    if(i%8!==0) ln.setAttribute("opacity","0.55");
+    g.appendChild(ln);
+  }
+})();
+
+/* ============================================================
+   Home wiring
+   ============================================================ */
+function updateHomeStats(){
+  $("#st-best").textContent = persist.bestStreak;
+  $("#st-games").textContent = persist.games;
+  $("#st-hits").textContent = persist.totalHits;
+  const acc = persist.totalQs ? Math.round(100*persist.totalHits/persist.totalQs) : null;
+  $("#st-acc").textContent = acc===null ? "—" : acc + "%";
+}
+function updateDiffCount(){
+  $("#diff-count").textContent = poolFor(state.diff).length + " países";
+}
+$$("#diff .diff-btn").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    $$("#diff .diff-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    state.diff = btn.dataset.diff;
+    updateDiffCount();
+  });
+});
+$$("#modes .mode").forEach(btn=>{
+  btn.addEventListener("click", ()=> startGame(btn.dataset.mode));
+});
+$("#back").addEventListener("click", goHome);
+$("#r-menu").addEventListener("click", goHome);
+$("#r-again").addEventListener("click", ()=> startGame(state.mode));
+
+updateHomeStats();
+updateDiffCount();
+
+/* ============================================================
+   Screen control
+   ============================================================ */
+function show(id){
+  $$(".screen").forEach(s=>s.classList.remove("active"));
+  $("#"+id).classList.add("active");
+  window.scrollTo({top:0, behavior:"instant"});
+}
+function goHome(){
+  stopTimer();
+  updateHomeStats();
+  show("home");
+}
+
+/* ============================================================
+   Game start / question loop
+   ============================================================ */
+const MODE_LABELS = {
+  country:"I · ¿Qué país?",
+  flag:"II · ¿Qué bandera?",
+  hints:"III · Pistas",
+  capital:"IV · Capitales",
+  write:"V · Escríbelo",
+  lightning:"VI · Relámpago",
+};
+
+function startGame(mode){
+  state.mode = mode;
+  state.pool = poolFor(state.diff);
+  state.qIdx = 0;
+  state.score = 0;
+  state.streak = 0;
+  state.bestStreakRound = 0;
+  state.hits = 0;
+  state.failed = [];
+  state.answered = false;
+  $("#gh-mode").textContent = MODE_LABELS[mode];
+  show("game");
+  nextQuestion();
+}
+
+function nextQuestion(){
+  stopTimer();
+  state.answered = false;
+  if(state.qIdx >= QUESTIONS_PER_ROUND){ return finishGame(); }
+  state.qIdx++;
+  renderHeader();
+  buildQuestion();
+}
+
+function renderHeader(){
+  $("#gh-score").textContent = state.score;
+  $("#gh-streak").textContent = state.streak;
+  $("#gh-prog").textContent = state.qIdx + "/" + QUESTIONS_PER_ROUND;
+  const pct = ((state.qIdx-1) / QUESTIONS_PER_ROUND) * 100;
+  $("#gh-fill").style.width = pct + "%";
+}
+
+function buildQuestion(){
+  const country = pickN(state.pool, 1)[0];
+  const distractors = pickN(state.pool, 3, new Set([country.n]));
+  state.current = { country, options: shuffle([country, ...distractors]) };
+  renderQuestion();
+}
+
+/* ============================================================
+   Render per mode
+   ============================================================ */
+function renderQuestion(){
+  const root = $("#q-area");
+  root.innerHTML = "";
+  const { country, options } = state.current;
+  const mode = state.mode;
+
+  // Lightning timer on top
+  if(mode === "lightning"){
+    const wrap = el(`
+      <div class="lightning-wrap">
+        <div class="lightning-ring">
+          <svg viewBox="0 0 50 50">
+            <circle class="lr-track" cx="25" cy="25" r="22"/>
+            <circle class="lr-bar" id="lr-bar" cx="25" cy="25" r="22"
+              stroke-dasharray="138.23" stroke-dashoffset="0"/>
+          </svg>
+          <div class="t" id="lr-text">${LIGHTNING_SECONDS}</div>
+        </div>
+        <div class="smallcaps">Tiempo</div>
+      </div>`);
+    root.appendChild(wrap);
+  }
+
+  // Label
+  const label = labelFor(mode);
+  root.appendChild(el(`<div class="q-label">${label}</div>`));
+
+  // Flag/Name card
+  const card = el(`<div class="flag-card reveal"></div>`);
+
+  if(mode === "flag"){
+    // Show only country name
+    card.innerHTML = `<div class="country-name">${country.n}</div>
+      <div class="smallcaps" style="margin-top:6px">Elige su bandera</div>`;
+  } else if(mode === "hints"){
+    card.innerHTML = `<div class="flag-big">${country.f}</div>
+      <div class="country-name hidden-letters">${maskName(country.n)}</div>`;
+  } else if(mode === "capital"){
+    card.innerHTML = `<div class="flag-big">${country.f}</div>
+      <div class="with-name">${country.n}</div>
+      <div class="ask-capital">¿Cuál es su capital?</div>`;
+  } else {
+    card.innerHTML = `<div class="flag-big">${country.f}</div>`;
+  }
+  root.appendChild(card);
+
+  // Options / input
+  if(mode === "write"){
+    const wrap = el(`
+      <div class="write-input-wrap">
+        <input class="write-input" id="write-input" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Nombre del país…"/>
+        <button class="write-submit" id="write-submit">Confirmar</button>
+      </div>
+      <div class="write-feedback" id="write-fb">&nbsp;</div>
+    `);
+    root.appendChild(wrap);
+    const inp = $("#write-input");
+    inp.focus();
+    inp.addEventListener("keydown", e=>{ if(e.key==="Enter") submitWrite(); });
+    $("#write-submit").addEventListener("click", submitWrite);
+  } else if(mode === "flag"){
+    const grid = el(`<div class="opt-grid"></div>`);
+    options.forEach((opt, i)=>{
+      const letter = "ABCD"[i];
+      const b = el(`<button class="opt-flag" data-letter="${letter}"><div class="ef">${opt.f}</div></button>`);
+      b.addEventListener("click", ()=> answerChoice(b, opt));
+      grid.appendChild(b);
+    });
+    root.appendChild(grid);
+  } else if(mode === "capital"){
+    // Distractors with capitals (must be from pool)
+    const capOpts = shuffle([
+      country,
+      ...pickN(state.pool, 3, new Set([country.n]))
+    ]);
+    state.current.options = capOpts;
+    const list = el(`<div class="options"></div>`);
+    capOpts.forEach((opt, i)=>{
+      const letter = "ABCD"[i];
+      const b = el(`<button class="opt" data-letter="${letter}">${opt.c}</button>`);
+      b.addEventListener("click", ()=> answerChoice(b, opt));
+      list.appendChild(b);
+    });
+    root.appendChild(list);
+  } else {
+    // country / hints / lightning  -> name options
+    const list = el(`<div class="options"></div>`);
+    options.forEach((opt, i)=>{
+      const letter = "ABCD"[i];
+      const b = el(`<button class="opt" data-letter="${letter}">${opt.n}</button>`);
+      b.addEventListener("click", ()=> answerChoice(b, opt));
+      list.appendChild(b);
+    });
+    root.appendChild(list);
+  }
+
+  // Next button (hidden)
+  const nextWrap = el(`<div class="next-row"><button class="btn-next" id="btn-next">Siguiente ›</button></div>`);
+  root.appendChild(nextWrap);
+  $("#btn-next").addEventListener("click", nextQuestion);
+
+  if(mode === "lightning") startLightningTimer();
+}
+
+function labelFor(mode){
+  const tot = QUESTIONS_PER_ROUND;
+  const n = state.qIdx;
+  const base = `Pregunta <span class="num">${n}</span> de ${tot}`;
+  if(mode==="lightning") return base + " · ⚡ Reloj de arena";
+  if(mode==="write")     return base + " · Sin opciones";
+  return base;
+}
+
+function maskName(name){
+  // Reveal ~30% of letters at random positions, preserve spaces and punctuation
+  const chars = [...name];
+  const idxs = chars.map((ch,i)=> /[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/.test(ch) ? i : -1).filter(i=>i>=0);
+  const reveal = new Set(shuffle(idxs).slice(0, Math.max(1, Math.floor(idxs.length*0.3))));
+  // Always reveal the first letter
+  if(idxs.length) reveal.add(idxs[0]);
+  return chars.map((ch,i)=>{
+    if(/\s/.test(ch)) return "&nbsp;&nbsp;";
+    if(!/[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/.test(ch)) return ch;
+    return reveal.has(i) ? ch.toUpperCase() : "·";
+  }).join(" ");
+}
+
+function el(html){
+  const d = document.createElement("div");
+  d.innerHTML = html.trim();
+  return d.firstElementChild;
+}
+
+/* ============================================================
+   Answers
+   ============================================================ */
+function answerChoice(btn, chosen){
+  if(state.answered) return;
+  state.answered = true;
+  stopTimer();
+  const correct = chosen.n === state.current.country.n;
+  // Mark buttons
+  const allBtns = $$(".opt, .opt-flag", $("#q-area"));
+  const correctName = state.current.country.n;
+  allBtns.forEach(b=>{
+    b.disabled = true;
+    // Find which option this button represents
+    const idx = allBtns.indexOf(b);
+    const opt = state.current.options[idx];
+    if(opt && opt.n === correctName) b.classList.add("correct");
+  });
+  if(!correct){ btn.classList.add("wrong"); }
+  finalizeAnswer(correct);
+}
+
+function submitWrite(){
+  if(state.answered) return;
+  const val = $("#write-input").value;
+  const correct = norm(val) === norm(state.current.country.n);
+  state.answered = true;
+  const fb = $("#write-fb");
+  if(correct){
+    fb.textContent = `✓ ¡Correcto! ${state.current.country.n}`;
+    fb.className = "write-feedback ok";
+  }else{
+    fb.innerHTML = `✗ Era <strong>${state.current.country.n}</strong>${val?` &nbsp;·&nbsp; escribiste “${val}”`:""}`;
+    fb.className = "write-feedback no";
+  }
+  $("#write-input").disabled = true;
+  $("#write-submit").disabled = true;
+  finalizeAnswer(correct);
+}
+
+function finalizeAnswer(correct){
+  if(correct){
+    state.hits++;
+    state.streak++;
+    if(state.streak > state.bestStreakRound) state.bestStreakRound = state.streak;
+    const base = POINTS[state.diff];
+    const bonus = state.streak * 2; // streak × 2 extra points
+    state.score += base + bonus;
+  } else {
+    state.streak = 0;
+    state.failed.push({ ...state.current.country });
+  }
+  renderHeader();
+  $("#btn-next").classList.add("show");
+  // Auto-advance write mode? Keep manual for consistency.
+}
+
+/* ============================================================
+   Lightning timer
+   ============================================================ */
+function startLightningTimer(){
+  state.timeLeft = LIGHTNING_SECONDS;
+  const bar = $("#lr-bar");
+  const text = $("#lr-text");
+  const CIRC = 138.23;
+  bar.style.strokeDashoffset = "0";
+  bar.classList.remove("danger");
+  text.classList.remove("danger");
+  text.textContent = state.timeLeft;
+  const start = Date.now();
+  state.timerId = setInterval(()=>{
+    const elapsed = (Date.now()-start)/1000;
+    const left = Math.max(0, LIGHTNING_SECONDS - elapsed);
+    state.timeLeft = left;
+    bar.style.strokeDashoffset = (CIRC * (elapsed/LIGHTNING_SECONDS)).toFixed(2);
+    const sec = Math.ceil(left);
+    text.textContent = sec;
+    if(left <= 3){
+      bar.classList.add("danger");
+      text.classList.add("danger");
+    }
+    if(left <= 0){
+      stopTimer();
+      if(!state.answered){
+        // Treat as wrong
+        state.answered = true;
+        const correctName = state.current.country.n;
+        $$(".opt, .opt-flag", $("#q-area")).forEach((b,i)=>{
+          b.disabled = true;
+          const opt = state.current.options[i];
+          if(opt && opt.n === correctName) b.classList.add("correct");
+        });
+        finalizeAnswer(false);
+      }
+    }
+  }, 80);
+}
+function stopTimer(){
+  if(state.timerId){ clearInterval(state.timerId); state.timerId = null; }
+}
+
+/* ============================================================
+   Finish + results
+   ============================================================ */
+function finishGame(){
+  // Persist
+  persist.games += 1;
+  persist.totalHits += state.hits;
+  persist.totalQs += QUESTIONS_PER_ROUND;
+  if(state.bestStreakRound > persist.bestStreak) persist.bestStreak = state.bestStreakRound;
+  savePersist();
+
+  // Compute result tier
+  const pct = state.hits / QUESTIONS_PER_ROUND;
+  let emoji = "🌧️", title = "Naufragio", sub = "Vuelve a embarcar y traza una nueva ruta.";
+  if(pct === 1)      { emoji="🏆"; title="Perfecto"; sub="Has dominado los siete mares."; }
+  else if(pct >= 0.8){ emoji="🌟"; title="Magnífico"; sub="Tu brújula apenas vacila."; }
+  else if(pct >= 0.6){ emoji="⚓"; title="Buen viaje"; sub="Buen rumbo, capitán."; }
+  else if(pct >= 0.4){ emoji="🧭"; title="Travesía"; sub="Aún quedan costas por descubrir."; }
+  else if(pct >= 0.2){ emoji="🪨"; title="Encallado"; sub="Endereza el timón y vuelve a zarpar."; }
+
+  $("#r-emoji").textContent = emoji;
+  $("#r-title").textContent = title;
+  $("#r-sub").textContent = sub;
+  $("#r-pts").textContent = state.score;
+  $("#r-hits").textContent = `${state.hits}/${QUESTIONS_PER_ROUND}`;
+  $("#r-streak").textContent = state.bestStreakRound;
+
+  const failedWrap = $("#r-failed-wrap");
+  const failedRoot = $("#r-failed");
+  failedRoot.innerHTML = "";
+  if(state.failed.length){
+    failedWrap.style.display = "block";
+    state.failed.forEach(c=>{
+      failedRoot.appendChild(el(`
+        <div class="res-row">
+          <div class="ef">${c.f}</div>
+          <div>
+            <div class="nm">${c.n}</div>
+            <div class="cap">Capital: ${c.c}</div>
+          </div>
+        </div>
+      `));
+    });
+  } else {
+    failedWrap.style.display = "none";
+  }
+
+  // Fill last bit of progress
+  $("#gh-fill").style.width = "100%";
+  show("results");
+}
+
+</script>
+</body>
+</html>
