@@ -104,7 +104,7 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'settings.reset.btn':    'Reiniciar progreso',
     'settings.reset.confirm':'⚠ Confirmar reinicio',
     'settings.reset.cancel': 'Cancelar',
-    'settings.footer':       'FlagMaster · Atlas de Banderas · Sprint I · MMXXVI',
+    'settings.footer':       'FlagMaster · Atlas de Banderas',
 
     // ── World Map ─────────────────────────────────────────────────
     'map.title':      'Atlas del explorador',
@@ -222,7 +222,7 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'settings.reset.btn':    'Reset progress',
     'settings.reset.confirm':'⚠ Confirm reset',
     'settings.reset.cancel': 'Cancel',
-    'settings.footer':       'FlagMaster · Atlas of Flags · Sprint I · MMXXVI',
+    'settings.footer':       'FlagMaster · Atlas of Flags',
 
     // ── World Map ─────────────────────────────────────────────────
     'map.title':      "Explorer's Atlas",

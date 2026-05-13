@@ -2,7 +2,16 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+function buildVersion(): string {
+  const d = new Date()
+  const p = (n: number, l = 2) => String(n).padStart(l, '0')
+  return `${String(d.getFullYear()).slice(2)}.${p(d.getMonth()+1)}.${p(d.getDate())}.${p(d.getHours())}${p(d.getMinutes())}`
+}
+
 export default defineConfig({
+  define: {
+    __BUILD_VERSION__: JSON.stringify(buildVersion()),
+  },
   base: '/flag-master/',
   plugins: [
     react(),

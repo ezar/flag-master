@@ -299,7 +299,7 @@ export function SettingsModal({ open, onClose }: Props) {
                 color:         'var(--ink-soft)',
                 textTransform: 'uppercase',
               }}>
-                {t('settings.footer')}
+                {t('settings.footer')} · {__BUILD_VERSION__}
               </div>
             </div>
           </motion.div>
