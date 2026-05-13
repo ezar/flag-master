@@ -2,15 +2,141 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/flag-master/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta name="theme-color" content="#1a1209" />
     <title>FlagMaster — Atlas de Banderas</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+    <style>
+      /* ── Splash screen ───────────────────────────────────────── */
+      #splash {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        background: #f5edd6;
+        background-image:
+          url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.10 0 0 0 0 0.07 0 0 0 0 0.04 0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
+          radial-gradient(140% 90% at 20% 0%, #faf2da 0%, #f5edd6 38%, #ecdfbd 100%);
+        background-blend-mode: multiply, normal;
+        transition: opacity 0.55s ease;
+        -webkit-font-smoothing: antialiased;
+      }
+      #splash.hide {
+        opacity: 0;
+        pointer-events: none;
+      }
+      @keyframes splash-spin {
+        from { transform: rotate(0deg); }
+        to   { transform: rotate(360deg); }
+      }
+      @keyframes splash-fade-in {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      #splash-compass {
+        animation: splash-spin 6s linear infinite;
+        filter: drop-shadow(0 8px 20px rgba(26,18,9,0.18));
+      }
+      #splash-brand {
+        text-align: center;
+        animation: splash-fade-in 0.7s ease 0.15s both;
+      }
+      #splash-eyebrow {
+        font-family: 'DM Mono', monospace, sans-serif;
+        font-size: 10px;
+        letter-spacing: 0.38em;
+        text-transform: uppercase;
+        color: #5c4528;
+        margin-bottom: 6px;
+      }
+      #splash-title {
+        font-family: 'Playfair Display', Georgia, serif;
+        font-style: italic;
+        font-weight: 900;
+        font-size: 48px;
+        line-height: 1;
+        letter-spacing: -0.01em;
+        color: #1a1209;
+      }
+      #splash-title .dot { color: #b8872a; font-weight: 400; }
+      #splash-sub {
+        font-family: 'Libre Baskerville', Georgia, serif;
+        font-style: italic;
+        font-size: 14px;
+        color: #5c4528;
+        margin-top: 4px;
+      }
+      #splash-dots {
+        display: flex;
+        gap: 6px;
+        animation: splash-fade-in 0.7s ease 0.4s both;
+      }
+      #splash-dots span {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: #b8872a;
+        opacity: 0.3;
+        animation: splash-dot 1.2s ease-in-out infinite;
+      }
+      #splash-dots span:nth-child(2) { animation-delay: 0.2s; }
+      #splash-dots span:nth-child(3) { animation-delay: 0.4s; }
+      @keyframes splash-dot {
+        0%, 100% { opacity: 0.2; transform: scale(0.8); }
+        50%       { opacity: 1;   transform: scale(1.2); }
+      }
+    </style>
   </head>
   <body>
+
+    <!-- ── Splash screen (removed by main.tsx after React mounts) ── -->
+    <div id="splash">
+      <svg id="splash-compass" viewBox="0 0 200 200" width="130" height="130" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="100" cy="100" r="92" fill="none" stroke="#1a1209" stroke-width="1" opacity="0.3"/>
+        <circle cx="100" cy="100" r="78" fill="none" stroke="#b8872a" stroke-width="0.8" stroke-dasharray="4 4" opacity="0.4"/>
+        <circle cx="100" cy="100" r="55" fill="none" stroke="#1a1209" stroke-width="0.7" opacity="0.15"/>
+        <!-- N/S/E/W ink spikes -->
+        <polygon points="100,12 105,94 100,100 95,94"  fill="#1a1209"/>
+        <polygon points="100,188 105,106 100,100 95,106" fill="#1a1209"/>
+        <polygon points="12,100 94,95 100,100 94,105"  fill="#1a1209"/>
+        <polygon points="188,100 106,95 100,100 106,105" fill="#1a1209"/>
+        <!-- Gold diagonals -->
+        <polygon points="100,30 115,100 100,100" fill="#b8872a"/>
+        <polygon points="100,30 85,100 100,100"  fill="#b8872a"/>
+        <polygon points="100,170 115,100 100,100" fill="#b8872a"/>
+        <polygon points="100,170 85,100 100,100"  fill="#b8872a"/>
+        <polygon points="30,100 100,85 100,100"  fill="#b8872a"/>
+        <polygon points="30,100 100,115 100,100" fill="#b8872a"/>
+        <polygon points="170,100 100,85 100,100"  fill="#b8872a"/>
+        <polygon points="170,100 100,115 100,100" fill="#b8872a"/>
+        <!-- Center -->
+        <circle cx="100" cy="100" r="14" fill="#b8872a"/>
+        <circle cx="100" cy="100" r="9"  fill="#f5edd6"/>
+        <circle cx="100" cy="100" r="5"  fill="#b8872a"/>
+        <!-- N label -->
+        <text x="100" y="9" text-anchor="middle" dominant-baseline="hanging"
+          font-family="Georgia,serif" font-style="italic" font-weight="bold"
+          font-size="11" fill="#1a1209" opacity="0.6">N</text>
+      </svg>
+
+      <div id="splash-brand">
+        <div id="splash-eyebrow">Compendium · MMXXVI</div>
+        <div id="splash-title">Flag<span class="dot">·</span>Master</div>
+        <div id="splash-sub">Un atlas ilustrado para jóvenes exploradores</div>
+      </div>
+
+      <div id="splash-dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

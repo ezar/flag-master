@@ -9,3 +9,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <App />
   </React.StrictMode>,
 )
+
+// Fade out and remove the splash screen after React mounts
+const splash = document.getElementById('splash')
+if (splash) {
+  splash.classList.add('hide')
+  setTimeout(() => splash.remove(), 600)
+}

@@ -1,12 +1,53 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <circle cx="50" cy="50" r="46" fill="none" stroke="#1a1209" stroke-width="2"/>
-  <polygon points="50,8 53,47 50,50 47,47" fill="#1a1209"/>
-  <polygon points="50,92 53,53 50,50 47,53" fill="#1a1209"/>
-  <polygon points="8,50 47,47 50,50 47,53" fill="#1a1209"/>
-  <polygon points="92,50 53,47 50,50 53,53" fill="#1a1209"/>
-  <polygon points="50,18 65,50 50,50" fill="#b8872a"/>
-  <polygon points="50,18 35,50 50,50" fill="#b8872a"/>
-  <polygon points="50,82 65,50 50,50" fill="#b8872a"/>
-  <polygon points="50,82 35,50 50,50" fill="#b8872a"/>
-  <circle cx="50" cy="50" r="5" fill="#b8872a"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="bg" cx="38%" cy="28%" r="70%">
+      <stop offset="0%" stop-color="#faf2da"/>
+      <stop offset="60%" stop-color="#f5edd6"/>
+      <stop offset="100%" stop-color="#e0ccaa"/>
+    </radialGradient>
+    <filter id="noise" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="3" result="n"/>
+      <feColorMatrix in="n" type="matrix"
+        values="0 0 0 0 0.10  0 0 0 0 0.07  0 0 0 0 0.04  0 0 0 0.18 0" result="tint"/>
+      <feComposite in="tint" in2="SourceGraphic" operator="multiply"/>
+    </filter>
+    <clipPath id="round">
+      <rect width="512" height="512" rx="110" ry="110"/>
+    </clipPath>
+  </defs>
+
+  <!-- Parchment background -->
+  <rect width="512" height="512" rx="110" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="110" fill="url(#bg)" filter="url(#noise)" opacity="0.7" clip-path="url(#round)"/>
+
+  <!-- Outer rings -->
+  <circle cx="256" cy="256" r="238" fill="none" stroke="#1a1209" stroke-width="5" opacity="0.18"/>
+  <circle cx="256" cy="256" r="226" fill="none" stroke="#b8872a" stroke-width="1.5" stroke-dasharray="6 5" opacity="0.5"/>
+  <circle cx="256" cy="256" r="194" fill="none" stroke="#1a1209" stroke-width="1" opacity="0.1"/>
+
+  <!-- N/S/E/W ink spikes -->
+  <polygon points="256,32  267,240 256,256 245,240" fill="#1a1209"/>
+  <polygon points="256,480 267,272 256,256 245,272" fill="#1a1209"/>
+  <polygon points="32,256  240,245 256,256 240,267" fill="#1a1209"/>
+  <polygon points="480,256 272,245 256,256 272,267" fill="#1a1209"/>
+
+  <!-- Gold diagonal points -->
+  <polygon points="256,96  284,256 256,256" fill="#b8872a"/>
+  <polygon points="256,96  228,256 256,256" fill="#b8872a"/>
+  <polygon points="256,416 284,256 256,256" fill="#b8872a"/>
+  <polygon points="256,416 228,256 256,256" fill="#b8872a"/>
+  <polygon points="96,256  256,228 256,256" fill="#b8872a"/>
+  <polygon points="96,256  256,284 256,256" fill="#b8872a"/>
+  <polygon points="416,256 256,228 256,256" fill="#b8872a"/>
+  <polygon points="416,256 256,284 256,256" fill="#b8872a"/>
+
+  <!-- Center jewel -->
+  <circle cx="256" cy="256" r="32" fill="#b8872a"/>
+  <circle cx="256" cy="256" r="23" fill="#f5edd6"/>
+  <circle cx="256" cy="256" r="13" fill="#b8872a"/>
+
+  <!-- N letter -->
+  <text x="256" y="16" text-anchor="middle" dominant-baseline="hanging"
+    font-family="Georgia,serif" font-style="italic" font-weight="bold"
+    font-size="30" fill="#1a1209" opacity="0.65">N</text>
 </svg>
