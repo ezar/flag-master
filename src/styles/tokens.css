@@ -1,1 +1,17 @@
-/* tokens placeholder — will be replaced in Task 1 */
+:root {
+  --paper:      #f5edd6;
+  --paper-2:    #efe4c4;
+  --paper-3:    #e8d9b0;
+  --ink:        #1a1209;
+  --ink-2:      #3a2a18;
+  --ink-soft:   #5c4528;
+  --gold:       #b8872a;
+  --gold-2:     #946a1d;
+  --gold-light: #d9b366;
+  --ok-bg:      #0d3320;
+  --ok:         #2d8c55;
+  --err-bg:     #2d0a0a;
+  --err:        #8b2222;
+  --rule:       rgba(26,18,9,0.18);
+  --shadow:     0 1px 0 rgba(26,18,9,0.06), 0 18px 30px -22px rgba(26,18,9,0.35);
+}

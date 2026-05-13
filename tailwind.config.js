@@ -14,6 +14,7 @@ export default {
         'ink-2':   'var(--ink-2)',
         'ink-soft':'var(--ink-soft)',
         gold:      'var(--gold)',
+        'gold-2':  'var(--gold-2)',
         'gold-light': 'var(--gold-light)',
         'ok-bg':   'var(--ok-bg)',
         ok:        'var(--ok)',
