@@ -1,67 +1,39 @@
 import { FM_REGIONS, FM_COUNTRIES } from '../data/countries'
 import { useGameStore, regionMastery, isRegionUnlocked, isMastered } from '../store/gameStore'
 
-interface Continent {
-  id:   string
-  name: string
-  // SVG path in 560×290 viewBox
-  path: string
-  // Label position
-  lx:   number
-  ly:   number
-}
-
-// Hand-crafted continent silhouettes — simplified but geographically evocative
-const CONTINENTS: Continent[] = [
+// Approximate continent polygon paths in a 1000×650 coordinate space
+// Matching a standard Mercator projection world map
+const REGIONS = [
   {
     id:   'americas',
     name: 'Américas',
-    path: `M 88,30 Q 78,38 72,52 Q 65,68 70,80 Q 75,90 85,88
-           Q 92,95 88,108 Q 82,122 78,138 Q 72,158 76,178
-           Q 82,200 96,212 Q 112,222 122,210 Q 132,195 128,178
-           Q 124,160 118,148 Q 112,136 116,122 Q 122,106 132,96
-           Q 142,84 138,70 Q 132,52 120,42 Q 106,28 88,30 Z`,
-    lx: 102, ly: 120,
+    // North + South America combined
+    points: '55,30 280,32 305,90 290,140 315,175 330,205 335,265 322,335 305,405 288,470 262,530 228,565 198,558 180,505 190,438 183,378 158,308 128,258 98,228 74,193 58,158 45,118 50,68',
+    lx: 165, ly: 290,
   },
   {
     id:   'europe',
     name: 'Europa',
-    path: `M 272,32 Q 260,28 252,38 Q 244,50 248,62
-           Q 252,72 262,76 Q 268,82 265,90 Q 260,96 265,100
-           Q 272,104 282,98 Q 294,90 302,80 Q 312,68 310,56
-           Q 308,42 296,34 Q 284,28 272,32 Z`,
-    lx: 278, ly: 66,
+    points: '448,62 565,62 575,102 568,152 548,202 508,218 472,208 452,188 446,148 444,102',
+    lx: 508, ly: 138,
   },
   {
     id:   'africa',
     name: 'África',
-    path: `M 272,112 Q 260,108 252,118 Q 244,130 246,148
-           Q 248,168 254,188 Q 262,208 272,218 Q 282,224 292,216
-           Q 304,204 308,184 Q 312,162 308,142
-           Q 304,122 292,114 Q 280,108 272,112 Z`,
-    lx: 278, ly: 166,
+    points: '448,238 610,238 620,312 616,392 598,468 568,538 534,558 498,552 468,520 450,452 438,370 438,292',
+    lx: 528, ly: 398,
   },
   {
     id:   'asia',
     name: 'Asia',
-    path: `M 332,28 Q 318,22 308,32 Q 296,44 300,58
-           Q 296,66 286,72 Q 278,80 282,92 Q 288,102 302,104
-           Q 316,106 330,98 Q 346,88 358,76 Q 374,62 380,48
-           Q 386,34 376,26 Q 362,18 348,22 Q 340,24 332,28 Z
-           M 366,72 Q 378,78 392,82 Q 408,86 422,80
-           Q 438,72 444,58 Q 448,44 440,36 Q 428,28 414,32
-           Q 398,36 388,48 Q 376,60 366,72 Z`,
-    lx: 390, ly: 62,
+    points: '548,50 1000,50 1000,412 838,422 778,392 712,362 668,318 628,292 588,288 558,262 546,212 543,152 548,96',
+    lx: 778, ly: 200,
   },
   {
     id:   'oceania',
     name: 'Oceanía',
-    path: `M 430,188 Q 418,184 412,194 Q 406,206 412,218
-           Q 418,228 432,228 Q 448,226 456,214
-           Q 462,202 456,192 Q 446,182 430,188 Z
-           M 464,196 Q 472,198 478,208 Q 482,218 476,224
-           Q 468,228 460,222 Q 456,212 460,202 Q 462,196 464,196 Z`,
-    lx: 438, ly: 208,
+    points: '718,358 972,358 978,432 958,502 920,550 865,562 815,538 772,482 735,422 718,388',
+    lx: 848, ly: 458,
   },
 ]
 
@@ -93,196 +65,138 @@ export function WorldMap() {
         Atlas del explorador
       </div>
 
-      {/* Map SVG */}
-      <svg
-        viewBox="0 0 560 256"
-        style={{ width: '100%', height: 'auto', display: 'block' }}
-        aria-hidden="true"
-      >
-        <defs>
-          {/* Hand-drawn / antique edge filter */}
-          <filter id="roughen" x="-8%" y="-8%" width="116%" height="116%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="4" seed="5" result="noise"/>
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="5"
-              xChannelSelector="R" yChannelSelector="G"/>
-          </filter>
+      {/* Map container — image + SVG overlay */}
+      <div style={{ position: 'relative', borderRadius: 2, overflow: 'hidden' }}>
+        {/* Base map image */}
+        <img
+          src={`${import.meta.env.BASE_URL}world-map.png`}
+          alt="Mapa del mundo"
+          style={{ width: '100%', display: 'block' }}
+        />
 
-          {/* Sea texture */}
-          <filter id="seatex" x="0" y="0" width="100%" height="100%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="2" result="t"/>
-            <feColorMatrix type="saturate" values="0" result="gray"/>
-            <feComposite in="gray" in2="SourceGraphic" operator="in"/>
-          </filter>
+        {/* SVG overlay — same aspect ratio as image (1340×870 ≈ 1000×650) */}
+        <svg
+          viewBox="0 0 1000 650"
+          preserveAspectRatio="xMidYMid slice"
+          style={{
+            position: 'absolute',
+            top: 0, left: 0,
+            width: '100%', height: '100%',
+          }}
+        >
+          {REGIONS.map(region => {
+            const unlocked = isRegionUnlocked(region.id, masteryCountries)
+            const mastery  = regionMastery(region.id, masteryCountries)
+            const total    = FM_COUNTRIES.filter(c => c.r === region.id).length
+            const mastered = FM_COUNTRIES.filter(c =>
+              c.r === region.id && isMastered(masteryCountries[c.n] ?? { seen: 0, hits: 0 })
+            ).length
 
-          {/* Cross-hatch pattern — locked regions */}
-          <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(42)">
-            <line x1="0" y1="0" x2="0" y2="6" stroke="var(--ink-soft)" strokeWidth="0.7" opacity="0.35"/>
-          </pattern>
+            // Overlay color per state
+            // locked:      dark cover hides the map
+            // available:   no overlay — map shows clearly
+            // in progress: slight gold tint
+            // mastered:    strong gold tint + glow
+            let fill    = 'rgba(26,18,9,0)'
+            let stroke  = 'rgba(26,18,9,0.3)'
+            let strokeW = 0.8
 
-          {/* Stipple dots — available (unlocked, no progress) */}
-          <pattern id="stipple" width="5" height="5" patternUnits="userSpaceOnUse">
-            <circle cx="2.5" cy="2.5" r="0.7" fill="var(--ink-soft)" opacity="0.28"/>
-          </pattern>
+            if (!unlocked) {
+              fill    = 'rgba(26,18,9,0.58)'
+              stroke  = 'rgba(26,18,9,0.4)'
+              strokeW = 0.6
+            } else if (mastery >= 0.99) {
+              fill    = 'rgba(184,135,42,0.45)'
+              stroke  = 'rgba(148,106,29,0.9)'
+              strokeW = 1.6
+            } else if (mastery > 0) {
+              fill    = 'rgba(217,179,102,0.22)'
+              stroke  = 'rgba(184,135,42,0.7)'
+              strokeW = 1.2
+            } else {
+              // available, no progress — subtle border only
+              fill    = 'rgba(184,135,42,0.04)'
+              stroke  = 'rgba(184,135,42,0.5)'
+              strokeW = 1
+            }
 
-          {/* Progress fill gradient */}
-          <linearGradient id="prog-grad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--gold-light)" stopOpacity="0.85"/>
-            <stop offset="100%" stopColor="var(--gold)" stopOpacity="0.6"/>
-          </linearGradient>
+            const subLabel = !unlocked
+              ? (() => {
+                  const reg = FM_REGIONS.find(r => r.id === region.id)
+                  return reg?.lock ? `▸ ${Math.round(reg.lock.mastery * 100)}%` : 'BLOQ.'
+                })()
+              : mastered === 0
+                ? `${total} países`
+                : `${mastered}/${total}`
 
-          {/* Mastered fill */}
-          <linearGradient id="done-grad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--gold-light)"/>
-            <stop offset="100%" stopColor="var(--gold-2)"/>
-          </linearGradient>
-        </defs>
+            const labelColor = !unlocked ? 'rgba(245,237,214,0.7)' :
+                               mastery >= 0.99 ? '#1a1209' : '#1a1209'
+            const subColor   = !unlocked ? 'rgba(245,237,214,0.5)' :
+                               mastery >= 0.99 ? 'rgba(148,106,29,0.9)' : 'rgba(92,69,40,0.85)'
 
-        {/* Outer map frame — double border */}
-        <rect x="3" y="3" width="554" height="250" fill="none"
-          stroke="var(--ink)" strokeWidth="1.2" opacity="0.4"/>
-        <rect x="7" y="7" width="546" height="242" fill="none"
-          stroke="var(--ink)" strokeWidth="0.5" opacity="0.22"/>
+            // Hatching pattern for locked regions
+            const patternId = `hatch-${region.id}`
 
-        {/* Parchment sea background with subtle grain */}
-        <rect x="8" y="8" width="544" height="240"
-          fill="var(--paper-2)" opacity="0.5"/>
+            return (
+              <g key={region.id}>
+                {!unlocked && (
+                  <defs>
+                    <pattern id={patternId} width="8" height="8"
+                      patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                      <line x1="0" y1="0" x2="0" y2="8"
+                        stroke="rgba(26,18,9,0.25)" strokeWidth="1.2"/>
+                    </pattern>
+                  </defs>
+                )}
 
-        {/* Latitude lines — faint grid */}
-        {[50, 100, 150, 200].map(y => (
-          <line key={y} x1="8" y1={y} x2="552" y2={y}
-            stroke="var(--ink)" strokeWidth="0.4" opacity="0.1"
-            strokeDasharray="2,6"/>
-        ))}
-        {[100, 200, 300, 400, 500].map(x => (
-          <line key={x} x1={x} y1="8" x2={x} y2="248"
-            stroke="var(--ink)" strokeWidth="0.4" opacity="0.1"
-            strokeDasharray="2,6"/>
-        ))}
+                {/* Main fill overlay */}
+                <polygon
+                  points={region.points}
+                  fill={fill}
+                  stroke={stroke}
+                  strokeWidth={strokeW}
+                  strokeLinejoin="round"
+                />
 
-        {/* Continents */}
-        {CONTINENTS.map(cont => {
-          const unlocked = isRegionUnlocked(cont.id, masteryCountries)
-          const mastery  = regionMastery(cont.id, masteryCountries)
+                {/* Hatch texture on locked */}
+                {!unlocked && (
+                  <polygon
+                    points={region.points}
+                    fill={`url(#${patternId})`}
+                    stroke="none"
+                  />
+                )}
 
-          // Fill logic
-          let mainFill   = 'var(--paper-3)'
-          let overlay    = ''
-          let strokeCol  = 'var(--ink-soft)'
-          let strokeW    = 1
-          let opacity    = 1
+                {/* Region name */}
+                <text
+                  x={region.lx} y={region.ly}
+                  textAnchor="middle"
+                  fontFamily="'Playfair Display', serif"
+                  fontStyle="italic"
+                  fontWeight="700"
+                  fontSize="22"
+                  fill={labelColor}
+                  style={{ textShadow: '0 1px 3px rgba(0,0,0,0.3)' }}
+                >
+                  {region.name}
+                </text>
 
-          if (!unlocked) {
-            mainFill  = 'var(--paper-3)'
-            overlay   = 'url(#hatch)'
-            opacity   = 0.6
-          } else if (mastery >= 0.99) {
-            mainFill  = 'url(#done-grad)'
-            strokeCol = 'var(--gold-2)'
-            strokeW   = 1.5
-          } else if (mastery > 0) {
-            mainFill  = 'url(#prog-grad)'
-            overlay   = 'url(#stipple)'
-            strokeCol = 'var(--gold)'
-          } else {
-            mainFill  = 'var(--paper-2)'
-            overlay   = 'url(#stipple)'
-            strokeCol = 'var(--ink)'
-          }
-
-          return (
-            <g key={cont.id} opacity={opacity} filter="url(#roughen)">
-              {/* Base fill */}
-              <path d={cont.path} fill={mainFill}
-                stroke={strokeCol} strokeWidth={strokeW} strokeLinejoin="round"/>
-              {/* Texture overlay */}
-              {overlay && (
-                <path d={cont.path} fill={overlay} stroke="none"/>
-              )}
-              {/* Subtle inner shadow line */}
-              <path d={cont.path} fill="none"
-                stroke={mastery >= 0.99 ? 'var(--gold)' : 'var(--ink)'}
-                strokeWidth="0.5" opacity="0.18"
-                strokeLinejoin="round"/>
-            </g>
-          )
-        })}
-
-        {/* Labels rendered WITHOUT the roughen filter (stay crisp) */}
-        {CONTINENTS.map(cont => {
-          const unlocked = isRegionUnlocked(cont.id, masteryCountries)
-          const mastery  = regionMastery(cont.id, masteryCountries)
-          const region   = FM_REGIONS.find(r => r.id === cont.id)
-          const total    = FM_COUNTRIES.filter(c => c.r === cont.id).length
-          const mastered = FM_COUNTRIES.filter(c =>
-            c.r === cont.id && isMastered(masteryCountries[c.n] ?? { seen: 0, hits: 0 })
-          ).length
-
-          const subText = !unlocked
-            ? (region?.lock
-                ? `▸ ${Math.round(region.lock.mastery * 100)}%`
-                : 'BLOQ.')
-            : mastered === 0
-              ? `${total} países`
-              : `${mastered}/${total}`
-
-          const labelInk = mastery >= 0.99 ? 'var(--gold-2)' : 'var(--ink)'
-          const subInk   = 'var(--ink-soft)'
-
-          return (
-            <g key={`lbl-${cont.id}`}>
-              <text
-                x={cont.lx} y={cont.ly - 5}
-                textAnchor="middle"
-                fontFamily="'Playfair Display', serif"
-                fontStyle="italic"
-                fontWeight="700"
-                fontSize={cont.id === 'oceania' ? 7.5 : 9}
-                fill={labelInk}
-                style={{ pointerEvents: 'none' }}
-              >
-                {cont.name}
-              </text>
-              <text
-                x={cont.lx} y={cont.ly + 6}
-                textAnchor="middle"
-                fontFamily="'DM Mono', monospace"
-                fontSize={cont.id === 'oceania' ? 5.5 : 6.5}
-                letterSpacing="0.08em"
-                fill={subInk}
-                opacity="0.85"
-                style={{ pointerEvents: 'none' }}
-              >
-                {subText}
-              </text>
-            </g>
-          )
-        })}
-
-        {/* Compass rose — bottom-left corner */}
-        <g transform="translate(28,230)" opacity="0.45">
-          <line x1="0" y1="-12" x2="0" y2="12" stroke="var(--ink)" strokeWidth="0.8"/>
-          <line x1="-12" y1="0" x2="12" y2="0" stroke="var(--ink)" strokeWidth="0.8"/>
-          <polygon points="0,-12 2,-4 0,-2 -2,-4" fill="var(--ink)"/>
-          <text x="0" y="-15" textAnchor="middle"
-            fontFamily="'Playfair Display', serif" fontStyle="italic"
-            fontSize="6" fill="var(--ink)">N</text>
-        </g>
-
-        {/* Scale decoration — bottom-right */}
-        <g transform="translate(490,240)" opacity="0.35">
-          <rect x="-30" y="-3" width="15" height="4" fill="var(--ink)"/>
-          <rect x="-15" y="-3" width="15" height="4" fill="var(--paper)"/>
-          <rect x="0"   y="-3" width="15" height="4" fill="var(--ink)"/>
-          <line x1="-30" y1="-5" x2="15" y2="-5" stroke="var(--ink)" strokeWidth="0.6"/>
-        </g>
-
-        {/* Corner ornaments */}
-        {[[10,10],[550,10],[10,246],[550,246]].map(([cx,cy],i) => (
-          <g key={i} transform={`translate(${cx},${cy})`}>
-            <circle r="2.5" fill="var(--gold)" opacity="0.5"/>
-          </g>
-        ))}
-      </svg>
+                {/* Sub-label: country count or unlock requirement */}
+                <text
+                  x={region.lx} y={region.ly + 18}
+                  textAnchor="middle"
+                  fontFamily="'DM Mono', monospace"
+                  fontSize="13"
+                  letterSpacing="0.1em"
+                  fill={subColor}
+                >
+                  {subLabel}
+                </text>
+              </g>
+            )
+          })}
+        </svg>
+      </div>
 
       {/* Legend */}
       <div style={{
@@ -299,20 +213,13 @@ export function WorldMap() {
         textTransform: 'uppercase',
       }}>
         {[
-          { bg: 'var(--paper-2)',    label: 'Disponible',  dashed: false },
-          { bg: 'var(--gold-light)', label: 'En progreso', dashed: false },
-          { bg: 'var(--gold)',       label: 'Dominado',    dashed: false },
-          { bg: 'var(--paper-3)',    label: 'Bloqueado',   dashed: true  },
-        ].map(({ bg, label, dashed }) => (
+          { bg: 'transparent',      border: '1px solid rgba(184,135,42,0.5)',  label: 'Disponible'  },
+          { bg: 'rgba(217,179,102,0.3)', border: '1px solid var(--gold)',       label: 'En progreso' },
+          { bg: 'rgba(184,135,42,0.5)', border: '1px solid var(--gold-2)',      label: 'Dominado'    },
+          { bg: 'rgba(26,18,9,0.55)',   border: '1px solid rgba(26,18,9,0.3)', label: 'Bloqueado'   },
+        ].map(({ bg, border, label }) => (
           <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-            <div style={{
-              width:       11,
-              height:      11,
-              background:  bg,
-              border:      dashed ? '1px dashed var(--ink-soft)' : '1px solid var(--ink-soft)',
-              opacity:     dashed ? 0.55 : 1,
-              flexShrink:  0,
-            }}/>
+            <div style={{ width: 11, height: 11, background: bg, border, flexShrink: 0 }}/>
             {label}
           </div>
         ))}
