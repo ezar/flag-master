@@ -149,10 +149,7 @@ export function OptionsGrid({ options, mode, correctName, onAnswer }: Props) {
               transition: 'background .18s, border-color .18s',
             }}
           >
-            {/* Small flag — shown in flag2country and lightning modes */}
-            {(mode === 'flag2country' || mode === 'lightning') && (
-              <FlagEmoji emoji={opt.f} width={32} height={22} style={{ flexShrink: 0, objectFit: 'contain' }} />
-            )}
+            {/* Small flag only in hint mode — flag2country/lightning would reveal the answer */}
 
             <span style={{ flex: 1 }}>{label}</span>
 
