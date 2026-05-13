@@ -62,11 +62,24 @@ export function FlagStage({ country, mode, hint, onTimeout }: Props) {
           transition={{ type: 'spring', stiffness: 300, damping: 18 }}
           style={{
             lineHeight: 1,
-            filter:     'drop-shadow(0 6px 20px rgba(26,18,9,0.22))',
             userSelect: 'none',
+            width: '100%',
           }}
         >
-          <FlagEmoji emoji={country.f} width={200} height={130} style={{ objectFit: 'contain' }} />
+          <FlagEmoji
+            emoji={country.f}
+            style={{
+              width:     '100%',
+              maxWidth:  320,
+              height:    'auto',
+              minHeight: 100,
+              objectFit: 'contain',
+              display:   'block',
+              margin:    '0 auto',
+              filter:    'drop-shadow(0 6px 20px rgba(26,18,9,0.22))',
+              borderRadius: 3,
+            }}
+          />
         </motion.div>
       )}
 
