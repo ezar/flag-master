@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx create-vite@latest . --template react-ts)",
+      "Bash(npm install *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(npm run *)",
+      "Bash(npx vitest *)",
+      "Bash(node -e \"const v = require\\('./node_modules/vite-plugin-pwa/package.json'\\); console.log\\('vite-plugin-pwa:', v.version\\)\")",
+      "Bash(npx tsc *)",
+      "Bash(node -e ' *)",
+      "Bash(node --input-type=module)",
+      "Bash(dir \"D:\\\\Development\\\\Personal\\\\flag-master\\\\src\")",
+      "Bash(dir \"D:\\\\Development\\\\Personal\\\\flag-master\\\\src\\\\components\")",
+      "Bash(dir \"D:\\\\Development\\\\Personal\\\\flag-master\\\\src\\\\store\")",
+      "Bash(dir \"D:\\\\Development\\\\Personal\\\\flag-master\\\\src\\\\data\")",
+      "PowerShell(New-Item -ItemType Directory -Path \"D:\\\\Development\\\\Personal\\\\flag-master\\\\src\\\\screens\" -Force)",
+      "Bash(git push *)",
+      "Bash(git filter-branch -f --env-filter ' *)",
+      "Bash(git config *)",
+      "Bash(git update-ref *)",
+      "Bash(git reflog *)",
+      "Bash(git gc *)",
+      "Bash(git filter-branch *)",
+      "Bash(git commit *)",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_take_screenshot",
+      "mcp__playwright__browser_snapshot",
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_evaluate",
+      "Bash(cd /d D:\\\\Development\\\\Personal\\\\flag-master)",
+      "Bash(npm test *)"
+    ]
+  }
+}

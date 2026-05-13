@@ -2,12 +2,13 @@ import { useT } from '../i18n/useT'
 
 interface Props {
   bestStreak:     number
+  dailyStreak:    number
   totalGames:     number
   totalCorrect:   number
   totalQuestions: number
 }
 
-export function StatCard({ bestStreak, totalGames, totalCorrect, totalQuestions }: Props) {
+export function StatCard({ bestStreak, dailyStreak, totalGames, totalCorrect, totalQuestions }: Props) {
   const t = useT()
 
   const acc = totalQuestions > 0
@@ -15,7 +16,7 @@ export function StatCard({ bestStreak, totalGames, totalCorrect, totalQuestions 
     : null
 
   const stats: Array<{ value: number | string; label: string; gold: boolean }> = [
-    { value: bestStreak,                       label: t('home.bestStreak'), gold: true  },
+    { value: dailyStreak > 0 ? `🔥${dailyStreak}` : bestStreak, label: dailyStreak > 0 ? t('home.dailyStreak') : t('home.bestStreak'), gold: true  },
     { value: totalGames,                       label: t('home.games'),      gold: false },
     { value: totalCorrect,                     label: t('home.correct'),    gold: false },
     { value: acc !== null ? `${acc}%` : '—',   label: t('home.accuracy'),   gold: false },

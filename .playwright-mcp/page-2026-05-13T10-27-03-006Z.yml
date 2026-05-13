@@ -1,0 +1,88 @@
+- generic [ref=e4]:
+  - generic:
+    - img
+  - generic [ref=e5]:
+    - img [ref=e7]:
+      - generic [ref=e55]: "N"
+      - generic [ref=e56]: E
+      - generic [ref=e57]: S
+      - generic [ref=e58]: O
+    - generic [ref=e60]:
+      - generic [ref=e61]: Compendium · MMXXVI
+      - heading "Flag·Master" [level=1] [ref=e62]
+      - generic [ref=e63]: Un atlas ilustrado para jóvenes exploradores
+    - generic [ref=e68]:
+      - generic [ref=e71]:
+        - generic [ref=e72]: ✦
+        - text: Bitácora del navegante
+      - generic [ref=e73]:
+        - generic [ref=e74]:
+          - generic [ref=e75]: "0"
+          - generic [ref=e76]: Mejor Racha
+        - generic [ref=e77]:
+          - generic [ref=e78]: "0"
+          - generic [ref=e79]: Partidas
+        - generic [ref=e80]:
+          - generic [ref=e81]: "0"
+          - generic [ref=e82]: Aciertos
+        - generic [ref=e83]:
+          - generic [ref=e84]: —
+          - generic [ref=e85]: Precisión
+    - generic [ref=e86]:
+      - heading "Dificultad" [level=2] [ref=e87]
+      - generic [ref=e88]: 51 países
+    - generic [ref=e89]:
+      - button "🌿 Fácil Iniciado" [ref=e90] [cursor=pointer]:
+        - generic [ref=e91]: 🌿
+        - generic [ref=e92]: Fácil
+        - generic [ref=e93]: Iniciado
+      - button "⚓ Medio Navegante" [ref=e94] [cursor=pointer]:
+        - generic [ref=e95]: ⚓
+        - generic [ref=e96]: Medio
+        - generic [ref=e97]: Navegante
+      - button "🗺️ Experto Cartógrafo" [ref=e98] [cursor=pointer]:
+        - generic [ref=e99]: 🗺️
+        - generic [ref=e100]: Experto
+        - generic [ref=e101]: Cartógrafo
+    - generic [ref=e102]:
+      - heading "Modos de juego" [level=2] [ref=e103]
+      - generic [ref=e104]: Elige uno
+    - generic [ref=e105]:
+      - button "I 🏳️ ¿Qué país? Ves la bandera, eliges el nombre →" [ref=e106] [cursor=pointer]:
+        - generic [ref=e107]: I
+        - generic [ref=e108]:
+          - generic [ref=e109]: 🏳️ ¿Qué país?
+          - generic [ref=e110]: Ves la bandera, eliges el nombre
+        - generic [ref=e111]: →
+      - button "II 🔍 ¿Qué bandera? Ves el nombre, eliges la bandera →" [ref=e112] [cursor=pointer]:
+        - generic [ref=e113]: II
+        - generic [ref=e114]:
+          - generic [ref=e115]: 🔍 ¿Qué bandera?
+          - generic [ref=e116]: Ves el nombre, eliges la bandera
+        - generic [ref=e117]: →
+      - button "III 🔤 Pistas Letras ocultas — descifra el nombre →" [ref=e118] [cursor=pointer]:
+        - generic [ref=e119]: III
+        - generic [ref=e120]:
+          - generic [ref=e121]: 🔤 Pistas
+          - generic [ref=e122]: Letras ocultas — descifra el nombre
+        - generic [ref=e123]: →
+      - button "IV 🏛️ Capitales Identifica la capital correcta →" [ref=e124] [cursor=pointer]:
+        - generic [ref=e125]: IV
+        - generic [ref=e126]:
+          - generic [ref=e127]: 🏛️ Capitales
+          - generic [ref=e128]: Identifica la capital correcta
+        - generic [ref=e129]: →
+      - button "V ✍️ Escríbelo Sin opciones — solo tu memoria →" [ref=e130] [cursor=pointer]:
+        - generic [ref=e131]: V
+        - generic [ref=e132]:
+          - generic [ref=e133]: ✍️ Escríbelo
+          - generic [ref=e134]: Sin opciones — solo tu memoria
+        - generic [ref=e135]: →
+      - button "VI ⚡ Relámpago 10 segundos por bandera →" [ref=e136] [cursor=pointer]:
+        - generic [ref=e137]: VI
+        - generic [ref=e138]:
+          - generic [ref=e139]: ⚡ Relámpago
+          - generic [ref=e140]: 10 segundos por bandera
+        - generic [ref=e141]: →
+    - button "Zarpar →" [ref=e142] [cursor=pointer]
+    - generic [ref=e143]: ✦ Septentrionem · Meridiem · Orientem · Occidentem ✦

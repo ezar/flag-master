@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useGameStore } from '../store/gameStore'
 import { FlagEmoji } from '../components/FlagEmoji'
 import { useT } from '../i18n/useT'
@@ -21,9 +22,26 @@ export function ResultScreen() {
   } = useGameStore()
 
   const t = useT()
+  const [copied, setCopied] = useState(false)
 
   const pct     = correct / QUESTIONS_PER_ROUND
-  const tierDef = TIER_KEYS.find(t => pct >= t.min) ?? TIER_KEYS[TIER_KEYS.length - 1]
+  const tierDef = TIER_KEYS.find(tk => pct >= tk.min) ?? TIER_KEYS[TIER_KEYS.length - 1]
+
+  async function handleShare() {
+    const stars = '⭐'.repeat(Math.round(pct * 5))
+    const text = language === 'en'
+      ? `🌍 FlagMaster — ${t(`tier.${tierDef.key}.title`)}\n${stars}\n${correct}/${QUESTIONS_PER_ROUND} correct · ${score} pts · ×${maxStreak} streak\nhttps://ezar.github.io/flag-master/`
+      : `🌍 FlagMaster — ${t(`tier.${tierDef.key}.title`)}\n${stars}\n${correct}/${QUESTIONS_PER_ROUND} aciertos · ${score} pts · ×${maxStreak} racha\nhttps://ezar.github.io/flag-master/`
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: 'FlagMaster', text })
+      } else {
+        await navigator.clipboard.writeText(text)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+      }
+    } catch { /* user cancelled */ }
+  }
 
   return (
     <div style={{ padding:'26px 22px 28px', textAlign:'center' }}>
@@ -128,8 +146,16 @@ export function ResultScreen() {
         </div>
       )}
 
+      {/* Share button */}
+      <button
+        onClick={handleShare}
+        style={{ display:'block', width:'100%', marginTop:20, padding:'12px 8px', border:'1px solid var(--gold)', background:'rgba(184,135,42,0.08)', color:'var(--gold)', fontFamily:"'DM Mono', monospace", fontSize:10.5, letterSpacing:'0.28em', textTransform:'uppercase', cursor:'pointer', transition:'all .2s' }}
+      >
+        {copied ? t('result.copied') : `↑ ${t('result.share')}`}
+      </button>
+
       {/* Action buttons */}
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginTop:22 }}>
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginTop:10 }}>
         <button
           onClick={goHome}
           style={{

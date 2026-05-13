@@ -5,20 +5,24 @@ import { WorldMap }       from '../components/WorldMap'
 import { SettingsModal }  from '../components/SettingsModal'
 import { useGameStore, type GameMode } from '../store/gameStore'
 import { getPool }        from '../engine/questionEngine'
-import { FM_COUNTRIES }   from '../data/countries'
+import { FM_COUNTRIES, FM_REGIONS } from '../data/countries'
 import { useT }           from '../i18n/useT'
 import type { Stage }     from '../engine/questionEngine'
 
 export function HomeScreen() {
   const {
-    stage, mode,
-    setStage, setMode, startGame,
+    stage, mode, regionFilter,
+    setStage, setMode, setRegionFilter, startGame,
     bestStreak, totalGames, totalCorrect, totalQuestions,
+    dailyStreak, goStats, goReview, language,
   } = useGameStore()
 
   const t = useT()
   const [settingsOpen, setSettingsOpen] = useState(false)
-  const poolCount = getPool(stage, FM_COUNTRIES).length
+  const basePool  = getPool(stage, FM_COUNTRIES)
+  const poolCount = regionFilter
+    ? basePool.filter(c => c.r === regionFilter).length
+    : basePool.length
 
   // Dynamic difficulty options (translated)
   const DIFFICULTIES: { id: Stage; icon: string; name: string; sub: string }[] = [
@@ -155,10 +159,27 @@ export function HomeScreen() {
         {/* Stats */}
         <StatCard
           bestStreak={bestStreak}
+          dailyStreak={dailyStreak}
           totalGames={totalGames}
           totalCorrect={totalCorrect}
           totalQuestions={totalQuestions}
         />
+
+        {/* Quick nav: Stats + Review */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 8 }}>
+          {[
+            { label: `📊 ${t('home.stats')}`,  action: goStats  },
+            { label: `📖 ${t('home.review')}`, action: goReview },
+          ].map(({ label, action }) => (
+            <button
+              key={label}
+              onClick={action}
+              style={{ border: '1px solid var(--rule)', background: 'rgba(255,253,243,0.55)', padding: '10px 8px', cursor: 'pointer', fontFamily: "'DM Mono', monospace", fontSize: 9.5, letterSpacing: '0.18em', color: 'var(--ink-soft)', textTransform: 'uppercase', transition: 'all .15s' }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
 
         {/* World map — continent progression */}
         <WorldMap />
@@ -171,6 +192,19 @@ export function HomeScreen() {
           <span style={{ fontFamily:"'DM Mono', monospace", fontSize:9.5, letterSpacing:'0.22em', color:'var(--ink-soft)', textTransform:'uppercase' }}>
             {t('home.countries', { n: poolCount })}
           </span>
+        </div>
+
+        {/* Region filter pills */}
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>
+          {[{ id: null, label: t('home.allRegions') }, ...FM_REGIONS.map(r => ({ id: r.id, label: language === 'en' ? r.nameEn : r.name }))].map(pill => (
+            <button
+              key={String(pill.id)}
+              onClick={() => setRegionFilter(pill.id)}
+              style={{ background: regionFilter === pill.id ? 'var(--ink)' : 'transparent', color: regionFilter === pill.id ? 'var(--paper)' : 'var(--ink-soft)', border: `1px solid ${regionFilter === pill.id ? 'var(--ink)' : 'var(--rule)'}`, padding: '4px 10px', cursor: 'pointer', fontFamily: "'DM Mono', monospace", fontSize: 8.5, letterSpacing: '0.18em', textTransform: 'uppercase', borderRadius: 2, transition: 'all .15s' }}
+            >
+              {pill.label}
+            </button>
+          ))}
         </div>
 
         {/* Difficulty buttons */}

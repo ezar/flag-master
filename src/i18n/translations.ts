@@ -7,17 +7,22 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'app.subtitle':  'Un atlas ilustrado para jóvenes exploradores',
 
     // ── Home ─────────────────────────────────────────────────────
-    'home.logbook':  'Bitácora del navegante',
-    'home.bestStreak':  'Mejor\nRacha',
-    'home.games':    'Partidas',
-    'home.correct':  'Aciertos',
-    'home.accuracy': 'Precisión',
-    'home.difficulty':   'Dificultad',
-    'home.countries':    '{{n}} países',
-    'home.modes':        'Modos de juego',
-    'home.chooseOne':    'Elige uno',
-    'home.sail':     'Zarpar →',
-    'home.footer':   '✦ Septentrionem · Meridiem · Orientem · Occidentem ✦',
+    'home.logbook':    'Bitácora del navegante',
+    'home.bestStreak': 'Mejor\nRacha',
+    'home.dailyStreak':'Racha\nDiaria',
+    'home.games':      'Partidas',
+    'home.correct':    'Aciertos',
+    'home.accuracy':   'Precisión',
+    'home.difficulty': 'Dificultad',
+    'home.countries':  '{{n}} países',
+    'home.modes':      'Modos de juego',
+    'home.chooseOne':  'Elige uno',
+    'home.sail':       'Zarpar →',
+    'home.footer':     '✦ Septentrionem · Meridiem · Orientem · Occidentem ✦',
+    'home.region':     'Región',
+    'home.allRegions': 'Todas',
+    'home.stats':      'Estadísticas',
+    'home.review':     'Revista',
 
     // Difficulties
     'diff.easy.name':  'Fácil',
@@ -77,6 +82,8 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'result.capital':    'Capital:',
     'result.menu':       'Menú',
     'result.again':      'Repetir',
+    'result.share':      'Compartir',
+    'result.copied':     '¡Copiado!',
 
     // Tiers
     'tier.perfect.title':   'Perfecto',
@@ -106,6 +113,19 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'settings.reset.cancel': 'Cancelar',
     'settings.footer':       'FlagMaster · Atlas de Banderas',
 
+    // ── Fun facts / Stats / Review ───────────────────────────────
+    'fun.label':      '💡 ¿Sabías que…',
+    'stats.title':    'Estadísticas',
+    'stats.back':     '‹ Inicio',
+    'stats.daily':    'Racha diaria',
+    'stats.days':     'días',
+    'stats.byRegion': 'Maestría por región',
+    'stats.hardest':  'Más difíciles',
+    'stats.noData':   'Sin datos aún — juega más partidas',
+    'review.title':   'Revista de Banderas',
+    'review.back':    '‹ Inicio',
+    'review.all':     'Todas',
+
     // ── World Map ─────────────────────────────────────────────────
     'map.title':      'Atlas del explorador',
     'map.subtitle':   'Conquista el mundo',
@@ -125,17 +145,22 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'app.subtitle':  'An illustrated atlas for young explorers',
 
     // ── Home ─────────────────────────────────────────────────────
-    'home.logbook':  "Navigator's Log",
+    'home.logbook':     "Navigator's Log",
     'home.bestStreak':  'Best\nStreak',
-    'home.games':    'Games',
-    'home.correct':  'Correct',
-    'home.accuracy': 'Accuracy',
-    'home.difficulty':   'Difficulty',
-    'home.countries':    '{{n}} countries',
-    'home.modes':        'Game Modes',
-    'home.chooseOne':    'Choose one',
-    'home.sail':     'Set Sail →',
-    'home.footer':   '✦ Septentrionem · Meridiem · Orientem · Occidentem ✦',
+    'home.dailyStreak': 'Daily\nStreak',
+    'home.games':       'Games',
+    'home.correct':     'Correct',
+    'home.accuracy':    'Accuracy',
+    'home.difficulty':  'Difficulty',
+    'home.countries':   '{{n}} countries',
+    'home.modes':       'Game Modes',
+    'home.chooseOne':   'Choose one',
+    'home.sail':        'Set Sail →',
+    'home.footer':      '✦ Septentrionem · Meridiem · Orientem · Occidentem ✦',
+    'home.region':      'Region',
+    'home.allRegions':  'All',
+    'home.stats':       'Statistics',
+    'home.review':      'Browse',
 
     // Difficulties
     'diff.easy.name':  'Easy',
@@ -195,6 +220,8 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'result.capital':    'Capital:',
     'result.menu':       'Menu',
     'result.again':      'Play again',
+    'result.share':      'Share',
+    'result.copied':     'Copied!',
 
     // Tiers
     'tier.perfect.title':   'Perfect',
@@ -223,6 +250,19 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'settings.reset.confirm':'⚠ Confirm reset',
     'settings.reset.cancel': 'Cancel',
     'settings.footer':       'FlagMaster · Atlas of Flags',
+
+    // ── Fun facts / Stats / Review ───────────────────────────────
+    'fun.label':      '💡 Did you know…',
+    'stats.title':    'Statistics',
+    'stats.back':     '‹ Home',
+    'stats.daily':    'Daily streak',
+    'stats.days':     'days',
+    'stats.byRegion': 'Mastery by region',
+    'stats.hardest':  'Hardest flags',
+    'stats.noData':   'No data yet — play more rounds',
+    'review.title':   'Flag Review',
+    'review.back':    '‹ Home',
+    'review.all':     'All',
 
     // ── World Map ─────────────────────────────────────────────────
     'map.title':      "Explorer's Atlas",

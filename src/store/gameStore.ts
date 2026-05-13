@@ -7,7 +7,7 @@ import { type Lang } from '../i18n/translations'
 
 export type { Stage }
 export type GameMode = 'flag2country' | 'country2flag' | 'hint' | 'capital' | 'type' | 'lightning'
-export type Screen   = 'home' | 'game' | 'results'
+export type Screen   = 'home' | 'game' | 'results' | 'stats' | 'review'
 
 export type MasteryEntry = { seen: number; hits: number }
 export type MasteryMap   = Record<string, MasteryEntry>
@@ -41,10 +41,15 @@ interface GameState {
   screen: Screen
 
   // Preferences (persisted)
-  stage:        Stage
-  mode:         GameMode
-  audioEnabled: boolean
-  language:     Lang
+  stage:          Stage
+  mode:           GameMode
+  audioEnabled:   boolean
+  language:       Lang
+  regionFilter:   string | null   // null = all regions
+
+  // Daily streak (persisted)
+  dailyStreak:    number
+  lastPlayedDate: string | null   // 'YYYY-MM-DD'
 
   // Lifetime history (persisted)
   bestStreak:     number
@@ -75,11 +80,14 @@ interface GameActions {
   answer:       (correct: boolean) => void
   finishGame:   () => void
   goHome:       () => void
-  setStage:        (s: Stage) => void
-  setMode:         (m: GameMode) => void
-  setAudio:        (v: boolean) => void
-  setLanguage:     (l: Lang) => void
-  resetProgress:   () => void
+  setStage:         (s: Stage) => void
+  setMode:          (m: GameMode) => void
+  setAudio:         (v: boolean) => void
+  setLanguage:      (l: Lang) => void
+  setRegionFilter:  (r: string | null) => void
+  goStats:          () => void
+  goReview:         () => void
+  resetProgress:    () => void
 }
 
 function buildOptions(country: Country, pool: Country[]): Country[] {
@@ -94,10 +102,13 @@ export const useGameStore = create<GameState & GameActions>()(
       screen: 'home',
 
       // Preferences
-      stage:        'medium',
-      mode:         'flag2country',
-      audioEnabled: true,
-      language:     'es' as Lang,
+      stage:          'medium',
+      mode:           'flag2country',
+      audioEnabled:   true,
+      language:       'es' as Lang,
+      regionFilter:   null,
+      dailyStreak:    0,
+      lastPlayedDate: null,
 
       // Lifetime history
       bestStreak:     0,
@@ -122,13 +133,18 @@ export const useGameStore = create<GameState & GameActions>()(
       wrongList:      [],
 
       startGame: () => {
-        const { stage } = get()
-        const pool      = getPool(stage, FM_COUNTRIES)
-        const questions = shuffle(pool).slice(0, Math.min(QUESTIONS_PER_ROUND, pool.length))
+        const { stage, regionFilter } = get()
+        const pool = getPool(stage, FM_COUNTRIES)   // full pool — used for distractors
+        const source = regionFilter
+          ? pool.filter(c => c.r === regionFilter)
+          : pool
+        // Fall back to full pool if region too small for a game
+        const questionPool = source.length >= 4 ? source : pool
+        const questions = shuffle(questionPool).slice(0, Math.min(QUESTIONS_PER_ROUND, questionPool.length))
         const current   = questions[0]
         set({
           screen:         'game',
-          pool,
+          pool,            // always full pool for distractors
           questions,
           qIndex:         0,
           currentCountry: current,
@@ -191,21 +207,33 @@ export const useGameStore = create<GameState & GameActions>()(
       },
 
       finishGame: () => {
-        const { bestStreak, totalGames, totalCorrect, totalQuestions, correct, maxStreak } = get()
+        const { bestStreak, totalGames, totalCorrect, totalQuestions, correct, maxStreak, dailyStreak, lastPlayedDate } = get()
+        const today     = new Date().toISOString().slice(0, 10)
+        const yesterday = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10)
+        const newDailyStreak = lastPlayedDate === today
+          ? dailyStreak
+          : lastPlayedDate === yesterday
+            ? dailyStreak + 1
+            : 1
         set({
           screen:         'results',
           bestStreak:     Math.max(bestStreak, maxStreak),
           totalGames:     totalGames + 1,
           totalCorrect:   totalCorrect + correct,
           totalQuestions: totalQuestions + QUESTIONS_PER_ROUND,
+          dailyStreak:    newDailyStreak,
+          lastPlayedDate: today,
         })
       },
 
       goHome: () => set({ screen: 'home' }),
 
-      setStage:    (stage)    => set({ stage }),
-      setMode:     (mode)     => set({ mode }),
-      setLanguage: (language) => set({ language }),
+      setStage:        (stage)        => set({ stage }),
+      setMode:         (mode)         => set({ mode }),
+      setLanguage:     (language)     => set({ language }),
+      setRegionFilter: (regionFilter) => set({ regionFilter }),
+      goStats:  () => set({ screen: 'stats' }),
+      goReview: () => set({ screen: 'review' }),
       setAudio: (v: boolean) => {
         setAudioEnabled(v)
         set({ audioEnabled: v })
@@ -217,6 +245,8 @@ export const useGameStore = create<GameState & GameActions>()(
           totalCorrect:     0,
           totalQuestions:   0,
           masteryCountries: {},
+          dailyStreak:      0,
+          lastPlayedDate:   null,
         })
       },
     }),
@@ -227,6 +257,9 @@ export const useGameStore = create<GameState & GameActions>()(
         mode:             state.mode,
         audioEnabled:     state.audioEnabled,
         language:         state.language,
+        regionFilter:     state.regionFilter,
+        dailyStreak:      state.dailyStreak,
+        lastPlayedDate:   state.lastPlayedDate,
         bestStreak:       state.bestStreak,
         totalGames:       state.totalGames,
         totalCorrect:     state.totalCorrect,

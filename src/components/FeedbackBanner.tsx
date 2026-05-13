@@ -31,13 +31,20 @@ export function FeedbackBanner({ correct, country, pointsEarned, streak }: Props
       }}
     >
       {correct ? (
-        <div style={{ color: 'var(--ok)', display:'flex', alignItems:'center', gap:8 }}>
-          <span>{t('feedback.correct')}</span>
-          <span style={{ fontFamily:"'DM Mono', monospace", fontSize:12 }}>
-            +{pointsEarned} pts
-          </span>
-          {streak > 1 && <span>🔥 ×{streak}</span>}
-        </div>
+        <>
+          <div style={{ color: 'var(--ok)', display:'flex', alignItems:'center', gap:8 }}>
+            <span>{t('feedback.correct')}</span>
+            <span style={{ fontFamily:"'DM Mono', monospace", fontSize:12 }}>
+              +{pointsEarned} pts
+            </span>
+            {streak > 1 && <span>🔥 ×{streak}</span>}
+          </div>
+          {country.fun && (
+            <div style={{ marginTop:8, color:'var(--ok)', fontSize:12, fontStyle:'italic', fontFamily:"'Libre Baskerville', serif", opacity:0.85 }}>
+              {t('fun.label')} {language === 'en' ? country.fun.en : country.fun.es}
+            </div>
+          )}
+        </>
       ) : (
         <div style={{ color: 'var(--err)', display:'flex', alignItems:'center', gap:8 }}>
           <span>{t('feedback.wrong')}</span>
