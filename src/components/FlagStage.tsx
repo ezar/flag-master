@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import type { GameMode } from '../store/gameStore'
 import type { Country } from '../data/countries'
 import { TimerRing } from './TimerRing'
+import { FlagEmoji } from './FlagEmoji'
 
 interface Props {
   country:    Country
@@ -60,13 +61,12 @@ export function FlagStage({ country, mode, hint, onTimeout }: Props) {
           animate={{ scale: 1,   rotate:  0, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 300, damping: 18 }}
           style={{
-            fontSize:   90,
             lineHeight: 1.1,
             filter:     'drop-shadow(0 6px 14px rgba(26,18,9,0.18))',
             userSelect: 'none',
           }}
         >
-          {country.f}
+          <FlagEmoji emoji={country.f} size={90} />
         </motion.div>
       )}
 

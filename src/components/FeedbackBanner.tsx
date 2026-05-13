@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import type { Country } from '../data/countries'
+import { FlagEmoji } from './FlagEmoji'
 
 interface Props {
   correct:      boolean
@@ -34,7 +35,7 @@ export function FeedbackBanner({ correct, country, pointsEarned, streak }: Props
       ) : (
         <div style={{ color: 'var(--err)', display:'flex', alignItems:'center', gap:8 }}>
           <span>✗ Era:</span>
-          <span style={{ fontSize:22 }}>{country.f}</span>
+          <FlagEmoji emoji={country.f} size={22} />
           <span style={{ fontWeight:700 }}>{country.n}</span>
         </div>
       )}

@@ -1,5 +1,6 @@
 import { CompassRose } from '../components/CompassRose'
 import { StatCard }    from '../components/StatCard'
+import { WorldMap }    from '../components/WorldMap'
 import { useGameStore, type GameMode } from '../store/gameStore'
 import { getPool }     from '../engine/questionEngine'
 import { FM_COUNTRIES } from '../data/countries'
@@ -125,6 +126,9 @@ export function HomeScreen() {
           totalCorrect={totalCorrect}
           totalQuestions={totalQuestions}
         />
+
+        {/* World map — continent progression */}
+        <WorldMap />
 
         {/* Difficulty header */}
         <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', margin:'22px 2px 10px' }}>

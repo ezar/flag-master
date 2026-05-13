@@ -1,14 +1,38 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { FM_COUNTRIES, type Country } from '../data/countries'
+import { FM_COUNTRIES, FM_REGIONS, type Country } from '../data/countries'
 import { getPool, shuffle, pickDistractors, type Stage } from '../engine/questionEngine'
 
 export type { Stage }
 export type GameMode = 'flag2country' | 'country2flag' | 'hint' | 'capital' | 'type' | 'lightning'
 export type Screen   = 'home' | 'game' | 'results'
 
+export type MasteryEntry = { seen: number; hits: number }
+export type MasteryMap   = Record<string, MasteryEntry>
+
 const POINTS_BASE: Record<Stage, number> = { easy: 10, medium: 15, hard: 20 }
 const QUESTIONS_PER_ROUND = 10
+
+/** A country is "mastered" if seen ≥ 3 and hit rate ≥ 66% */
+export function isMastered(e: MasteryEntry): boolean {
+  return e.seen >= 3 && e.hits / e.seen >= 0.66
+}
+
+/** Mastery ratio for a region: mastered countries / total countries in region */
+export function regionMastery(regionId: string, mastery: MasteryMap): number {
+  const regionCountries = FM_COUNTRIES.filter(c => c.r === regionId)
+  if (regionCountries.length === 0) return 0
+  const masteredCount = regionCountries.filter(c => isMastered(mastery[c.n] ?? { seen: 0, hits: 0 })).length
+  return masteredCount / regionCountries.length
+}
+
+/** Whether a region is unlocked based on prerequisite mastery */
+export function isRegionUnlocked(regionId: string, mastery: MasteryMap): boolean {
+  const region = FM_REGIONS.find(r => r.id === regionId)
+  if (!region) return false
+  if (!region.lock) return true  // europe is always unlocked
+  return regionMastery(region.lock.region, mastery) >= region.lock.mastery
+}
 
 interface GameState {
   // Navigation
@@ -23,6 +47,9 @@ interface GameState {
   totalGames:     number
   totalCorrect:   number
   totalQuestions: number
+
+  // Per-country mastery (persisted)
+  masteryCountries: MasteryMap
 
   // Current session (not persisted)
   pool:           Country[]
@@ -68,6 +95,9 @@ export const useGameStore = create<GameState & GameActions>()(
       totalGames:     0,
       totalCorrect:   0,
       totalQuestions: 0,
+
+      // Mastery
+      masteryCountries: {},
 
       // Session (starts empty)
       pool:           [],
@@ -120,23 +150,33 @@ export const useGameStore = create<GameState & GameActions>()(
       },
 
       answer: (isCorrect: boolean) => {
-        const { stage, score, streak, maxStreak, correct, wrongList, currentCountry } = get()
+        const { stage, score, streak, maxStreak, correct, wrongList, currentCountry, masteryCountries } = get()
+        // Update per-country mastery
+        const updatedMastery = currentCountry ? {
+          ...masteryCountries,
+          [currentCountry.n]: {
+            seen: (masteryCountries[currentCountry.n]?.seen ?? 0) + 1,
+            hits: (masteryCountries[currentCountry.n]?.hits ?? 0) + (isCorrect ? 1 : 0),
+          },
+        } : masteryCountries
         if (isCorrect) {
           const bonus     = streak * 2
           const pts       = POINTS_BASE[stage] + bonus
           const newStreak = streak + 1
           set({
-            score:     score + pts,
-            streak:    newStreak,
-            maxStreak: Math.max(maxStreak, newStreak),
-            correct:   correct + 1,
-            answered:  true,
+            score:            score + pts,
+            streak:           newStreak,
+            maxStreak:        Math.max(maxStreak, newStreak),
+            correct:          correct + 1,
+            answered:         true,
+            masteryCountries: updatedMastery,
           })
         } else {
           set({
-            streak:    0,
-            answered:  true,
-            wrongList: currentCountry ? [...wrongList, currentCountry] : wrongList,
+            streak:           0,
+            answered:         true,
+            wrongList:        currentCountry ? [...wrongList, currentCountry] : wrongList,
+            masteryCountries: updatedMastery,
           })
         }
       },
@@ -160,12 +200,13 @@ export const useGameStore = create<GameState & GameActions>()(
     {
       name: 'flagmaster_v2',
       partialize: (state) => ({
-        stage:          state.stage,
-        mode:           state.mode,
-        bestStreak:     state.bestStreak,
-        totalGames:     state.totalGames,
-        totalCorrect:   state.totalCorrect,
-        totalQuestions: state.totalQuestions,
+        stage:            state.stage,
+        mode:             state.mode,
+        bestStreak:       state.bestStreak,
+        totalGames:       state.totalGames,
+        totalCorrect:     state.totalCorrect,
+        totalQuestions:   state.totalQuestions,
+        masteryCountries: state.masteryCountries,
       }),
     },
   ),

@@ -35,6 +35,8 @@ export function GameScreen() {
 
   // Track what the last answer was (for FeedbackBanner)
   const [lastAnswerCorrect, setLastAnswerCorrect] = useState(false)
+  // Capture pointsEarned BEFORE answer() increments streak
+  const [lastPointsEarned, setLastPointsEarned] = useState(0)
 
   // Type mode local state
   const [writeValue,    setWriteValue]    = useState('')
@@ -58,10 +60,10 @@ export function GameScreen() {
 
   const hint = mode === 'hint' ? makeHint(country.n, stage) : undefined
 
-  // Points earned for THIS answer (streak is BEFORE answer() increments it)
-  const pointsEarned = POINTS_BASE[stage] + streak * 2
-
   function handleAnswer(correct: boolean) {
+    // Capture points BEFORE answer() increments streak in the store
+    const pts = POINTS_BASE[stage] + streak * 2
+    setLastPointsEarned(pts)
     setLastAnswerCorrect(correct)
     answer(correct)
     if (correct) {
@@ -306,7 +308,7 @@ export function GameScreen() {
           <FeedbackBanner
             correct={lastAnswerCorrect}
             country={country}
-            pointsEarned={pointsEarned}
+            pointsEarned={lastPointsEarned}
             streak={streak}
           />
         )}

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import type { Country } from '../data/countries'
 import type { GameMode } from '../store/gameStore'
+import { FlagEmoji } from './FlagEmoji'
 
 interface Props {
   options:     Country[]
@@ -87,7 +88,7 @@ export function OptionsGrid({ options, mode, correctName, onAnswer }: Props) {
               }}>
                 {LETTERS[i]}
               </span>
-              {opt.f}
+              <FlagEmoji emoji={opt.f} size={46} />
             </motion.button>
           )
         })}
@@ -150,7 +151,7 @@ export function OptionsGrid({ options, mode, correctName, onAnswer }: Props) {
           >
             {/* Small flag — shown in flag2country and lightning modes */}
             {(mode === 'flag2country' || mode === 'lightning') && (
-              <span style={{ fontSize: 22, lineHeight: 1, flexShrink: 0 }}>{opt.f}</span>
+              <FlagEmoji emoji={opt.f} size={22} style={{ flexShrink: 0 }} />
             )}
 
             <span style={{ flex: 1 }}>{label}</span>
