@@ -1,9 +1,11 @@
 import { FM_REGIONS, FM_COUNTRIES } from '../data/countries'
 import { useGameStore, regionMastery, isRegionUnlocked, isMastered } from '../store/gameStore'
-
+import { useT } from '../i18n/useT'
 
 export function WorldMap() {
   const { masteryCountries } = useGameStore()
+  const language = useGameStore(s => s.language)
+  const t = useT()
 
   return (
     <div style={{
@@ -52,7 +54,7 @@ export function WorldMap() {
             color:         'var(--ink-soft)',
             textTransform: 'uppercase',
           }}>
-            ✦ Atlas del explorador ✦
+            ✦ {t('map.title')} ✦
           </div>
           <div style={{
             fontFamily: "'Playfair Display', serif",
@@ -62,7 +64,7 @@ export function WorldMap() {
             color:      'var(--ink)',
             textShadow: '0 1px 3px rgba(245,237,214,0.8)',
           }}>
-            Conquista el mundo
+            {t('map.subtitle')}
           </div>
         </div>
       </div>
@@ -80,11 +82,15 @@ export function WorldMap() {
 
             const pct       = Math.round(mastery * 100)
             const prereqReg = region.lock ? FM_REGIONS.find(r => r.id === region.lock!.region) : null
+            const regionName = language === 'en' ? region.nameEn : region.name
+            const prereqName = prereqReg
+              ? (language === 'en' ? prereqReg.nameEn : prereqReg.name)
+              : ''
 
             // Visual state
             let bg          = 'rgba(255,253,243,0.75)'
             let borderColor = 'var(--rule)'
-            let statusLabel = `${total} países`
+            let statusLabel = t('map.countries', { n: total })
             let statusColor = 'var(--ink-soft)'
             let dim         = false
 
@@ -92,19 +98,19 @@ export function WorldMap() {
               bg          = 'rgba(26,18,9,0.04)'
               borderColor = 'rgba(26,18,9,0.12)'
               statusLabel = prereqReg
-                ? `🔒 ${prereqReg.name} ${Math.round(region.lock!.mastery * 100)}%`
-                : '🔒 Bloqueado'
+                ? t('map.locked', { req: prereqName, pct: Math.round(region.lock!.mastery * 100) })
+                : '🔒'
               statusColor = 'var(--ink-soft)'
               dim         = true
             } else if (mastery >= 0.99) {
               bg          = 'rgba(184,135,42,0.14)'
               borderColor = 'var(--gold)'
-              statusLabel = `✦ Dominado`
+              statusLabel = t('map.cleared')
               statusColor = 'var(--gold-2)'
             } else if (mastery > 0) {
               bg          = 'rgba(217,179,102,0.12)'
               borderColor = 'var(--gold-light)'
-              statusLabel = `${mastered}/${total} dominados`
+              statusLabel = t('map.mastered', { m: mastered, t: total })
               statusColor = 'var(--gold-2)'
             }
 
@@ -128,7 +134,7 @@ export function WorldMap() {
                   color:      'var(--ink)',
                   marginBottom: 4,
                 }}>
-                  {region.name}
+                  {regionName}
                 </div>
 
                 {/* Status */}
@@ -178,7 +184,7 @@ export function WorldMap() {
                       background: 'var(--gold)',
                       transform: 'rotate(45deg)',
                     }}/>
-                    Expedición completa
+                    {t('map.cleared')}
                   </div>
                 )}
               </div>

@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useGameStore } from '../store/gameStore'
+import { useT } from '../i18n/useT'
+import type { Lang } from '../i18n/translations'
 
 interface Props {
   open:    boolean
@@ -8,7 +10,8 @@ interface Props {
 }
 
 export function SettingsModal({ open, onClose }: Props) {
-  const { audioEnabled, stage, setAudio, setStage, resetProgress } = useGameStore()
+  const { audioEnabled, stage, language, setAudio, setStage, setLanguage, resetProgress } = useGameStore()
+  const t = useT()
   const [confirmReset, setConfirmReset] = useState(false)
 
   function handleReset() {
@@ -20,6 +23,18 @@ export function SettingsModal({ open, onClose }: Props) {
       setConfirmReset(true)
     }
   }
+
+  const diffLabels: Record<string, string> = {
+    easy:   t('diff.easy.name'),
+    medium: t('diff.medium.name'),
+    hard:   t('diff.hard.name'),
+  }
+  const diffIcons  = { easy: '🌿', medium: '⚓', hard: '🗺️' }
+
+  const langOptions: { id: Lang; label: string }[] = [
+    { id: 'es', label: '🇪🇸 Español' },
+    { id: 'en', label: '🇬🇧 English' },
+  ]
 
   return (
     <AnimatePresence>
@@ -83,7 +98,7 @@ export function SettingsModal({ open, onClose }: Props) {
                 fontSize:   20,
                 color:      'var(--ink)',
               }}>
-                Ajustes
+                {t('settings.title')}
               </h2>
               <button
                 onClick={onClose}
@@ -99,7 +114,7 @@ export function SettingsModal({ open, onClose }: Props) {
                   padding:       '4px 0',
                 }}
               >
-                Cerrar ✕
+                {t('settings.close')}
               </button>
             </div>
 
@@ -116,10 +131,10 @@ export function SettingsModal({ open, onClose }: Props) {
               }}>
                 <div>
                   <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:16, color:'var(--ink)' }}>
-                    Sonido
+                    {t('settings.audio')}
                   </div>
                   <div style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:'italic', fontSize:12, color:'var(--ink-soft)', marginTop:2 }}>
-                    Efectos de audio en partida
+                    {t('settings.audio.desc')}
                   </div>
                 </div>
                 {/* Toggle */}
@@ -151,49 +166,77 @@ export function SettingsModal({ open, onClose }: Props) {
                 </button>
               </div>
 
+              {/* Language */}
+              <div style={{
+                padding:      '16px 0',
+                borderBottom: '1px solid var(--rule)',
+              }}>
+                <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:16, color:'var(--ink)', marginBottom:10 }}>
+                  {t('settings.language')}
+                </div>
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
+                  {langOptions.map(opt => (
+                    <button
+                      key={opt.id}
+                      onClick={() => setLanguage(opt.id)}
+                      style={{
+                        background:  language === opt.id ? 'var(--ink)' : 'transparent',
+                        color:       language === opt.id ? 'var(--paper)' : 'var(--ink)',
+                        border:      '1px solid var(--rule)',
+                        padding:     '10px 8px',
+                        cursor:      'pointer',
+                        fontFamily:  "'Playfair Display', serif",
+                        fontWeight:  700,
+                        fontSize:    14,
+                        textAlign:   'center',
+                        transition:  'all .15s ease',
+                      }}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Difficulty default */}
               <div style={{
                 padding:      '16px 0',
                 borderBottom: '1px solid var(--rule)',
               }}>
                 <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:16, color:'var(--ink)', marginBottom:10 }}>
-                  Dificultad por defecto
+                  {t('settings.difficulty')}
                 </div>
                 <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8 }}>
-                  {(['easy','medium','hard'] as const).map((s, i) => {
-                    const labels = ['Fácil','Medio','Experto']
-                    const icons  = ['🌿','⚓','🗺️']
-                    return (
-                      <button
-                        key={s}
-                        onClick={() => setStage(s)}
-                        style={{
-                          background:  stage === s ? 'var(--ink)' : 'transparent',
-                          color:       stage === s ? 'var(--paper)' : 'var(--ink)',
-                          border:      '1px solid var(--rule)',
-                          padding:     '10px 6px',
-                          cursor:      'pointer',
-                          fontFamily:  "'Playfair Display', serif",
-                          fontWeight:  700,
-                          fontSize:    13,
-                          textAlign:   'center',
-                          transition:  'all .15s ease',
-                        }}
-                      >
-                        {icons[i]} {labels[i]}
-                      </button>
-                    )
-                  })}
+                  {(['easy','medium','hard'] as const).map(s => (
+                    <button
+                      key={s}
+                      onClick={() => setStage(s)}
+                      style={{
+                        background:  stage === s ? 'var(--ink)' : 'transparent',
+                        color:       stage === s ? 'var(--paper)' : 'var(--ink)',
+                        border:      '1px solid var(--rule)',
+                        padding:     '10px 6px',
+                        cursor:      'pointer',
+                        fontFamily:  "'Playfair Display', serif",
+                        fontWeight:  700,
+                        fontSize:    13,
+                        textAlign:   'center',
+                        transition:  'all .15s ease',
+                      }}
+                    >
+                      {diffIcons[s]} {diffLabels[s]}
+                    </button>
+                  ))}
                 </div>
               </div>
 
               {/* Reset progress */}
               <div style={{ padding: '16px 0', borderBottom: '1px solid var(--rule)' }}>
                 <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:16, color:'var(--ink)', marginBottom:4 }}>
-                  Reiniciar progreso
+                  {t('settings.reset')}
                 </div>
                 <div style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:'italic', fontSize:12, color:'var(--ink-soft)', marginBottom:12 }}>
-                  Borra estadísticas, racha y maestría de banderas. No se puede deshacer.
+                  {t('settings.reset.desc')}
                 </div>
                 <button
                   onClick={handleReset}
@@ -210,7 +253,7 @@ export function SettingsModal({ open, onClose }: Props) {
                     transition:    'all .2s ease',
                   }}
                 >
-                  {confirmReset ? '⚠ Confirmar reinicio' : 'Reiniciar progreso'}
+                  {confirmReset ? t('settings.reset.confirm') : t('settings.reset.btn')}
                 </button>
                 {confirmReset && (
                   <button
@@ -228,7 +271,7 @@ export function SettingsModal({ open, onClose }: Props) {
                       textTransform: 'uppercase',
                     }}
                   >
-                    Cancelar
+                    {t('settings.reset.cancel')}
                   </button>
                 )}
               </div>
@@ -243,7 +286,7 @@ export function SettingsModal({ open, onClose }: Props) {
                 color:         'var(--ink-soft)',
                 textTransform: 'uppercase',
               }}>
-                FlagMaster · Atlas de Banderas · Sprint I · MMXXVI
+                {t('settings.footer')}
               </div>
             </div>
           </motion.div>

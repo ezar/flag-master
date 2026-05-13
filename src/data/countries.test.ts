@@ -11,9 +11,10 @@ describe('FM_COUNTRIES', () => {
 
   it('every country has all required fields', () => {
     FM_COUNTRIES.forEach(c => {
-      expect(c.f, `${c.n} missing f`).toBeTruthy()
-      expect(c.n, 'missing n').toBeTruthy()
-      expect(c.c, `${c.n} missing c`).toBeTruthy()
+      expect(c.f,  `${c.n} missing f`).toBeTruthy()
+      expect(c.n,  `missing n`).toBeTruthy()
+      expect(c.ne, `${c.n} missing ne`).toBeTruthy()
+      expect(c.c,  `${c.n} missing c`).toBeTruthy()
       expect(VALID_STAGES.has(c.s),  `${c.n} invalid stage`).toBe(true)
       expect(VALID_REGIONS.has(c.r), `${c.n} invalid region`).toBe(true)
     })
@@ -37,6 +38,12 @@ describe('FM_COUNTRIES', () => {
 describe('FM_REGIONS', () => {
   it('has 5 regions', () => {
     expect(FM_REGIONS).toHaveLength(5)
+  })
+
+  it('every region has nameEn', () => {
+    FM_REGIONS.forEach(r => {
+      expect(r.nameEn, `${r.id} missing nameEn`).toBeTruthy()
+    })
   })
 
   it('europe has no lock', () => {

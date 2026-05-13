@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion'
 import type { Country } from '../data/countries'
 import { FlagEmoji } from './FlagEmoji'
+import { useT } from '../i18n/useT'
+import { useGameStore } from '../store/gameStore'
 
 interface Props {
   correct:      boolean
@@ -10,6 +12,10 @@ interface Props {
 }
 
 export function FeedbackBanner({ correct, country, pointsEarned, streak }: Props) {
+  const t        = useT()
+  const language = useGameStore(s => s.language)
+  const name     = language === 'en' ? country.ne : country.n
+
   return (
     <motion.div
       initial={{ y: 8, opacity: 0 }}
@@ -26,7 +32,7 @@ export function FeedbackBanner({ correct, country, pointsEarned, streak }: Props
     >
       {correct ? (
         <div style={{ color: 'var(--ok)', display:'flex', alignItems:'center', gap:8 }}>
-          <span>¡Correcto!</span>
+          <span>{t('feedback.correct')}</span>
           <span style={{ fontFamily:"'DM Mono', monospace", fontSize:12 }}>
             +{pointsEarned} pts
           </span>
@@ -34,9 +40,9 @@ export function FeedbackBanner({ correct, country, pointsEarned, streak }: Props
         </div>
       ) : (
         <div style={{ color: 'var(--err)', display:'flex', alignItems:'center', gap:8 }}>
-          <span>✗ Era:</span>
+          <span>{t('feedback.wrong')}</span>
           <FlagEmoji emoji={country.f} width={32} height={22} />
-          <span style={{ fontWeight:700 }}>{country.n}</span>
+          <span style={{ fontWeight:700 }}>{name}</span>
         </div>
       )}
     </motion.div>

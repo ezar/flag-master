@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import type { Country } from '../data/countries'
-import type { GameMode } from '../store/gameStore'
+import { useGameStore, type GameMode } from '../store/gameStore'
 import { FlagEmoji } from './FlagEmoji'
 
 interface Props {
@@ -16,6 +16,7 @@ const LETTERS = ['A', 'B', 'C', 'D'] as const
 export function OptionsGrid({ options, mode, correctName, onAnswer }: Props) {
   const [revealed, setRevealed] = useState(false)
   const [selected, setSelected] = useState<string | null>(null)
+  const language = useGameStore(s => s.language)
 
   function handleClick(opt: Country) {
     if (revealed) return
@@ -110,7 +111,7 @@ export function OptionsGrid({ options, mode, correctName, onAnswer }: Props) {
         if (revealed && isSelected && !isCorrect) { bg = 'var(--err-bg)'; border = '1px solid var(--err)'; color = '#fbe9e9' }
 
         // Label shown in the button body
-        const label = mode === 'capital' ? opt.c : opt.n
+        const label = mode === 'capital' ? opt.c : (language === 'en' ? opt.ne : opt.n)
 
         const letterColor = revealed && (isCorrect || (isSelected && !isCorrect))
           ? '#fff'

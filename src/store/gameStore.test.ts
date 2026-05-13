@@ -41,7 +41,7 @@ describe('startGame', () => {
   })
 
   it('resets score, streak, correct, wrongList', () => {
-    useGameStore.setState({ score: 100, streak: 5, correct: 8, wrongList: [{ f: '🇪🇸', n: 'España', c: 'Madrid', s: 'easy', r: 'europe' }] })
+    useGameStore.setState({ score: 100, streak: 5, correct: 8, wrongList: [{ f: '🇪🇸', n: 'España', ne: 'Spain', c: 'Madrid', s: 'easy', r: 'europe' }] })
     useGameStore.getState().startGame()
     const s = useGameStore.getState()
     expect(s.score).toBe(0)

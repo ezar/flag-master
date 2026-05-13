@@ -1,3 +1,5 @@
+import { useT } from '../i18n/useT'
+
 interface Props {
   bestStreak:     number
   totalGames:     number
@@ -6,15 +8,17 @@ interface Props {
 }
 
 export function StatCard({ bestStreak, totalGames, totalCorrect, totalQuestions }: Props) {
+  const t = useT()
+
   const acc = totalQuestions > 0
     ? Math.round((100 * totalCorrect) / totalQuestions)
     : null
 
   const stats: Array<{ value: number | string; label: string; gold: boolean }> = [
-    { value: bestStreak,                       label: 'Mejor\nRacha', gold: true  },
-    { value: totalGames,                       label: 'Partidas',     gold: false },
-    { value: totalCorrect,                     label: 'Aciertos',     gold: false },
-    { value: acc !== null ? `${acc}%` : '—',   label: 'Precisión',    gold: false },
+    { value: bestStreak,                       label: t('home.bestStreak'), gold: true  },
+    { value: totalGames,                       label: t('home.games'),      gold: false },
+    { value: totalCorrect,                     label: t('home.correct'),    gold: false },
+    { value: acc !== null ? `${acc}%` : '—',   label: t('home.accuracy'),   gold: false },
   ]
 
   return (
@@ -35,7 +39,7 @@ export function StatCard({ bestStreak, totalGames, totalCorrect, totalQuestions 
 
       <div style={{ display:'flex', alignItems:'center', gap:8, fontFamily:"'DM Mono', monospace", fontSize:10, letterSpacing:'0.28em', color:'var(--ink-soft)', textTransform:'uppercase', marginBottom:10 }}>
         <span style={{ color:'var(--gold)' }}>✦</span>
-        Bitácora del navegante
+        {t('home.logbook')}
       </div>
 
       <div style={{ display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:8 }}>

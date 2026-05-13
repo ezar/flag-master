@@ -3,6 +3,8 @@ import type { GameMode } from '../store/gameStore'
 import type { Country } from '../data/countries'
 import { TimerRing } from './TimerRing'
 import { FlagEmoji } from './FlagEmoji'
+import { useT } from '../i18n/useT'
+import { useGameStore } from '../store/gameStore'
 
 interface Props {
   country:    Country
@@ -12,6 +14,10 @@ interface Props {
 }
 
 export function FlagStage({ country, mode, hint, onTimeout }: Props) {
+  const t        = useT()
+  const language = useGameStore(s => s.language)
+  const name     = language === 'en' ? country.ne : country.n
+
   return (
     <div
       style={{
@@ -92,7 +98,7 @@ export function FlagStage({ country, mode, hint, onTimeout }: Props) {
           letterSpacing: '0.01em',
           padding:       '10px 0',
         }}>
-          {country.n}
+          {name}
         </div>
       )}
 
@@ -118,7 +124,7 @@ export function FlagStage({ country, mode, hint, onTimeout }: Props) {
             fontSize:   22,
             marginTop:  14,
           }}>
-            {country.n}
+            {name}
           </div>
           <div style={{
             fontFamily: "'Libre Baskerville', serif",
@@ -127,7 +133,7 @@ export function FlagStage({ country, mode, hint, onTimeout }: Props) {
             fontSize:   13,
             marginTop:  10,
           }}>
-            ¿Cuál es su capital?
+            {t('game.capital.prompt')}
           </div>
         </>
       )}

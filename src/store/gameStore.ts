@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 import { FM_COUNTRIES, FM_REGIONS, type Country } from '../data/countries'
 import { getPool, shuffle, pickDistractors, type Stage } from '../engine/questionEngine'
 import { setAudioEnabled } from '../audio/audioEngine'
+import { type Lang } from '../i18n/translations'
 
 export type { Stage }
 export type GameMode = 'flag2country' | 'country2flag' | 'hint' | 'capital' | 'type' | 'lightning'
@@ -43,6 +44,7 @@ interface GameState {
   stage:        Stage
   mode:         GameMode
   audioEnabled: boolean
+  language:     Lang
 
   // Lifetime history (persisted)
   bestStreak:     number
@@ -76,6 +78,7 @@ interface GameActions {
   setStage:        (s: Stage) => void
   setMode:         (m: GameMode) => void
   setAudio:        (v: boolean) => void
+  setLanguage:     (l: Lang) => void
   resetProgress:   () => void
 }
 
@@ -94,6 +97,7 @@ export const useGameStore = create<GameState & GameActions>()(
       stage:        'medium',
       mode:         'flag2country',
       audioEnabled: true,
+      language:     'es' as Lang,
 
       // Lifetime history
       bestStreak:     0,
@@ -199,8 +203,9 @@ export const useGameStore = create<GameState & GameActions>()(
 
       goHome: () => set({ screen: 'home' }),
 
-      setStage: (stage) => set({ stage }),
-      setMode:  (mode)  => set({ mode }),
+      setStage:    (stage)    => set({ stage }),
+      setMode:     (mode)     => set({ mode }),
+      setLanguage: (language) => set({ language }),
       setAudio: (v: boolean) => {
         setAudioEnabled(v)
         set({ audioEnabled: v })
@@ -221,6 +226,7 @@ export const useGameStore = create<GameState & GameActions>()(
         stage:            state.stage,
         mode:             state.mode,
         audioEnabled:     state.audioEnabled,
+        language:         state.language,
         bestStreak:       state.bestStreak,
         totalGames:       state.totalGames,
         totalCorrect:     state.totalCorrect,

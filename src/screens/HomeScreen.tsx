@@ -6,24 +6,8 @@ import { SettingsModal }  from '../components/SettingsModal'
 import { useGameStore, type GameMode } from '../store/gameStore'
 import { getPool }        from '../engine/questionEngine'
 import { FM_COUNTRIES }   from '../data/countries'
+import { useT }           from '../i18n/useT'
 import type { Stage }     from '../engine/questionEngine'
-
-// ── Difficulty options ──────────────────────────────────────────────
-const DIFFICULTIES: { id: Stage; icon: string; name: string; sub: string }[] = [
-  { id: 'easy',   icon: '🌿', name: 'Fácil',   sub: 'Iniciado'    },
-  { id: 'medium', icon: '⚓', name: 'Medio',   sub: 'Navegante'   },
-  { id: 'hard',   icon: '🗺️', name: 'Experto',  sub: 'Cartógrafo' },
-]
-
-// ── Game modes ──────────────────────────────────────────────────────
-const MODES: { id: GameMode; roman: string; title: string; desc: string }[] = [
-  { id: 'flag2country', roman: 'I',   title: '🏳️ ¿Qué país?',    desc: 'Ves la bandera, eliges el nombre'  },
-  { id: 'country2flag', roman: 'II',  title: '🔍 ¿Qué bandera?', desc: 'Ves el nombre, eliges la bandera'  },
-  { id: 'hint',         roman: 'III', title: '🔤 Pistas',         desc: 'Letras ocultas — descifra el nombre' },
-  { id: 'capital',      roman: 'IV',  title: '🏛️ Capitales',      desc: 'Identifica la capital correcta'   },
-  { id: 'type',         roman: 'V',   title: '✍️ Escríbelo',       desc: 'Sin opciones — solo tu memoria'   },
-  { id: 'lightning',    roman: 'VI',  title: '⚡ Relámpago',       desc: '10 segundos por bandera'          },
-]
 
 export function HomeScreen() {
   const {
@@ -32,8 +16,26 @@ export function HomeScreen() {
     bestStreak, totalGames, totalCorrect, totalQuestions,
   } = useGameStore()
 
+  const t = useT()
   const [settingsOpen, setSettingsOpen] = useState(false)
   const poolCount = getPool(stage, FM_COUNTRIES).length
+
+  // Dynamic difficulty options (translated)
+  const DIFFICULTIES: { id: Stage; icon: string; name: string; sub: string }[] = [
+    { id: 'easy',   icon: '🌿', name: t('diff.easy.name'),   sub: t('diff.easy.sub')   },
+    { id: 'medium', icon: '⚓', name: t('diff.medium.name'), sub: t('diff.medium.sub') },
+    { id: 'hard',   icon: '🗺️', name: t('diff.hard.name'),   sub: t('diff.hard.sub')   },
+  ]
+
+  // Dynamic game modes (translated)
+  const MODES: { id: GameMode; roman: string; title: string; desc: string }[] = [
+    { id: 'flag2country', roman: 'I',   title: t('mode.flag2country.title'), desc: t('mode.flag2country.desc') },
+    { id: 'country2flag', roman: 'II',  title: t('mode.country2flag.title'), desc: t('mode.country2flag.desc') },
+    { id: 'hint',         roman: 'III', title: t('mode.hint.title'),         desc: t('mode.hint.desc')         },
+    { id: 'capital',      roman: 'IV',  title: t('mode.capital.title'),      desc: t('mode.capital.desc')      },
+    { id: 'type',         roman: 'V',   title: t('mode.type.title'),         desc: t('mode.type.desc')         },
+    { id: 'lightning',    roman: 'VI',  title: t('mode.lightning.title'),    desc: t('mode.lightning.desc')    },
+  ]
 
   return (
     <div style={{ position: 'relative', padding: '22px 22px 28px' }}>
@@ -60,8 +62,8 @@ export function HomeScreen() {
           borderRadius:  2,
           transition:    'all .15s',
         }}
-        title="Ajustes"
-        aria-label="Abrir ajustes"
+        title={t('settings.title')}
+        aria-label={t('settings.title')}
       >
         ⚙
       </button>
@@ -110,7 +112,7 @@ export function HomeScreen() {
             color: 'var(--ink-soft)',
             textTransform: 'uppercase',
           }}>
-            Compendium · MMXXVI
+            {t('app.eyebrow')}
           </div>
           <h1 style={{
             fontFamily: "'Playfair Display', serif",
@@ -133,7 +135,7 @@ export function HomeScreen() {
             fontSize: 13.5,
             marginTop: 2,
           }}>
-            Un atlas ilustrado para jóvenes exploradores
+            {t('app.subtitle')}
           </div>
         </div>
 
@@ -164,10 +166,10 @@ export function HomeScreen() {
         {/* Difficulty header */}
         <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', margin:'22px 2px 10px' }}>
           <h2 style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:18 }}>
-            Dificultad
+            {t('home.difficulty')}
           </h2>
           <span style={{ fontFamily:"'DM Mono', monospace", fontSize:9.5, letterSpacing:'0.22em', color:'var(--ink-soft)', textTransform:'uppercase' }}>
-            {poolCount} países
+            {t('home.countries', { n: poolCount })}
           </span>
         </div>
 
@@ -198,10 +200,10 @@ export function HomeScreen() {
         {/* Mode header */}
         <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', margin:'22px 2px 10px' }}>
           <h2 style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:18 }}>
-            Modos de juego
+            {t('home.modes')}
           </h2>
           <span style={{ fontFamily:"'DM Mono', monospace", fontSize:9.5, letterSpacing:'0.22em', color:'var(--ink-soft)', textTransform:'uppercase' }}>
-            Elige uno
+            {t('home.chooseOne')}
           </span>
         </div>
 
@@ -257,17 +259,12 @@ export function HomeScreen() {
             boxShadow:   '0 6px 18px -10px rgba(26,18,9,0.6)',
           }}
         >
-          Zarpar →
+          {t('home.sail')}
         </button>
 
         {/* Footer */}
         <div style={{ marginTop:26, textAlign:'center', fontFamily:"'DM Mono', monospace", fontSize:9.5, letterSpacing:'0.32em', color:'var(--ink-soft)', textTransform:'uppercase' }}>
-          ✦{' '}
-          <span style={{ color:'var(--gold)' }}>Septentrionem</span> ·{' '}
-          <span style={{ color:'var(--gold)' }}>Meridiem</span> ·{' '}
-          <span style={{ color:'var(--gold)' }}>Orientem</span> ·{' '}
-          <span style={{ color:'var(--gold)' }}>Occidentem</span>
-          {' '}✦
+          {t('home.footer')}
         </div>
 
       </div>

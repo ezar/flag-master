@@ -5,6 +5,7 @@ import { OptionsGrid }    from '../components/OptionsGrid'
 import { FeedbackBanner } from '../components/FeedbackBanner'
 import { ProgressBar }    from '../components/ProgressBar'
 import { makeHint, norm } from '../engine/questionEngine'
+import { useT }           from '../i18n/useT'
 import {
   playCorrect,
   playWrong,
@@ -13,16 +14,6 @@ import {
 } from '../audio/audioEngine'
 
 const QUESTIONS_PER_ROUND = 10
-
-const MODE_LABELS: Record<string, string> = {
-  flag2country: 'I · ¿Qué país?',
-  country2flag: 'II · ¿Qué bandera?',
-  hint:         'III · Pistas',
-  capital:      'IV · Capitales',
-  type:         'V · Escríbelo',
-  lightning:    'VI · Relámpago',
-}
-
 const POINTS_BASE: Record<string, number> = { easy: 10, medium: 15, hard: 20 }
 
 export function GameScreen() {
@@ -31,7 +22,10 @@ export function GameScreen() {
     currentCountry, currentOptions,
     score, streak, answered,
     answer, nextQuestion, goHome,
+    language,
   } = useGameStore()
+
+  const t = useT()
 
   // Track what the last answer was (for FeedbackBanner)
   const [lastAnswerCorrect, setLastAnswerCorrect] = useState(false)
@@ -43,7 +37,6 @@ export function GameScreen() {
   const [writeFeedback, setWriteFeedback] = useState<string | null>(null)
 
   // handleTimeout must be defined before the null guard (hooks order rule).
-  // It only calls answer(false) and audio — it doesn't need currentCountry.
   const handleTimeout = useCallback(() => {
     if (!answered) {
       playTimeout()
@@ -55,20 +48,19 @@ export function GameScreen() {
 
   if (!currentCountry) return null
 
-  // Capture as non-null local so nested functions (submitWrite, etc.) type-check
   const country = currentCountry
+  // Language-aware country name
+  const countryName = language === 'en' ? country.ne : country.n
 
-  const hint = mode === 'hint' ? makeHint(country.n, stage) : undefined
+  // Hint uses the language-appropriate name
+  const hint = mode === 'hint' ? makeHint(countryName, stage) : undefined
 
   function handleAnswer(correct: boolean) {
-    // Capture points BEFORE answer() increments streak in the store
     const pts = POINTS_BASE[stage] + streak * 2
     setLastPointsEarned(pts)
     setLastAnswerCorrect(correct)
     answer(correct)
     if (correct) {
-      // streak is the OLD value here; if streak >= 2 before this answer,
-      // after it'll be >= 3 → playStreak
       if (streak >= 2) playStreak(); else playCorrect()
     } else {
       playWrong()
@@ -83,14 +75,23 @@ export function GameScreen() {
 
   function submitWrite() {
     if (answered) return
-    const correct = norm(writeValue) === norm(country.n)
+    // Compare against language-appropriate name
+    const correct = norm(writeValue) === norm(countryName)
     setWriteFeedback(
       correct
-        ? `✓ ¡Correcto! ${country.n}`
-        : `✗ Era ${country.n}${writeValue ? ` · escribiste "${writeValue}"` : ''}`
+        ? t('game.type.correct', { name: countryName })
+        : writeValue
+          ? t('game.type.wrongTyped', { name: countryName, typed: writeValue })
+          : t('game.type.wrong', { name: countryName })
     )
     handleAnswer(correct)
   }
+
+  const modeLabel = t(`mode.label.${mode}`)
+  const questionLine =
+    t('game.questionOf', { n: qIndex + 1, total: QUESTIONS_PER_ROUND }) +
+    (mode === 'lightning' ? ' ' + t('game.lightning.suffix') : '') +
+    (mode === 'type'      ? ' ' + t('game.type.suffix')      : '')
 
   return (
     <div>
@@ -116,7 +117,7 @@ export function GameScreen() {
               textTransform: 'uppercase',
             }}
           >
-            ‹ Menú
+            {t('game.back')}
           </button>
           <div style={{
             fontFamily: "'Playfair Display', serif",
@@ -124,7 +125,7 @@ export function GameScreen() {
             fontSize:   14,
             color:      'var(--gold-light)',
           }}>
-            {MODE_LABELS[mode]}
+            {modeLabel}
           </div>
           <div style={{ width: 54 }} />
         </div>
@@ -148,7 +149,7 @@ export function GameScreen() {
               color:         'rgba(245,237,214,0.55)',
               textTransform: 'uppercase',
             }}>
-              Puntos
+              {t('game.points')}
             </div>
           </div>
           <div>
@@ -176,7 +177,7 @@ export function GameScreen() {
               color:         'rgba(245,237,214,0.55)',
               textTransform: 'uppercase',
             }}>
-              Racha
+              {t('game.streak')}
             </div>
           </div>
           <div style={{ marginLeft:'auto', textAlign:'right' }}>
@@ -196,7 +197,7 @@ export function GameScreen() {
               color:         'rgba(245,237,214,0.55)',
               textTransform: 'uppercase',
             }}>
-              Pregunta
+              {t('game.question')}
             </div>
           </div>
         </div>
@@ -216,9 +217,7 @@ export function GameScreen() {
           textAlign:     'center',
           marginBottom:  12,
         }}>
-          Pregunta <span style={{ color:'var(--gold)' }}>{qIndex + 1}</span> de {QUESTIONS_PER_ROUND}
-          {mode === 'lightning' && ' · ⚡ Reloj de arena'}
-          {mode === 'type'      && ' · Sin opciones'}
+          {questionLine}
         </div>
 
         {/* Flag / name card */}
@@ -248,7 +247,7 @@ export function GameScreen() {
                 autoComplete="off"
                 autoCapitalize="words"
                 spellCheck={false}
-                placeholder="Nombre del país…"
+                placeholder={t('game.type.placeholder')}
                 style={{
                   flex:        1,
                   background:  'transparent',
@@ -277,7 +276,7 @@ export function GameScreen() {
                   textTransform: 'uppercase',
                 }}
               >
-                Confirmar
+                {t('game.type.submit')}
               </button>
             </div>
             {writeFeedback && (
@@ -332,7 +331,7 @@ export function GameScreen() {
                 animation:     'pop-in .25s ease',
               }}
             >
-              Siguiente ›
+              {t('game.next')}
             </button>
           </div>
         )}

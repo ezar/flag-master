@@ -1,32 +1,36 @@
 import { useGameStore } from '../store/gameStore'
 import { FlagEmoji } from '../components/FlagEmoji'
+import { useT } from '../i18n/useT'
 
 const QUESTIONS_PER_ROUND = 10
 
-const TIERS = [
-  { min: 1.0,  emoji: '🏆', title: 'Perfecto',   sub: 'Has dominado los siete mares.'              },
-  { min: 0.8,  emoji: '🌟', title: 'Magnífico',  sub: 'Tu brújula apenas vacila.'                  },
-  { min: 0.6,  emoji: '⚓', title: 'Buen viaje',  sub: 'Buen rumbo, capitán.'                       },
-  { min: 0.4,  emoji: '🧭', title: 'Travesía',   sub: 'Aún quedan costas por descubrir.'           },
-  { min: 0.2,  emoji: '🪨', title: 'Encallado',  sub: 'Endereza el timón y vuelve a zarpar.'       },
-  { min: 0,    emoji: '🌧️', title: 'Naufragio',  sub: 'Vuelve a embarcar y traza una nueva ruta.'  },
+const TIER_KEYS = [
+  { min: 1.0,  emoji: '🏆', key: 'perfect' },
+  { min: 0.8,  emoji: '🌟', key: 'great'   },
+  { min: 0.6,  emoji: '⚓', key: 'good'    },
+  { min: 0.4,  emoji: '🧭', key: 'ok'      },
+  { min: 0.2,  emoji: '🪨', key: 'poor'    },
+  { min: 0,    emoji: '🌧️', key: 'bad'     },
 ]
 
 export function ResultScreen() {
   const {
     score, correct, maxStreak,
     wrongList, startGame, goHome,
+    language,
   } = useGameStore()
 
-  const pct  = correct / QUESTIONS_PER_ROUND
-  const tier = TIERS.find(t => pct >= t.min) ?? TIERS[TIERS.length - 1]
+  const t = useT()
+
+  const pct     = correct / QUESTIONS_PER_ROUND
+  const tierDef = TIER_KEYS.find(t => pct >= t.min) ?? TIER_KEYS[TIER_KEYS.length - 1]
 
   return (
     <div style={{ padding:'26px 22px 28px', textAlign:'center' }}>
 
       {/* Hero */}
       <div style={{ fontSize:64, lineHeight:1, animation:'pop-in .6s cubic-bezier(0.34, 1.56, 0.64, 1)' }}>
-        {tier.emoji}
+        {tierDef.emoji}
       </div>
       <h1 style={{
         fontFamily: "'Playfair Display', serif",
@@ -36,7 +40,7 @@ export function ResultScreen() {
         marginTop: 8,
         color: 'var(--ink)',
       }}>
-        {tier.title}
+        {t(`tier.${tierDef.key}.title`)}
       </h1>
       <p style={{
         fontFamily: "'Libre Baskerville', serif",
@@ -44,7 +48,7 @@ export function ResultScreen() {
         color: 'var(--ink-soft)',
         marginTop: 4,
       }}>
-        {tier.sub}
+        {t(`tier.${tierDef.key}.sub`)}
       </p>
 
       <div style={{ height:1, background:'var(--rule)', margin:'18px 0 16px' }} />
@@ -52,9 +56,9 @@ export function ResultScreen() {
       {/* Stats strip */}
       <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:8, margin:'4px 0' }}>
         {[
-          { value: score,                                label: 'Puntos',      gold: true  },
-          { value: `${correct}/${QUESTIONS_PER_ROUND}`,  label: 'Aciertos',   gold: false },
-          { value: maxStreak,                            label: 'Mejor Racha', gold: false },
+          { value: score,                                label: t('result.points'), gold: true  },
+          { value: `${correct}/${QUESTIONS_PER_ROUND}`,  label: t('result.correct'), gold: false },
+          { value: maxStreak,                            label: t('result.streak'),  gold: false },
         ].map(({ value, label, gold }) => (
           <div key={label} style={{
             padding: '10px 6px',
@@ -94,29 +98,32 @@ export function ResultScreen() {
             textTransform: 'uppercase',
             marginBottom: 8,
           }}>
-            ✦ Banderas para repasar
+            {t('result.review')}
           </div>
           <div style={{ display:'grid', gap:6 }}>
-            {wrongList.map(c => (
-              <div key={c.n} style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                border: '1px solid var(--rule)',
-                padding: '8px 12px',
-                background: 'rgba(255,253,243,0.55)',
-              }}>
-                <FlagEmoji emoji={c.f} width={40} height={26} />
-                <div>
-                  <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:14, lineHeight:1.1 }}>
-                    {c.n}
-                  </div>
-                  <div style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:'italic', fontSize:11.5, color:'var(--ink-soft)' }}>
-                    Capital: {c.c}
+            {wrongList.map(c => {
+              const name = language === 'en' ? c.ne : c.n
+              return (
+                <div key={c.n} style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
+                  border: '1px solid var(--rule)',
+                  padding: '8px 12px',
+                  background: 'rgba(255,253,243,0.55)',
+                }}>
+                  <FlagEmoji emoji={c.f} width={40} height={26} />
+                  <div>
+                    <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:14, lineHeight:1.1 }}>
+                      {name}
+                    </div>
+                    <div style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:'italic', fontSize:11.5, color:'var(--ink-soft)' }}>
+                      {t('result.capital')} {c.c}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       )}
@@ -137,7 +144,7 @@ export function ResultScreen() {
             cursor: 'pointer',
           }}
         >
-          Menú
+          {t('result.menu')}
         </button>
         <button
           onClick={startGame}
@@ -153,7 +160,7 @@ export function ResultScreen() {
             cursor: 'pointer',
           }}
         >
-          Repetir
+          {t('result.again')}
         </button>
       </div>
 
