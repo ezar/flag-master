@@ -31,9 +31,9 @@ export function SettingsModal({ open, onClose }: Props) {
   }
   const diffIcons  = { easy: '🌿', medium: '⚓', hard: '🗺️' }
 
-  const langOptions: { id: Lang; label: string }[] = [
-    { id: 'es', label: '🇪🇸 Español' },
-    { id: 'en', label: '🇬🇧 English' },
+  const langOptions: { id: Lang; iso: string; label: string }[] = [
+    { id: 'es', iso: 'es', label: 'Español' },
+    { id: 'en', iso: 'gb', label: 'English' },
   ]
 
   return (
@@ -67,6 +67,8 @@ export function SettingsModal({ open, onClose }: Props) {
               transform:  'translateX(-50%)',
               width:      '100%',
               maxWidth:   820,
+              maxHeight:  '85vh',
+              overflowY:  'auto',
               zIndex:     101,
               background: 'var(--paper)',
               backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.10 0 0 0 0 0.07 0 0 0 0 0.04 0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"), radial-gradient(140% 90% at 20% 0%, #faf2da 0%, #f5edd6 38%, #ecdfbd 100%)`,
@@ -190,8 +192,19 @@ export function SettingsModal({ open, onClose }: Props) {
                         fontSize:    14,
                         textAlign:   'center',
                         transition:  'all .15s ease',
+                        display:     'flex',
+                        alignItems:  'center',
+                        justifyContent: 'center',
+                        gap:         8,
                       }}
                     >
+                      <img
+                        src={`https://flagcdn.com/${opt.iso}.svg`}
+                        width={22}
+                        height={15}
+                        style={{ objectFit:'cover', borderRadius:2, flexShrink:0 }}
+                        alt=""
+                      />
                       {opt.label}
                     </button>
                   ))}
