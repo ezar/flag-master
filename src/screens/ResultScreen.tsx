@@ -106,7 +106,7 @@ export function ResultScreen() {
                 padding: '8px 12px',
                 background: 'rgba(255,253,243,0.55)',
               }}>
-                <FlagEmoji emoji={c.f} size={26} />
+                <FlagEmoji emoji={c.f} width={40} height={26} />
                 <div>
                   <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:14, lineHeight:1.1 }}>
                     {c.n}

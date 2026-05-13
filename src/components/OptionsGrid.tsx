@@ -88,7 +88,7 @@ export function OptionsGrid({ options, mode, correctName, onAnswer }: Props) {
               }}>
                 {LETTERS[i]}
               </span>
-              <FlagEmoji emoji={opt.f} size={46} />
+              <FlagEmoji emoji={opt.f} width={70} height={46} style={{ objectFit: 'contain' }} />
             </motion.button>
           )
         })}
@@ -151,7 +151,7 @@ export function OptionsGrid({ options, mode, correctName, onAnswer }: Props) {
           >
             {/* Small flag — shown in flag2country and lightning modes */}
             {(mode === 'flag2country' || mode === 'lightning') && (
-              <FlagEmoji emoji={opt.f} size={22} style={{ flexShrink: 0 }} />
+              <FlagEmoji emoji={opt.f} width={32} height={22} style={{ flexShrink: 0, objectFit: 'contain' }} />
             )}
 
             <span style={{ flex: 1 }}>{label}</span>

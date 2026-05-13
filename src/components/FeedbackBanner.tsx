@@ -35,7 +35,7 @@ export function FeedbackBanner({ correct, country, pointsEarned, streak }: Props
       ) : (
         <div style={{ color: 'var(--err)', display:'flex', alignItems:'center', gap:8 }}>
           <span>✗ Era:</span>
-          <FlagEmoji emoji={country.f} size={22} />
+          <FlagEmoji emoji={country.f} width={32} height={22} />
           <span style={{ fontWeight:700 }}>{country.n}</span>
         </div>
       )}
