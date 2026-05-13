@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { FM_COUNTRIES, FM_REGIONS, type Country } from '../data/countries'
 import { getPool, shuffle, pickDistractors, type Stage } from '../engine/questionEngine'
+import { setAudioEnabled } from '../audio/audioEngine'
 
 export type { Stage }
 export type GameMode = 'flag2country' | 'country2flag' | 'hint' | 'capital' | 'type' | 'lightning'
@@ -39,8 +40,9 @@ interface GameState {
   screen: Screen
 
   // Preferences (persisted)
-  stage: Stage
-  mode:  GameMode
+  stage:        Stage
+  mode:         GameMode
+  audioEnabled: boolean
 
   // Lifetime history (persisted)
   bestStreak:     number
@@ -71,8 +73,10 @@ interface GameActions {
   answer:       (correct: boolean) => void
   finishGame:   () => void
   goHome:       () => void
-  setStage:     (s: Stage) => void
-  setMode:      (m: GameMode) => void
+  setStage:        (s: Stage) => void
+  setMode:         (m: GameMode) => void
+  setAudio:        (v: boolean) => void
+  resetProgress:   () => void
 }
 
 function buildOptions(country: Country, pool: Country[]): Country[] {
@@ -87,8 +91,9 @@ export const useGameStore = create<GameState & GameActions>()(
       screen: 'home',
 
       // Preferences
-      stage: 'medium',
-      mode:  'flag2country',
+      stage:        'medium',
+      mode:         'flag2country',
+      audioEnabled: true,
 
       // Lifetime history
       bestStreak:     0,
@@ -196,12 +201,26 @@ export const useGameStore = create<GameState & GameActions>()(
 
       setStage: (stage) => set({ stage }),
       setMode:  (mode)  => set({ mode }),
+      setAudio: (v: boolean) => {
+        setAudioEnabled(v)
+        set({ audioEnabled: v })
+      },
+      resetProgress: () => {
+        set({
+          bestStreak:       0,
+          totalGames:       0,
+          totalCorrect:     0,
+          totalQuestions:   0,
+          masteryCountries: {},
+        })
+      },
     }),
     {
       name: 'flagmaster_v2',
       partialize: (state) => ({
         stage:            state.stage,
         mode:             state.mode,
+        audioEnabled:     state.audioEnabled,
         bestStreak:       state.bestStreak,
         totalGames:       state.totalGames,
         totalCorrect:     state.totalCorrect,

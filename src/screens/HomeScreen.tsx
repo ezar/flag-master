@@ -1,10 +1,12 @@
-import { CompassRose } from '../components/CompassRose'
-import { StatCard }    from '../components/StatCard'
-import { WorldMap }    from '../components/WorldMap'
+import { useState } from 'react'
+import { CompassRose }    from '../components/CompassRose'
+import { StatCard }       from '../components/StatCard'
+import { WorldMap }       from '../components/WorldMap'
+import { SettingsModal }  from '../components/SettingsModal'
 import { useGameStore, type GameMode } from '../store/gameStore'
-import { getPool }     from '../engine/questionEngine'
-import { FM_COUNTRIES } from '../data/countries'
-import type { Stage }  from '../engine/questionEngine'
+import { getPool }        from '../engine/questionEngine'
+import { FM_COUNTRIES }   from '../data/countries'
+import type { Stage }     from '../engine/questionEngine'
 
 // ── Difficulty options ──────────────────────────────────────────────
 const DIFFICULTIES: { id: Stage; icon: string; name: string; sub: string }[] = [
@@ -30,10 +32,39 @@ export function HomeScreen() {
     bestStreak, totalGames, totalCorrect, totalQuestions,
   } = useGameStore()
 
+  const [settingsOpen, setSettingsOpen] = useState(false)
   const poolCount = getPool(stage, FM_COUNTRIES).length
 
   return (
     <div style={{ position: 'relative', padding: '22px 22px 28px' }}>
+      <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+
+      {/* Settings button — top right */}
+      <button
+        onClick={() => setSettingsOpen(true)}
+        style={{
+          position:      'absolute',
+          top:           16,
+          right:         16,
+          zIndex:        10,
+          background:    'none',
+          border:        '1px solid var(--rule)',
+          width:         34,
+          height:        34,
+          cursor:        'pointer',
+          display:       'flex',
+          alignItems:    'center',
+          justifyContent:'center',
+          color:         'var(--ink-soft)',
+          fontSize:      16,
+          borderRadius:  2,
+          transition:    'all .15s',
+        }}
+        title="Ajustes"
+        aria-label="Abrir ajustes"
+      >
+        ⚙
+      </button>
 
       {/* ── Nautical chart lines (decorative bg) ── */}
       <div
