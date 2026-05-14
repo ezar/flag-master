@@ -177,8 +177,8 @@ export function ResultScreen() {
           style={{
             padding: '14px 8px',
             border: '1px solid var(--ink)',
-            background: 'var(--ink)',
-            color: 'var(--paper)',
+            background: 'var(--chrome-bg)',
+            color: 'var(--chrome-text)',
             fontFamily: "'DM Mono', monospace",
             fontSize: 10.5,
             letterSpacing: '0.28em',

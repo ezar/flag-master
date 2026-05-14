@@ -225,8 +225,8 @@ export function SettingsModal({ open, onClose }: Props) {
                       key={opt.id}
                       onClick={() => setLanguage(opt.id)}
                       style={{
-                        background:  language === opt.id ? 'var(--ink)' : 'transparent',
-                        color:       language === opt.id ? 'var(--paper)' : 'var(--ink)',
+                        background:  language === opt.id ? 'var(--chrome-bg)' : 'transparent',
+                        color:       language === opt.id ? 'var(--chrome-text)' : 'var(--ink)',
                         border:      '1px solid var(--rule)',
                         padding:     '10px 8px',
                         cursor:      'pointer',
@@ -268,8 +268,8 @@ export function SettingsModal({ open, onClose }: Props) {
                       key={s}
                       onClick={() => setStage(s)}
                       style={{
-                        background:  stage === s ? 'var(--ink)' : 'transparent',
-                        color:       stage === s ? 'var(--paper)' : 'var(--ink)',
+                        background:  stage === s ? 'var(--chrome-bg)' : 'transparent',
+                        color:       stage === s ? 'var(--chrome-text)' : 'var(--ink)',
                         border:      '1px solid var(--rule)',
                         padding:     '10px 6px',
                         cursor:      'pointer',

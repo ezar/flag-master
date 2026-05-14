@@ -25,8 +25,8 @@ export function ReviewScreen() {
 
       {/* Header — same structure as GameScreen */}
       <header style={{
-        background: 'var(--ink)',
-        color:      'var(--paper)',
+        background: 'var(--chrome-bg)',
+        color:      'var(--chrome-text)',
         padding:    '14px 16px 14px',
         boxShadow:  '0 2px 0 var(--gold)',
         position:   'sticky',
@@ -36,7 +36,7 @@ export function ReviewScreen() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <button
             onClick={goHome}
-            style={{ background: 'none', border: 'none', color: 'var(--paper)', fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: '0.2em', cursor: 'pointer', textTransform: 'uppercase', padding: '6px 0' }}
+            style={{ background: 'none', border: 'none', color: 'var(--chrome-text)', fontFamily: "'DM Mono', monospace", fontSize: 10, letterSpacing: '0.2em', cursor: 'pointer', textTransform: 'uppercase', padding: '6px 0' }}
           >
             {t('review.back')}
           </button>

@@ -16,6 +16,16 @@
   --shadow:     0 1px 0 rgba(26,18,9,0.06), 0 18px 30px -22px rgba(26,18,9,0.35);
 }
 
+/* ── Chrome fills (always-dark headers, action buttons) ──── */
+:root {
+  --chrome-bg:   var(--ink);    /* light mode: #1a1209 */
+  --chrome-text: var(--paper);  /* light mode: #f5edd6 */
+}
+body.dark {
+  --chrome-bg:   var(--paper-3);  /* dark mode: #2e2210 — stays dark */
+  --chrome-text: var(--ink);      /* dark mode: #f0e6cc — stays light */
+}
+
 /* ── Toggle thumb (always light) ─────────────────────────── */
 :root {
   --toggle-thumb: #f5edd6;

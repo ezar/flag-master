@@ -81,9 +81,9 @@ export function GameScreen() {
 
   // ── Shared header ──────────────────────────────────────────────────────
   const gameHeader = (
-    <header style={{ background:'var(--ink)', color:'var(--paper)', padding:'14px 16px 0', boxShadow:'0 2px 0 var(--gold)' }}>
+    <header style={{ background:'var(--chrome-bg)', color:'var(--chrome-text)', padding:'14px 16px 0', boxShadow:'0 2px 0 var(--gold)' }}>
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-        <button onClick={goHome} style={{ background:'none', border:'none', color:'var(--paper)', fontFamily:"'DM Mono', monospace", fontSize:10, letterSpacing:'0.2em', cursor:'pointer', padding:'6px 0', textTransform:'uppercase' }}>
+        <button onClick={goHome} style={{ background:'none', border:'none', color:'var(--chrome-text)', fontFamily:"'DM Mono', monospace", fontSize:10, letterSpacing:'0.2em', cursor:'pointer', padding:'6px 0', textTransform:'uppercase' }}>
           {t('game.back')}
         </button>
         <div style={{ fontFamily:"'Playfair Display', serif", fontStyle:'italic', fontSize:14, color:'var(--gold-light)' }}>
@@ -98,14 +98,14 @@ export function GameScreen() {
           <div style={{ fontFamily:"'DM Mono', monospace", fontSize:9, letterSpacing:'0.18em', color:'rgba(245,237,214,0.55)', textTransform:'uppercase' }}>{t('game.points')}</div>
         </div>
         <div>
-          <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:20, lineHeight:1, color:'var(--paper)', display:'flex', alignItems:'center', gap:4 }}>
+          <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:20, lineHeight:1, color:'var(--chrome-text)', display:'flex', alignItems:'center', gap:4 }}>
             <span style={{ color:'var(--gold-light)', fontSize:14, animation:'flicker 1.4s ease-in-out infinite' }}>✦</span>
             {streak}
           </div>
           <div style={{ fontFamily:"'DM Mono', monospace", fontSize:9, letterSpacing:'0.18em', color:'rgba(245,237,214,0.55)', textTransform:'uppercase' }}>{t('game.streak')}</div>
         </div>
         <div style={{ marginLeft:'auto', textAlign:'right' }}>
-          <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:20, lineHeight:1, color:'var(--paper)' }}>{qIndex + 1}/{QUESTIONS_PER_ROUND}</div>
+          <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:20, lineHeight:1, color:'var(--chrome-text)' }}>{qIndex + 1}/{QUESTIONS_PER_ROUND}</div>
           <div style={{ fontFamily:"'DM Mono', monospace", fontSize:9, letterSpacing:'0.18em', color:'rgba(245,237,214,0.55)', textTransform:'uppercase' }}>{t('game.question')}</div>
         </div>
       </div>
@@ -127,7 +127,7 @@ export function GameScreen() {
           placeholder={t('game.type.placeholder')}
           style={{ flex:1, background:'transparent', border:'none', outline:'none', fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:18, color:'var(--ink)', padding:'6px 4px', borderBottom:'1px solid var(--rule)' }}
         />
-        <button onClick={submitWrite} disabled={answered} style={{ background:'var(--ink)', color:'var(--paper)', border:'none', padding:'10px 14px', cursor: answered ? 'default' : 'pointer', fontFamily:"'DM Mono', monospace", fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase' }}>
+        <button onClick={submitWrite} disabled={answered} style={{ background:'var(--chrome-bg)', color:'var(--chrome-text)', border:'none', padding:'10px 14px', cursor: answered ? 'default' : 'pointer', fontFamily:"'DM Mono', monospace", fontSize:10, letterSpacing:'0.2em', textTransform:'uppercase' }}>
           {t('game.type.submit')}
         </button>
       </div>
@@ -148,7 +148,7 @@ export function GameScreen() {
       )}
       {answered && (
         <div style={{ display:'flex', justifyContent:'center', marginTop:18 }}>
-          <button onClick={handleNext} style={{ background:'var(--ink)', color:'var(--paper)', border:'none', padding:'13px 26px', cursor:'pointer', fontFamily:"'DM Mono', monospace", fontSize:10.5, letterSpacing:'0.28em', textTransform:'uppercase', boxShadow:'0 6px 18px -10px rgba(26,18,9,0.6)', animation:'pop-in .25s ease' }}>
+          <button onClick={handleNext} style={{ background:'var(--chrome-bg)', color:'var(--chrome-text)', border:'none', padding:'13px 26px', cursor:'pointer', fontFamily:"'DM Mono', monospace", fontSize:10.5, letterSpacing:'0.28em', textTransform:'uppercase', boxShadow:'0 6px 18px -10px rgba(26,18,9,0.6)', animation:'pop-in .25s ease' }}>
             {t('game.next')}
           </button>
         </div>

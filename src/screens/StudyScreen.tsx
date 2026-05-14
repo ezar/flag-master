@@ -106,7 +106,7 @@ export function StudyScreen() {
               {t('result.menu')}
             </button>
             <button onClick={() => { setDeck(initialDeck); setDeckIndex(0); setRevealed(false); setDone(false); setKnownCount(0); setTotalShown(0) }}
-              style={{ padding:'13px', border:'none', background:'var(--ink)', color:'var(--gold)', fontFamily:"'DM Mono', monospace", fontSize:10, letterSpacing:'0.24em', textTransform:'uppercase', cursor:'pointer' }}>
+              style={{ padding:'13px', border:'none', background:'var(--chrome-bg)', color:'var(--gold)', fontFamily:"'DM Mono', monospace", fontSize:10, letterSpacing:'0.24em', textTransform:'uppercase', cursor:'pointer' }}>
               {t('study.again')}
             </button>
           </div>
@@ -119,9 +119,9 @@ export function StudyScreen() {
   return (
     <div style={{ minHeight:'100dvh', display:'flex', flexDirection:'column' }}>
       {/* Header */}
-      <header style={{ background:'var(--ink)', color:'var(--paper)', padding:'14px 16px', boxShadow:'0 2px 0 var(--gold)' }}>
+      <header style={{ background:'var(--chrome-bg)', color:'var(--chrome-text)', padding:'14px 16px', boxShadow:'0 2px 0 var(--gold)' }}>
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-          <button onClick={goHome} style={{ background:'none', border:'none', color:'var(--paper)', fontFamily:"'DM Mono', monospace", fontSize:10, letterSpacing:'0.2em', cursor:'pointer', textTransform:'uppercase', padding:'6px 0' }}>
+          <button onClick={goHome} style={{ background:'none', border:'none', color:'var(--chrome-text)', fontFamily:"'DM Mono', monospace", fontSize:10, letterSpacing:'0.2em', cursor:'pointer', textTransform:'uppercase', padding:'6px 0' }}>
             {t('game.back')}
           </button>
           <div style={{ fontFamily:"'Playfair Display', serif", fontStyle:'italic', fontSize:14, color:'var(--gold-light)' }}>

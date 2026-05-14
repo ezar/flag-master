@@ -176,7 +176,7 @@ function CreateProfileForm({ onCancel }: { onCancel?: () => void }) {
         <button
           onClick={handleCreate}
           disabled={!name.trim()}
-          style={{ padding:'14px', background: name.trim() ? 'var(--ink)' : 'var(--rule)', color: name.trim() ? 'var(--gold)' : 'var(--ink-soft)', border:'none', fontFamily:"'DM Mono', monospace", fontSize:10, letterSpacing:'0.28em', textTransform:'uppercase', cursor: name.trim() ? 'pointer' : 'default', transition:'all .15s' }}
+          style={{ padding:'14px', background: name.trim() ? 'var(--chrome-bg)' : 'var(--rule)', color: name.trim() ? 'var(--gold)' : 'var(--ink-soft)', border:'none', fontFamily:"'DM Mono', monospace", fontSize:10, letterSpacing:'0.28em', textTransform:'uppercase', cursor: name.trim() ? 'pointer' : 'default', transition:'all .15s' }}
         >
           {t('profile.create')} →
         </button>

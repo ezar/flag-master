@@ -80,7 +80,7 @@ export function HomeScreen() {
           <button
             key={String(pill.id)}
             onClick={() => setRegionFilter(pill.id)}
-            style={{ background: regionFilter===pill.id ? 'var(--ink)' : 'transparent', color: regionFilter===pill.id ? 'var(--paper)' : 'var(--ink-soft)', border:`1px solid ${regionFilter===pill.id ? 'var(--ink)' : 'var(--rule)'}`, padding:'4px 10px', cursor:'pointer', fontFamily:"'DM Mono', monospace", fontSize:8.5, letterSpacing:'0.18em', textTransform:'uppercase', borderRadius:2, transition:'all .15s' }}
+            style={{ background: regionFilter===pill.id ? 'var(--chrome-bg)' : 'transparent', color: regionFilter===pill.id ? 'var(--chrome-text)' : 'var(--ink-soft)', border:`1px solid ${regionFilter===pill.id ? 'var(--chrome-bg)' : 'var(--rule)'}`, padding:'4px 10px', cursor:'pointer', fontFamily:"'DM Mono', monospace", fontSize:8.5, letterSpacing:'0.18em', textTransform:'uppercase', borderRadius:2, transition:'all .15s' }}
           >
             {pill.label}
           </button>
@@ -89,7 +89,7 @@ export function HomeScreen() {
 
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8 }}>
         {DIFFICULTIES.map(d => (
-          <button key={d.id} onClick={() => setStage(d.id)} style={{ background: stage===d.id ? 'var(--ink)' : 'transparent', border:'1px solid var(--rule)', padding:'12px 8px 10px', cursor:'pointer', textAlign:'center', color: stage===d.id ? 'var(--paper)' : 'var(--ink)', transition:'all .18s ease', boxShadow: stage===d.id ? '0 6px 18px -10px rgba(26,18,9,0.6)' : 'none' }}>
+          <button key={d.id} onClick={() => setStage(d.id)} style={{ background: stage===d.id ? 'var(--chrome-bg)' : 'transparent', border:'1px solid var(--rule)', padding:'12px 8px 10px', cursor:'pointer', textAlign:'center', color: stage===d.id ? 'var(--chrome-text)' : 'var(--ink)', transition:'all .18s ease', boxShadow: stage===d.id ? '0 6px 18px -10px rgba(26,18,9,0.6)' : 'none' }}>
             <div style={{ fontSize:20, lineHeight:1 }}>{d.icon}</div>
             <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:14, marginTop:6 }}>{d.name}</div>
             <div style={{ fontFamily:"'DM Mono', monospace", fontSize:9, letterSpacing:'0.18em', color: stage===d.id ? 'rgba(245,237,214,0.7)' : 'var(--ink-soft)', marginTop:3 }}>{d.sub}</div>
@@ -127,7 +127,7 @@ export function HomeScreen() {
   const zarparBtn = (
     <button
       onClick={mode === ('study' as GameMode) ? goStudy : startGame}
-      style={{ display:'block', width:'100%', marginTop:22, background:'var(--ink)', color:'var(--gold)', border:'none', padding:'16px 8px', fontFamily:"'DM Mono', monospace", fontSize:11, letterSpacing:'0.32em', textTransform:'uppercase', cursor:'pointer', boxShadow:'0 6px 18px -10px rgba(26,18,9,0.6)' }}
+      style={{ display:'block', width:'100%', marginTop:22, background:'var(--chrome-bg)', color:'var(--gold)', border:'none', padding:'16px 8px', fontFamily:"'DM Mono', monospace", fontSize:11, letterSpacing:'0.32em', textTransform:'uppercase', cursor:'pointer', boxShadow:'0 6px 18px -10px rgba(26,18,9,0.6)' }}
     >
       {mode === ('study' as GameMode) ? (language === 'en' ? 'Start study →' : 'Estudiar →') : t('home.sail')}
     </button>
