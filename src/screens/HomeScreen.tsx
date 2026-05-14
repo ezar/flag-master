@@ -132,7 +132,7 @@ export function HomeScreen() {
   // ── DESKTOP: two-column layout ─────────────────────────────────────────
   if (isDesktop) {
     return (
-      <div style={{ display:'flex', height:'100dvh' }}>
+      <div style={{ display:'flex', minHeight:'100dvh', alignItems:'flex-start' }}>
         <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 
         {/* ── LEFT SIDEBAR ──────────────────────────────── */}
@@ -193,6 +193,7 @@ export function HomeScreen() {
               totalGames={totalGames}
               totalCorrect={totalCorrect}
               totalQuestions={totalQuestions}
+              columns={2}
             />
 
             {/* Quick nav */}
@@ -223,8 +224,8 @@ export function HomeScreen() {
           </div>
         </aside>
 
-        {/* ── RIGHT CONTENT ─────────────────────────────── */}
-        <main style={{ flex:1, overflowY:'auto', height:'100dvh', padding:'28px 40px 40px', maxWidth:900 }}>
+        {/* ── RIGHT CONTENT — window scrolls, not inner div ── */}
+        <main style={{ flex:1, padding:'28px 40px 60px', maxWidth:960, minHeight:'100dvh' }}>
           <WorldMap />
           <div style={{ marginTop:22 }}>
             {difficultySection}

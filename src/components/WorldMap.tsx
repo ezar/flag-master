@@ -1,11 +1,13 @@
 import { FM_REGIONS, FM_COUNTRIES } from '../data/countries'
 import { useGameStore, regionMastery, isRegionUnlocked, isMastered } from '../store/gameStore'
 import { useT } from '../i18n/useT'
+import { useDesktop } from '../hooks/useDesktop'
 
 export function WorldMap() {
   const { masteryCountries } = useGameStore()
-  const language = useGameStore(s => s.language)
-  const t = useT()
+  const language  = useGameStore(s => s.language)
+  const t         = useT()
+  const isDesktop = useDesktop()
 
   return (
     <div style={{
@@ -71,7 +73,7 @@ export function WorldMap() {
 
       {/* Continent grid */}
       <div style={{ padding: '12px 14px 14px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: isDesktop ? '1fr 1fr 1fr' : '1fr 1fr', gap: 8 }}>
           {FM_REGIONS.map(region => {
             const unlocked = isRegionUnlocked(region.id, masteryCountries)
             const mastery  = regionMastery(region.id, masteryCountries)

@@ -6,9 +6,10 @@ interface Props {
   totalGames:     number
   totalCorrect:   number
   totalQuestions: number
+  columns?:       2 | 4   // 4=single row (mobile), 2=2×2 grid (sidebar)
 }
 
-export function StatCard({ bestStreak, dailyStreak, totalGames, totalCorrect, totalQuestions }: Props) {
+export function StatCard({ bestStreak, dailyStreak, totalGames, totalCorrect, totalQuestions, columns = 4 }: Props) {
   const t = useT()
 
   const acc = totalQuestions > 0
@@ -43,38 +44,41 @@ export function StatCard({ bestStreak, dailyStreak, totalGames, totalCorrect, to
         {t('home.logbook')}
       </div>
 
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(4, 1fr)', gap:8 }}>
-        {stats.map(({ value, label, gold }, i) => (
-          <div
-            key={i}
-            style={{
-              textAlign: 'center',
-              padding: '6px 4px',
-              borderRight: i < stats.length - 1 ? '1px dashed var(--rule)' : 'none',
-            }}
-          >
-            <div style={{
-              fontFamily: "'Playfair Display', serif",
-              fontWeight: 700,
-              fontSize: 22,
-              lineHeight: 1,
-              color: gold ? 'var(--gold)' : 'var(--ink)',
-            }}>
-              {value}
+      <div style={{ display:'grid', gridTemplateColumns:`repeat(${columns}, 1fr)`, gap: columns === 2 ? 10 : 8 }}>
+        {stats.map(({ value, label, gold }, i) => {
+          const isLastInRow = columns === 2 ? i % 2 === 1 : i === stats.length - 1
+          return (
+            <div
+              key={i}
+              style={{
+                textAlign: 'center',
+                padding: columns === 2 ? '8px 4px' : '6px 4px',
+                borderRight: !isLastInRow ? '1px dashed var(--rule)' : 'none',
+              }}
+            >
+              <div style={{
+                fontFamily: "'Playfair Display', serif",
+                fontWeight: 700,
+                fontSize: columns === 2 ? 26 : 22,
+                lineHeight: 1,
+                color: gold ? 'var(--gold)' : 'var(--ink)',
+              }}>
+                {value}
+              </div>
+              <div style={{
+                fontFamily: "'DM Mono', monospace",
+                fontSize: 9,
+                letterSpacing: '0.18em',
+                color: 'var(--ink-soft)',
+                textTransform: 'uppercase',
+                marginTop: 6,
+                whiteSpace: 'pre-line',
+              }}>
+                {label}
+              </div>
             </div>
-            <div style={{
-              fontFamily: "'DM Mono', monospace",
-              fontSize: 9,
-              letterSpacing: '0.18em',
-              color: 'var(--ink-soft)',
-              textTransform: 'uppercase',
-              marginTop: 6,
-              whiteSpace: 'pre-line',
-            }}>
-              {label}
-            </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )
