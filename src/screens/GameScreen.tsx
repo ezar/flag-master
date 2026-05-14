@@ -170,7 +170,7 @@ export function GameScreen() {
         {gameHeader}
         <div style={{ display:'flex', flex:1 }}>
           {/* Left — flag stage */}
-          <div style={{ flex:'0 0 50%', padding:'28px 28px 28px 32px', display:'flex', flexDirection:'column', justifyContent:'center', borderRight:'1px solid var(--rule)' }}>
+          <div style={{ flex:'0 0 50%', padding:'28px 28px 28px 32px', display:'flex', flexDirection:'column', justifyContent:'center', borderRight:'1px solid var(--rule)', background:'var(--paper-2)' }}>
             <div style={{ fontFamily:"'DM Mono', monospace", fontSize:10, letterSpacing:'0.28em', color:'var(--ink-soft)', textTransform:'uppercase', textAlign:'center', marginBottom:14 }}>
               {questionLine}
             </div>

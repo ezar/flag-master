@@ -137,9 +137,10 @@ export function HomeScreen() {
 
         {/* ── LEFT SIDEBAR ──────────────────────────────── */}
         <aside style={{
-          width:        300,
+          width:        320,
           flexShrink:   0,
-          borderRight:  '1px solid var(--rule)',
+          borderRight:  '2px solid var(--rule)',
+          background:   'var(--paper-2)',
           padding:      '28px 24px 24px',
           display:      'flex',
           flexDirection:'column',
@@ -223,7 +224,7 @@ export function HomeScreen() {
         </aside>
 
         {/* ── RIGHT CONTENT ─────────────────────────────── */}
-        <main style={{ flex:1, overflowY:'auto', height:'100dvh', padding:'28px 28px 40px' }}>
+        <main style={{ flex:1, overflowY:'auto', height:'100dvh', padding:'28px 40px 40px', maxWidth:900 }}>
           <WorldMap />
           <div style={{ marginTop:22 }}>
             {difficultySection}
