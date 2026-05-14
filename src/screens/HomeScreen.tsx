@@ -172,21 +172,6 @@ export function HomeScreen() {
 
           <div style={{ position:'relative', zIndex:1, display:'flex', flexDirection:'column', gap:20, flex:1 }}>
 
-            {/* Active profile chip */}
-            {activeProfile && (
-              <button
-                onClick={goProfiles}
-                style={{ display:'flex', alignItems:'center', gap:10, border:'1px solid var(--rule)', background:'rgba(255,253,243,0.6)', padding:'10px 14px', cursor:'pointer', textAlign:'left', transition:'all .15s' }}
-              >
-                <span style={{ fontSize:24, lineHeight:1 }}>{activeProfile.avatar}</span>
-                <div style={{ flex:1, minWidth:0 }}>
-                  <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:15, color:'var(--ink)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{activeProfile.name}</div>
-                  <div style={{ fontFamily:"'DM Mono', monospace", fontSize:8.5, letterSpacing:'0.16em', color:'var(--ink-soft)', textTransform:'uppercase', marginTop:2 }}>{t('profile.switch')}</div>
-                </div>
-                <span style={{ color:'var(--gold)', fontSize:16 }}>⇄</span>
-              </button>
-            )}
-
             {/* Compass */}
             <CompassRose size={150} />
 
@@ -233,23 +218,36 @@ export function HomeScreen() {
               ))}
             </div>
 
-            {/* Settings — at bottom */}
-            <div style={{ marginTop:'auto', borderTop:'1px solid var(--rule)', paddingTop:18 }}>
+            {/* Bottom: profile + settings */}
+            <div style={{ marginTop:'auto', borderTop:'1px solid var(--rule)', paddingTop:16, display:'flex', flexDirection:'column', gap:8 }}>
+
+              {/* Active profile chip */}
+              {activeProfile && (
+                <button
+                  onClick={goProfiles}
+                  style={{ display:'flex', alignItems:'center', gap:10, border:'1px solid var(--rule)', background:'rgba(255,253,243,0.6)', padding:'10px 14px', cursor:'pointer', textAlign:'left', transition:'all .15s', width:'100%' }}
+                >
+                  <span style={{ fontSize:22, lineHeight:1 }}>{activeProfile.avatar}</span>
+                  <div style={{ flex:1, minWidth:0 }}>
+                    <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:14, color:'var(--ink)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{activeProfile.name}</div>
+                    <div style={{ fontFamily:"'DM Mono', monospace", fontSize:8, letterSpacing:'0.16em', color:'var(--ink-soft)', textTransform:'uppercase', marginTop:1 }}>{t('profile.switch')}</div>
+                  </div>
+                  <span style={{ color:'var(--gold)', fontSize:14 }}>⇄</span>
+                </button>
+              )}
+
               <button
                 onClick={() => setSettingsOpen(true)}
-                style={{ display:'flex', alignItems:'center', gap:12, width:'100%', border:'1px solid var(--rule)', background:'transparent', padding:'12px 16px', cursor:'pointer', color:'var(--ink-soft)', transition:'all .15s' }}
+                style={{ display:'flex', alignItems:'center', gap:12, width:'100%', border:'1px solid var(--rule)', background:'transparent', padding:'11px 14px', cursor:'pointer', color:'var(--ink-soft)', transition:'all .15s' }}
               >
-                <span style={{ fontSize:18 }}>⚙</span>
+                <span style={{ fontSize:16 }}>⚙</span>
                 <div style={{ textAlign:'left' }}>
                   <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:14, color:'var(--ink)' }}>{t('settings.title')}</div>
-                  <div style={{ fontFamily:"'DM Mono', monospace", fontSize:8.5, letterSpacing:'0.2em', color:'var(--ink-soft)', textTransform:'uppercase', marginTop:2 }}>
+                  <div style={{ fontFamily:"'DM Mono', monospace", fontSize:8, letterSpacing:'0.2em', color:'var(--ink-soft)', textTransform:'uppercase', marginTop:1 }}>
                     {language==='en' ? 'Audio · Language · Reset' : 'Audio · Idioma · Reiniciar'}
                   </div>
                 </div>
               </button>
-              <div style={{ textAlign:'center', marginTop:14, fontFamily:"'DM Mono', monospace", fontSize:8, letterSpacing:'0.24em', color:'var(--ink-soft)', textTransform:'uppercase', opacity:0.6 }}>
-                ✦ Septentrionem · Meridiem ✦
-              </div>
             </div>
 
           </div>
@@ -278,7 +276,17 @@ export function HomeScreen() {
     <div style={{ position:'relative', padding:'22px 22px 28px', minHeight:'100dvh' }}>
       <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 
-      {/* Settings button */}
+      {/* Mobile header buttons */}
+      {activeProfile && (
+        <button
+          onClick={goProfiles}
+          style={{ position:'absolute', top:14, left:16, zIndex:10, background:'rgba(255,253,243,0.7)', border:'1px solid var(--rule)', height:34, cursor:'pointer', display:'flex', alignItems:'center', gap:7, padding:'0 10px', borderRadius:2, transition:'all .15s' }}
+          title={t('profile.switch')}
+        >
+          <span style={{ fontSize:18, lineHeight:1 }}>{activeProfile.avatar}</span>
+          <span style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:13, color:'var(--ink)' }}>{activeProfile.name}</span>
+        </button>
+      )}
       <button onClick={() => setSettingsOpen(true)} style={{ position:'absolute', top:16, right:16, zIndex:10, background:'none', border:'1px solid var(--rule)', width:34, height:34, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', color:'var(--ink-soft)', fontSize:16, borderRadius:2, transition:'all .15s' }} title={t('settings.title')}>⚙</button>
 
       {/* Nautical chart lines */}
