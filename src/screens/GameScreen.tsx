@@ -178,7 +178,7 @@ export function GameScreen() {
           </div>
 
           {/* Right — options + feedback + next */}
-          <div style={{ flex:'0 0 50%', padding:'28px 32px 28px 28px', display:'flex', flexDirection:'column', justifyContent:'center', overflowY:'auto' }}>
+          <div style={{ flex:'0 0 50%', padding:'40px 48px', display:'flex', flexDirection:'column', justifyContent:'center', overflowY:'auto' }}>
             {answerArea}
             {feedbackAndNext}
           </div>

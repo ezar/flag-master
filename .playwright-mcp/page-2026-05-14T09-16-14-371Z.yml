@@ -1,0 +1,121 @@
+- generic [ref=e1154]:
+  - button "Ajustes" [ref=e1155] [cursor=pointer]: ⚙
+  - generic:
+    - img
+  - generic [ref=e1156]:
+    - img [ref=e1158]:
+      - generic [ref=e1202]: "N"
+      - generic [ref=e1203]: E
+      - generic [ref=e1204]: S
+      - generic [ref=e1205]: O
+    - generic [ref=e1207]:
+      - generic [ref=e1208]: Compendium · MMXXVI
+      - heading "Flag·Master" [level=1] [ref=e1209]
+      - generic [ref=e1210]: Un atlas ilustrado para jóvenes exploradores
+    - generic [ref=e1215]:
+      - generic [ref=e1218]:
+        - generic [ref=e1219]: ✦
+        - text: Bitácora del navegante
+      - generic [ref=e1220]:
+        - generic [ref=e1221]:
+          - generic [ref=e1222]: "0"
+          - generic [ref=e1223]: Mejor Racha
+        - generic [ref=e1224]:
+          - generic [ref=e1225]: "0"
+          - generic [ref=e1226]: Partidas
+        - generic [ref=e1227]:
+          - generic [ref=e1228]: "0"
+          - generic [ref=e1229]: Aciertos
+        - generic [ref=e1230]:
+          - generic [ref=e1231]: —
+          - generic [ref=e1232]: Precisión
+    - generic [ref=e1233]:
+      - button "📊 Estadísticas" [ref=e1234] [cursor=pointer]
+      - button "📖 Revista" [ref=e1235] [cursor=pointer]
+    - generic [ref=e1236]:
+      - generic [ref=e1237]:
+        - img [ref=e1238]
+        - generic [ref=e1239]:
+          - generic [ref=e1240]: ✦ Atlas del explorador ✦
+          - generic [ref=e1241]: Conquista el mundo
+      - generic [ref=e1243]:
+        - generic [ref=e1244]:
+          - generic [ref=e1245]: Europa
+          - generic [ref=e1246]: 49 países
+        - generic [ref=e1247]:
+          - generic [ref=e1248]: Américas
+          - generic [ref=e1249]: 🔒 Europa 60%
+        - generic [ref=e1250]:
+          - generic [ref=e1251]: Asia
+          - generic [ref=e1252]: 🔒 Américas 60%
+        - generic [ref=e1253]:
+          - generic [ref=e1254]: África
+          - generic [ref=e1255]: 🔒 Asia 50%
+        - generic [ref=e1256]:
+          - generic [ref=e1257]: Oceanía
+          - generic [ref=e1258]: 🔒 África 50%
+    - generic [ref=e1259]:
+      - heading "Dificultad" [level=2] [ref=e1260]
+      - generic [ref=e1261]: 69 países
+    - generic [ref=e1262]:
+      - button "Todas" [ref=e1263] [cursor=pointer]
+      - button "Europa" [ref=e1264] [cursor=pointer]
+      - button "Américas" [ref=e1265] [cursor=pointer]
+      - button "Asia" [ref=e1266] [cursor=pointer]
+      - button "África" [ref=e1267] [cursor=pointer]
+      - button "Oceanía" [ref=e1268] [cursor=pointer]
+    - generic [ref=e1269]:
+      - button "🌿 Fácil Iniciado" [ref=e1270] [cursor=pointer]:
+        - generic [ref=e1271]: 🌿
+        - generic [ref=e1272]: Fácil
+        - generic [ref=e1273]: Iniciado
+      - button "⚓ Medio Navegante" [ref=e1274] [cursor=pointer]:
+        - generic [ref=e1275]: ⚓
+        - generic [ref=e1276]: Medio
+        - generic [ref=e1277]: Navegante
+      - button "🗺️ Experto Cartógrafo" [ref=e1278] [cursor=pointer]:
+        - generic [ref=e1279]: 🗺️
+        - generic [ref=e1280]: Experto
+        - generic [ref=e1281]: Cartógrafo
+    - generic [ref=e1282]:
+      - heading "Modos de juego" [level=2] [ref=e1283]
+      - generic [ref=e1284]: Elige uno
+    - generic [ref=e1285]:
+      - button "I 🏳️ ¿Qué país? Ves la bandera, eliges el nombre →" [ref=e1286] [cursor=pointer]:
+        - generic [ref=e1287]: I
+        - generic [ref=e1288]:
+          - generic [ref=e1289]: 🏳️ ¿Qué país?
+          - generic [ref=e1290]: Ves la bandera, eliges el nombre
+        - generic [ref=e1291]: →
+      - button "II 🔍 ¿Qué bandera? Ves el nombre, eliges la bandera →" [ref=e1292] [cursor=pointer]:
+        - generic [ref=e1293]: II
+        - generic [ref=e1294]:
+          - generic [ref=e1295]: 🔍 ¿Qué bandera?
+          - generic [ref=e1296]: Ves el nombre, eliges la bandera
+        - generic [ref=e1297]: →
+      - button "III 🔤 Pistas Letras ocultas — descifra el nombre →" [ref=e1298] [cursor=pointer]:
+        - generic [ref=e1299]: III
+        - generic [ref=e1300]:
+          - generic [ref=e1301]: 🔤 Pistas
+          - generic [ref=e1302]: Letras ocultas — descifra el nombre
+        - generic [ref=e1303]: →
+      - button "IV 🏛️ Capitales Identifica la capital correcta →" [ref=e1304] [cursor=pointer]:
+        - generic [ref=e1305]: IV
+        - generic [ref=e1306]:
+          - generic [ref=e1307]: 🏛️ Capitales
+          - generic [ref=e1308]: Identifica la capital correcta
+        - generic [ref=e1309]: →
+      - button "V ✍️ Escríbelo Sin opciones — solo tu memoria →" [ref=e1310] [cursor=pointer]:
+        - generic [ref=e1311]: V
+        - generic [ref=e1312]:
+          - generic [ref=e1313]: ✍️ Escríbelo
+          - generic [ref=e1314]: Sin opciones — solo tu memoria
+        - generic [ref=e1315]: →
+      - button "VI ⚡ Relámpago 10 segundos por bandera →" [ref=e1316] [cursor=pointer]:
+        - generic [ref=e1317]: VI
+        - generic [ref=e1318]:
+          - generic [ref=e1319]: ⚡ Relámpago
+          - generic [ref=e1320]: 10 segundos por bandera
+        - generic [ref=e1321]: →
+    - button "Zarpar →" [ref=e1322] [cursor=pointer]
+    - generic [ref=e1323]: ✦ Septentrionem · Meridiem · Orientem · Occidentem ✦

@@ -2,6 +2,7 @@ import { useGameStore, regionMastery, isMastered } from '../store/gameStore'
 import { FM_REGIONS, FM_COUNTRIES } from '../data/countries'
 import { FlagEmoji } from '../components/FlagEmoji'
 import { useT } from '../i18n/useT'
+import { useDesktop } from '../hooks/useDesktop'
 
 // Reusable section label — matches home screen's ✦ style
 function SectionLabel({ label }: { label: string }) {
@@ -20,8 +21,9 @@ function SectionLabel({ label }: { label: string }) {
 
 export function StatsScreen() {
   const { masteryCountries, dailyStreak, bestStreak, totalGames, totalCorrect, totalQuestions, goHome, language } = useGameStore()
-  const t   = useT()
-  const acc = totalQuestions > 0 ? Math.round((100 * totalCorrect) / totalQuestions) : null
+  const t         = useT()
+  const isDesktop = useDesktop()
+  const acc       = totalQuestions > 0 ? Math.round((100 * totalCorrect) / totalQuestions) : null
 
   const hardest = FM_COUNTRIES
     .map(c => {
@@ -61,7 +63,7 @@ export function StatsScreen() {
       </header>
 
       {/* Content */}
-      <div style={{ flex: 1, padding: '22px 20px 32px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <div style={{ flex: 1, padding: '28px 32px 40px', display: 'flex', flexDirection: 'column', gap: 20, maxWidth: isDesktop ? 1200 : undefined, margin: '0 auto', width: '100%' }}>
 
         {/* Daily streak hero */}
         <div style={{ border: '1px solid var(--gold)', background: 'rgba(184,135,42,0.08)', padding: '22px 20px', textAlign: 'center', boxShadow: 'var(--shadow)' }}>
@@ -92,7 +94,7 @@ export function StatsScreen() {
         {/* Region mastery */}
         <div>
           <SectionLabel label={t('stats.byRegion')} />
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isDesktop ? '1fr 1fr' : '1fr', gap: 8 }}>
             {FM_REGIONS.map(region => {
               const mastery  = regionMastery(region.id, masteryCountries)
               const total    = FM_COUNTRIES.filter(c => c.r === region.id).length
@@ -126,7 +128,7 @@ export function StatsScreen() {
               </div>
             </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: isDesktop ? '1fr 1fr' : '1fr', gap: 7 }}>
               {hardest.map(({ c, ratio, seen }) => {
                 const name = language === 'en' ? c.ne : c.n
                 const pct  = Math.round(ratio * 100)

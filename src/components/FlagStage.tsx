@@ -5,6 +5,7 @@ import { TimerRing } from './TimerRing'
 import { FlagEmoji } from './FlagEmoji'
 import { useT } from '../i18n/useT'
 import { useGameStore } from '../store/gameStore'
+import { useDesktop } from '../hooks/useDesktop'
 
 interface Props {
   country:    Country
@@ -14,9 +15,10 @@ interface Props {
 }
 
 export function FlagStage({ country, mode, hint, onTimeout }: Props) {
-  const t        = useT()
-  const language = useGameStore(s => s.language)
-  const name     = language === 'en' ? country.ne : country.n
+  const t         = useT()
+  const language  = useGameStore(s => s.language)
+  const isDesktop = useDesktop()
+  const name      = language === 'en' ? country.ne : country.n
 
   return (
     <div
@@ -76,9 +78,9 @@ export function FlagStage({ country, mode, hint, onTimeout }: Props) {
             emoji={country.f}
             style={{
               width:     '100%',
-              maxWidth:  320,
+              maxWidth:  isDesktop ? 520 : 320,
               height:    'auto',
-              minHeight: 100,
+              minHeight: isDesktop ? 160 : 100,
               objectFit: 'contain',
               display:   'block',
               margin:    '0 auto',

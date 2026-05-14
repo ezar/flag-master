@@ -105,7 +105,7 @@ export function HomeScreen() {
           {t('home.chooseOne')}
         </span>
       </div>
-      <div style={{ display:'grid', gap:isDesktop ? 7 : 9 }}>
+      <div style={{ display:'grid', gap:isDesktop ? 7 : 9, gridTemplateColumns: isDesktop ? '1fr 1fr' : '1fr' }}>
         {MODES.map(m => (
           <button key={m.id} onClick={() => setMode(m.id)} style={{ display:'flex', alignItems:'center', gap:14, padding:'12px 14px', border: mode===m.id ? '1px solid var(--gold)' : '1px solid var(--rule)', background: mode===m.id ? 'rgba(255,253,243,0.85)' : 'rgba(255,253,243,0.55)', cursor:'pointer', textAlign:'left', color:'var(--ink)', transition:'all .18s ease' }}>
             <div style={{ fontFamily:"'Playfair Display', serif", fontStyle:'italic', fontSize:22, color:'var(--gold)', width:26, textAlign:'center', lineHeight:1 }}>{m.roman}</div>
@@ -225,7 +225,7 @@ export function HomeScreen() {
         </aside>
 
         {/* ── RIGHT CONTENT — window scrolls, not inner div ── */}
-        <main style={{ flex:1, padding:'28px 40px 60px', maxWidth:960, minHeight:'100dvh' }}>
+        <main style={{ flex:1, padding:'28px 40px 60px', minHeight:'100dvh' }}>
           <WorldMap />
           <div style={{ marginTop:22 }}>
             {difficultySection}

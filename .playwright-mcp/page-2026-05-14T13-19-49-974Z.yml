@@ -1,0 +1,34 @@
+- generic [ref=e186]:
+  - banner [ref=e187]:
+    - generic [ref=e188]:
+      - button "‹ Menú" [active] [ref=e189] [cursor=pointer]
+      - generic [ref=e190]: I · ¿Qué país?
+    - generic [ref=e191]:
+      - generic [ref=e192]:
+        - generic [ref=e193]: "0"
+        - generic [ref=e194]: Puntos
+      - generic [ref=e195]:
+        - generic [ref=e196]:
+          - generic [ref=e197]: ✦
+          - text: "0"
+        - generic [ref=e198]: Racha
+      - generic [ref=e199]:
+        - generic [ref=e200]: 1/10
+        - generic [ref=e201]: Pregunta
+  - generic [ref=e203]:
+    - generic [ref=e204]:
+      - generic [ref=e205]: Pregunta 1 de 10
+      - img "PL" [ref=e210]
+    - generic [ref=e212]:
+      - button "Islandia A" [ref=e213] [cursor=pointer]:
+        - generic [ref=e214]: Islandia
+        - generic [ref=e215]: A
+      - button "Israel B" [ref=e216] [cursor=pointer]:
+        - generic [ref=e217]: Israel
+        - generic [ref=e218]: B
+      - button "Alemania C" [ref=e219] [cursor=pointer]:
+        - generic [ref=e220]: Alemania
+        - generic [ref=e221]: C
+      - button "Polonia D" [ref=e222] [cursor=pointer]:
+        - generic [ref=e223]: Polonia
+        - generic [ref=e224]: D
