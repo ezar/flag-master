@@ -137,14 +137,14 @@ export function HomeScreen() {
 
         {/* ── LEFT SIDEBAR ──────────────────────────────── */}
         <aside style={{
-          width:        320,
+          width:        380,
           flexShrink:   0,
-          borderRight:  '2px solid var(--rule)',
+          borderRight:  '1px solid var(--rule)',
           background:   'var(--paper-2)',
-          padding:      '28px 24px 24px',
+          padding:      '36px 28px 28px',
           display:      'flex',
           flexDirection:'column',
-          gap:          14,
+          gap:          20,
           overflowY:    'auto',
           position:     'sticky',
           top:          0,
@@ -153,33 +153,33 @@ export function HomeScreen() {
         }}>
 
           {/* Decorative nautical lines */}
-          <div aria-hidden="true" style={{ position:'absolute', inset:0, pointerEvents:'none', zIndex:0, opacity:0.6 }}>
-            <svg viewBox="0 0 300 800" preserveAspectRatio="xMidYMid slice" style={{ width:'100%', height:'100%', display:'block' }}>
-              <g fill="none" stroke="var(--ink)" strokeWidth="0.5" opacity="0.07">
-                <circle cx="150" cy="160" r="160"/>
-                <circle cx="150" cy="160" r="100"/>
-                <circle cx="150" cy="160" r="50"/>
-                <line x1="150" y1="0"   x2="150" y2="800"/>
-                <line x1="0"   y1="160" x2="300" y2="160"/>
-                <line x1="0"   y1="0"   x2="300" y2="320"/>
-                <line x1="300" y1="0"   x2="0"   y2="320"/>
+          <div aria-hidden="true" style={{ position:'absolute', inset:0, pointerEvents:'none', zIndex:0 }}>
+            <svg viewBox="0 0 380 900" preserveAspectRatio="xMidYMid slice" style={{ width:'100%', height:'100%', display:'block' }}>
+              <g fill="none" stroke="var(--ink)" strokeWidth="0.6" opacity="0.06">
+                <circle cx="190" cy="200" r="200"/>
+                <circle cx="190" cy="200" r="130"/>
+                <circle cx="190" cy="200" r="60"/>
+                <line x1="190" y1="0"   x2="190" y2="900"/>
+                <line x1="0"   y1="200" x2="380" y2="200"/>
+                <line x1="0"   y1="0"   x2="380" y2="400"/>
+                <line x1="380" y1="0"   x2="0"   y2="400"/>
               </g>
             </svg>
           </div>
 
-          <div style={{ position:'relative', zIndex:1, display:'flex', flexDirection:'column', gap:14, flex:1 }}>
+          <div style={{ position:'relative', zIndex:1, display:'flex', flexDirection:'column', gap:20, flex:1 }}>
             {/* Compass */}
-            <CompassRose size={110} />
+            <CompassRose size={150} />
 
             {/* Brand */}
             <div style={{ textAlign:'center' }}>
-              <div style={{ fontFamily:"'DM Mono', monospace", fontSize:9, letterSpacing:'0.36em', color:'var(--ink-soft)', textTransform:'uppercase' }}>
+              <div style={{ fontFamily:"'DM Mono', monospace", fontSize:10, letterSpacing:'0.38em', color:'var(--ink-soft)', textTransform:'uppercase', marginBottom:6 }}>
                 {t('app.eyebrow')}
               </div>
-              <h1 style={{ fontFamily:"'Playfair Display', serif", fontWeight:900, fontStyle:'italic', fontSize:34, lineHeight:1, letterSpacing:'-0.01em', margin:'4px 0 3px', color:'var(--ink)' }}>
+              <h1 style={{ fontFamily:"'Playfair Display', serif", fontWeight:900, fontStyle:'italic', fontSize:44, lineHeight:1, letterSpacing:'-0.01em', margin:'0 0 6px', color:'var(--ink)' }}>
                 Flag<span style={{ color:'var(--gold)', fontStyle:'italic', fontWeight:400 }}>·</span>Master
               </h1>
-              <div style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:'italic', color:'var(--ink-soft)', fontSize:11.5 }}>
+              <div style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:'italic', color:'var(--ink-soft)', fontSize:13 }}>
                 {t('app.subtitle')}
               </div>
             </div>
@@ -196,31 +196,43 @@ export function HomeScreen() {
               columns={2}
             />
 
-            {/* Quick nav */}
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:7 }}>
+            <GoldDivider />
+
+            {/* Nav buttons — big, prominent */}
+            <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
               {[
-                { label:`📊 ${t('home.stats')}`,  action: goStats  },
-                { label:`📖 ${t('home.review')}`, action: goReview },
-              ].map(({ label, action }) => (
-                <button key={label} onClick={action} style={{ border:'1px solid var(--rule)', background:'rgba(255,253,243,0.55)', padding:'9px 6px', cursor:'pointer', fontFamily:"'DM Mono', monospace", fontSize:8.5, letterSpacing:'0.16em', color:'var(--ink-soft)', textTransform:'uppercase', transition:'all .15s' }}>
-                  {label}
+                { icon:'📊', label: t('home.stats'),  desc: language==='en' ? 'Mastery by region, hardest flags' : 'Maestría por región, más difíciles', action: goStats  },
+                { icon:'📖', label: t('home.review'), desc: language==='en' ? 'Browse all 147 flags'             : 'Navega las 147 banderas',            action: goReview },
+              ].map(({ icon, label, desc, action }) => (
+                <button key={label} onClick={action} style={{ display:'flex', alignItems:'center', gap:14, border:'1px solid var(--rule)', background:'rgba(255,253,243,0.6)', padding:'14px 16px', cursor:'pointer', textAlign:'left', transition:'all .15s', color:'var(--ink)' }}>
+                  <span style={{ fontSize:26, lineHeight:1, flexShrink:0 }}>{icon}</span>
+                  <div>
+                    <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:15 }}>{label}</div>
+                    <div style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:'italic', fontSize:11, color:'var(--ink-soft)', marginTop:2 }}>{desc}</div>
+                  </div>
                 </button>
               ))}
             </div>
 
-            {/* Footer + settings */}
-            <div style={{ marginTop:'auto', paddingTop:16, borderTop:'1px solid var(--rule)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-              <div style={{ fontFamily:"'DM Mono', monospace", fontSize:8, letterSpacing:'0.2em', color:'var(--ink-soft)', textTransform:'uppercase', lineHeight:1.6 }}>
-                ✦ Septentrionem<br/>· Meridiem ✦
-              </div>
+            {/* Settings — at bottom */}
+            <div style={{ marginTop:'auto', borderTop:'1px solid var(--rule)', paddingTop:18 }}>
               <button
                 onClick={() => setSettingsOpen(true)}
-                style={{ background:'none', border:'1px solid var(--rule)', width:32, height:32, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', color:'var(--ink-soft)', fontSize:15, borderRadius:2 }}
-                title={t('settings.title')}
+                style={{ display:'flex', alignItems:'center', gap:12, width:'100%', border:'1px solid var(--rule)', background:'transparent', padding:'12px 16px', cursor:'pointer', color:'var(--ink-soft)', transition:'all .15s' }}
               >
-                ⚙
+                <span style={{ fontSize:18 }}>⚙</span>
+                <div style={{ textAlign:'left' }}>
+                  <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:14, color:'var(--ink)' }}>{t('settings.title')}</div>
+                  <div style={{ fontFamily:"'DM Mono', monospace", fontSize:8.5, letterSpacing:'0.2em', color:'var(--ink-soft)', textTransform:'uppercase', marginTop:2 }}>
+                    {language==='en' ? 'Audio · Language · Reset' : 'Audio · Idioma · Reiniciar'}
+                  </div>
+                </div>
               </button>
+              <div style={{ textAlign:'center', marginTop:14, fontFamily:"'DM Mono', monospace", fontSize:8, letterSpacing:'0.24em', color:'var(--ink-soft)', textTransform:'uppercase', opacity:0.6 }}>
+                ✦ Septentrionem · Meridiem ✦
+              </div>
             </div>
+
           </div>
         </aside>
 
