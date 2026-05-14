@@ -86,7 +86,7 @@ export function SettingsModal({ open, onClose }: Props) {
               overflowY:  'auto',
               zIndex:     101,
               background: 'var(--paper)',
-              backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.10 0 0 0 0 0.07 0 0 0 0 0.04 0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"), radial-gradient(140% 90% at 20% 0%, #faf2da 0%, #f5edd6 38%, #ecdfbd 100%)`,
+              backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.10 0 0 0 0 0.07 0 0 0 0 0.04 0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"), radial-gradient(140% 90% at 20% 0%, var(--paper) 0%, var(--paper) 38%, var(--paper-2) 100%)`,
               backgroundBlendMode: 'multiply, normal',
               borderTop:  '2px solid var(--gold)',
               boxShadow:  '0 -12px 40px -8px rgba(26,18,9,0.35)',
@@ -176,7 +176,7 @@ export function SettingsModal({ open, onClose }: Props) {
                     width:        22,
                     height:       22,
                     borderRadius: '50%',
-                    background:   'var(--paper)',
+                    background:   'var(--toggle-thumb)',
                     boxShadow:    '0 1px 4px rgba(26,18,9,0.3)',
                     transition:   'left 0.2s ease',
                   }}/>
@@ -190,7 +190,7 @@ export function SettingsModal({ open, onClose }: Props) {
                   <div style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:'italic', fontSize:12, color:'var(--ink-soft)', marginTop:2 }}>{t('settings.dark.desc')}</div>
                 </div>
                 <button onClick={() => setDarkMode(!darkMode)} style={{ width:52, height:28, borderRadius:14, border:'none', background: darkMode ? 'var(--gold)' : 'var(--rule)', cursor:'pointer', position:'relative', transition:'background 0.2s ease', flexShrink:0 }}>
-                  <div style={{ position:'absolute', top:3, left: darkMode ? 27 : 3, width:22, height:22, borderRadius:'50%', background:'var(--paper)', boxShadow:'0 1px 4px rgba(26,18,9,0.3)', transition:'left 0.2s ease' }}/>
+                  <div style={{ position:'absolute', top:3, left: darkMode ? 27 : 3, width:22, height:22, borderRadius:'50%', background:'var(--toggle-thumb)', boxShadow:'0 1px 4px rgba(26,18,9,0.3)', transition:'left 0.2s ease' }}/>
                 </button>
               </div>
 
@@ -205,7 +205,7 @@ export function SettingsModal({ open, onClose }: Props) {
                     <span style={{ fontFamily:"'DM Mono', monospace", fontSize:9, color:'var(--err)', letterSpacing:'0.12em' }}>{t('settings.notif.denied')}</span>
                   ) : (
                     <button onClick={handleNotifToggle} style={{ width:52, height:28, borderRadius:14, border:'none', background: notifEnabled ? 'var(--gold)' : 'var(--rule)', cursor:'pointer', position:'relative', transition:'background 0.2s ease', flexShrink:0 }}>
-                      <div style={{ position:'absolute', top:3, left: notifEnabled ? 27 : 3, width:22, height:22, borderRadius:'50%', background:'var(--paper)', boxShadow:'0 1px 4px rgba(26,18,9,0.3)', transition:'left 0.2s ease' }}/>
+                      <div style={{ position:'absolute', top:3, left: notifEnabled ? 27 : 3, width:22, height:22, borderRadius:'50%', background:'var(--toggle-thumb)', boxShadow:'0 1px 4px rgba(26,18,9,0.3)', transition:'left 0.2s ease' }}/>
                     </button>
                   )}
                 </div>

@@ -202,7 +202,7 @@ export function ProfileScreen() {
       justifyContent: 'center',
       padding:        isDesktop ? '40px 32px' : '32px 20px',
       background:     'var(--paper)',
-      backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.10 0 0 0 0 0.07 0 0 0 0 0.04 0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"), radial-gradient(140% 90% at 20% 0%, #faf2da 0%, #f5edd6 38%, #ecdfbd 100%)`,
+      backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='280'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.10 0 0 0 0 0.07 0 0 0 0 0.04 0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"), radial-gradient(140% 90% at 20% 0%, var(--paper) 0%, var(--paper) 38%, var(--paper-2) 100%)`,
       backgroundBlendMode: 'multiply, normal',
     }}>
       <div style={{ width:'100%', maxWidth: isDesktop ? 860 : 500 }}>

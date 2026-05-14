@@ -16,6 +16,14 @@
   --shadow:     0 1px 0 rgba(26,18,9,0.06), 0 18px 30px -22px rgba(26,18,9,0.35);
 }
 
+/* ── Toggle thumb (always light) ─────────────────────────── */
+:root {
+  --toggle-thumb: #f5edd6;
+}
+body.dark {
+  --toggle-thumb: #e8d9b0;
+}
+
 /* ── Surface tokens (semi-transparent card backgrounds) ───── */
 :root {
   --surface:        rgba(255,253,243,0.55);
