@@ -113,6 +113,26 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'settings.reset.cancel': 'Cancelar',
     'settings.footer':       'FlagMaster · Atlas de Banderas',
 
+    // ── Study mode ───────────────────────────────────────────────
+    'study.title':    'Modo Estudio',
+    'study.reveal':   'Ver respuesta',
+    'study.known':    'Lo sé',
+    'study.unknown':  'No lo sé',
+    'study.done':     '¡Completado!',
+    'study.doneDesc': 'Aprendiste {{n}} banderas en {{pct}}% de efectividad',
+    'study.learned':  'Aprendidas',
+    'study.total':    'Rondas',
+    'study.again':    'Repetir',
+
+    // ── Dark mode & notifications ─────────────────────────────
+    'settings.dark':          'Modo oscuro',
+    'settings.dark.desc':     'Tema nocturno para la pantalla',
+    'settings.notif':         'Recordatorio de racha',
+    'settings.notif.desc':    'Aviso si tu racha está en peligro',
+    'settings.notif.enable':  'Activar',
+    'settings.notif.granted': 'Activado ✓',
+    'settings.notif.denied':  'Bloqueado por el navegador',
+
     // ── Profiles ─────────────────────────────────────────────────
     'profile.select':        '¿Quién juega?',
     'profile.create':        'Crear perfil',
@@ -262,6 +282,26 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'settings.reset.confirm':'⚠ Confirm reset',
     'settings.reset.cancel': 'Cancel',
     'settings.footer':       'FlagMaster · Atlas of Flags',
+
+    // ── Study mode ───────────────────────────────────────────────
+    'study.title':    'Study Mode',
+    'study.reveal':   'Show answer',
+    'study.known':    'I know it',
+    'study.unknown':  "Don't know",
+    'study.done':     'Complete!',
+    'study.doneDesc': 'You learned {{n}} flags at {{pct}}% efficiency',
+    'study.learned':  'Learned',
+    'study.total':    'Rounds',
+    'study.again':    'Repeat',
+
+    // ── Dark mode & notifications ─────────────────────────────
+    'settings.dark':          'Dark mode',
+    'settings.dark.desc':     'Night theme for the screen',
+    'settings.notif':         'Streak reminder',
+    'settings.notif.desc':    'Alert when your streak is at risk',
+    'settings.notif.enable':  'Enable',
+    'settings.notif.granted': 'Enabled ✓',
+    'settings.notif.denied':  'Blocked by browser',
 
     // ── Profiles ─────────────────────────────────────────────────
     'profile.select':        "Who's playing?",

@@ -15,3 +15,22 @@
   --rule:       rgba(26,18,9,0.18);
   --shadow:     0 1px 0 rgba(26,18,9,0.06), 0 18px 30px -22px rgba(26,18,9,0.35);
 }
+
+/* ── Dark mode ────────────────────────────────────────────── */
+body.dark {
+  --paper:      #1c1408;
+  --paper-2:    #251b0c;
+  --paper-3:    #2e2210;
+  --ink:        #f0e6cc;
+  --ink-2:      #d4c4a0;
+  --ink-soft:   #9e8460;
+  --gold:       #d4a843;
+  --gold-2:     #b88f30;
+  --gold-light: #e8c870;
+  --ok-bg:      #0a2212;
+  --ok:         #3daa68;
+  --err-bg:     #220808;
+  --err:        #c44848;
+  --rule:       rgba(240,230,204,0.12);
+  --shadow:     0 1px 0 rgba(0,0,0,0.4), 0 18px 30px -22px rgba(0,0,0,0.7);
+}

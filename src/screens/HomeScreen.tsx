@@ -24,7 +24,7 @@ function GoldDivider() {
 export function HomeScreen() {
   const {
     stage, mode, regionFilter,
-    setStage, setMode, setRegionFilter, startGame,
+    setStage, setMode, setRegionFilter, startGame, goStudy,
     bestStreak, totalGames, totalCorrect, totalQuestions,
     dailyStreak, goStats, goReview, goProfiles, language,
     profiles, activeProfileId,
@@ -47,13 +47,14 @@ export function HomeScreen() {
     { id: 'hard',   icon: '🗺️', name: t('diff.hard.name'),   sub: t('diff.hard.sub')   },
   ]
 
-  const MODES: { id: GameMode; roman: string; title: string; desc: string }[] = [
-    { id: 'flag2country', roman: 'I',   title: t('mode.flag2country.title'), desc: t('mode.flag2country.desc') },
-    { id: 'country2flag', roman: 'II',  title: t('mode.country2flag.title'), desc: t('mode.country2flag.desc') },
-    { id: 'hint',         roman: 'III', title: t('mode.hint.title'),         desc: t('mode.hint.desc')         },
-    { id: 'capital',      roman: 'IV',  title: t('mode.capital.title'),      desc: t('mode.capital.desc')      },
-    { id: 'type',         roman: 'V',   title: t('mode.type.title'),         desc: t('mode.type.desc')         },
-    { id: 'lightning',    roman: 'VI',  title: t('mode.lightning.title'),    desc: t('mode.lightning.desc')    },
+  const MODES: { id: GameMode; roman: string; title: string; desc: string; study?: boolean }[] = [
+    { id: 'flag2country', roman: 'I',    title: t('mode.flag2country.title'), desc: t('mode.flag2country.desc') },
+    { id: 'country2flag', roman: 'II',   title: t('mode.country2flag.title'), desc: t('mode.country2flag.desc') },
+    { id: 'hint',         roman: 'III',  title: t('mode.hint.title'),         desc: t('mode.hint.desc')         },
+    { id: 'capital',      roman: 'IV',   title: t('mode.capital.title'),      desc: t('mode.capital.desc')      },
+    { id: 'type',         roman: 'V',    title: t('mode.type.title'),         desc: t('mode.type.desc')         },
+    { id: 'lightning',    roman: 'VI',   title: t('mode.lightning.title'),    desc: t('mode.lightning.desc')    },
+    { id: 'study' as GameMode, roman: '◈', title: t('study.title'), desc: language === 'en' ? 'Flash cards — know it / don\'t know it' : 'Flash cards — lo sé / no lo sé', study: true },
   ]
 
   const regionPills = [
@@ -125,10 +126,10 @@ export function HomeScreen() {
 
   const zarparBtn = (
     <button
-      onClick={startGame}
+      onClick={mode === ('study' as GameMode) ? goStudy : startGame}
       style={{ display:'block', width:'100%', marginTop:22, background:'var(--ink)', color:'var(--gold)', border:'none', padding:'16px 8px', fontFamily:"'DM Mono', monospace", fontSize:11, letterSpacing:'0.32em', textTransform:'uppercase', cursor:'pointer', boxShadow:'0 6px 18px -10px rgba(26,18,9,0.6)' }}
     >
-      {t('home.sail')}
+      {mode === ('study' as GameMode) ? (language === 'en' ? 'Start study →' : 'Estudiar →') : t('home.sail')}
     </button>
   )
 

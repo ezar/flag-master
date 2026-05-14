@@ -7,7 +7,7 @@ import { type Lang } from '../i18n/translations'
 
 export type { Stage }
 export type GameMode = 'flag2country' | 'country2flag' | 'hint' | 'capital' | 'type' | 'lightning'
-export type Screen   = 'home' | 'game' | 'results' | 'stats' | 'review' | 'profiles'
+export type Screen   = 'home' | 'game' | 'results' | 'stats' | 'review' | 'profiles' | 'study'
 
 export type MasteryEntry = { seen: number; hits: number }
 export type MasteryMap   = Record<string, MasteryEntry>
@@ -78,8 +78,10 @@ interface GameState {
   screen: Screen
 
   // Device preferences (shared across profiles)
-  audioEnabled: boolean
-  language:     Lang
+  audioEnabled:    boolean
+  language:        Lang
+  darkMode:        boolean
+  notifEnabled:    boolean
 
   // Multi-profile
   profiles:        Profile[]
@@ -134,6 +136,9 @@ interface GameActions {
   setMode:         (m: GameMode) => void
   setAudio:        (v: boolean) => void
   setLanguage:     (l: Lang) => void
+  setDarkMode:     (v: boolean) => void
+  setNotifEnabled: (v: boolean) => void
+  goStudy:         () => void
   setRegionFilter: (r: string | null) => void
 
   resetProgress: () => void
@@ -170,8 +175,10 @@ export const useGameStore = create<GameState & GameActions>()(
       screen: 'profiles',
 
       // Device prefs
-      audioEnabled: true,
-      language:     'es' as Lang,
+      audioEnabled:   true,
+      language:       'es' as Lang,
+      darkMode:       false,
+      notifEnabled:   false,
 
       // Profiles
       profiles:        [],
@@ -358,7 +365,10 @@ export const useGameStore = create<GameState & GameActions>()(
         setAudioEnabled(v)
         set({ audioEnabled: v })
       },
-      setLanguage: (language) => set({ language }),
+      setLanguage:     (language)    => set({ language }),
+      setDarkMode:     (darkMode)    => set({ darkMode }),
+      setNotifEnabled: (notifEnabled)=> set({ notifEnabled }),
+      goStudy: () => set({ screen: 'study' }),
 
       resetProgress: () => {
         const reset = {
@@ -378,6 +388,8 @@ export const useGameStore = create<GameState & GameActions>()(
       partialize: (state) => ({
         audioEnabled:     state.audioEnabled,
         language:         state.language,
+        darkMode:         state.darkMode,
+        notifEnabled:     state.notifEnabled,
         profiles:         state.profiles,
         activeProfileId:  state.activeProfileId,
         // Also persist active profile's flat state (for fast restore)
