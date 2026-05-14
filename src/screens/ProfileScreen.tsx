@@ -19,7 +19,7 @@ function ProfileCard({ profile, onSelect, onDelete }: {
       animate={{ opacity: 1, y: 0 }}
       style={{
         border:      '1px solid var(--rule)',
-        background:  'rgba(255,253,243,0.7)',
+        background:  'var(--surface-hi)',
         padding:     '24px 20px 20px',
         display:     'flex',
         flexDirection:'column',
@@ -124,7 +124,7 @@ function CreateProfileForm({ onCancel }: { onCancel?: () => void }) {
                 lineHeight:  1,
                 padding:     '10px 4px',
                 border:      avatar === em ? '2px solid var(--gold)' : '1px solid var(--rule)',
-                background:  avatar === em ? 'rgba(184,135,42,0.12)' : 'rgba(255,253,243,0.55)',
+                background:  avatar === em ? 'rgba(184,135,42,0.12)' : 'var(--surface)',
                 cursor:      'pointer',
                 borderRadius:2,
                 transition:  'all .12s',
@@ -150,7 +150,7 @@ function CreateProfileForm({ onCancel }: { onCancel?: () => void }) {
           maxLength={20}
           style={{
             width:        '100%',
-            background:   'rgba(255,253,243,0.85)',
+            background:   'var(--surface-input)',
             border:       '1px solid var(--rule)',
             borderBottom: '2px solid var(--gold)',
             padding:      '12px 14px',

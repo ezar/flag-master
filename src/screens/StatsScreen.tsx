@@ -82,7 +82,7 @@ export function StatsScreen() {
             { value: acc !== null ? `${acc}%` : '—',  label: t('home.accuracy')   },
             { value: bestStreak,                      label: t('home.bestStreak') },
           ].map(({ value, label }) => (
-            <div key={label} style={{ border: '1px solid var(--rule)', background: 'rgba(255,253,243,0.55)', padding: '10px 6px', textAlign: 'center', boxShadow: 'var(--shadow)' }}>
+            <div key={label} style={{ border: '1px solid var(--rule)', background: 'var(--surface)', padding: '10px 6px', textAlign: 'center', boxShadow: 'var(--shadow)' }}>
               <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: 22, color: 'var(--ink)' }}>{value}</div>
               <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 8.5, letterSpacing: '0.18em', color: 'var(--ink-soft)', textTransform: 'uppercase', marginTop: 4, whiteSpace: 'pre-line' }}>
                 {label}
@@ -102,7 +102,7 @@ export function StatsScreen() {
               const pct      = Math.round(mastery * 100)
               const name     = language === 'en' ? region.nameEn : region.name
               return (
-                <div key={region.id} style={{ border: '1px solid var(--rule)', background: 'rgba(255,253,243,0.55)', padding: '12px 14px', boxShadow: 'var(--shadow)' }}>
+                <div key={region.id} style={{ border: '1px solid var(--rule)', background: 'var(--surface)', padding: '12px 14px', boxShadow: 'var(--shadow)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 8 }}>
                     <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontStyle: 'italic', fontSize: 15, color: 'var(--ink)' }}>{name}</div>
                     <div style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, letterSpacing: '0.14em', color: mastery >= 0.99 ? 'var(--gold)' : 'var(--ink-soft)', textTransform: 'uppercase' }}>
@@ -122,7 +122,7 @@ export function StatsScreen() {
         <div>
           <SectionLabel label={t('stats.hardest')} />
           {hardest.length === 0 ? (
-            <div style={{ border: '1px solid var(--rule)', background: 'rgba(255,253,243,0.45)', padding: '24px 16px', textAlign: 'center', boxShadow: 'var(--shadow)' }}>
+            <div style={{ border: '1px solid var(--rule)', background: 'var(--surface-subtle)', padding: '24px 16px', textAlign: 'center', boxShadow: 'var(--shadow)' }}>
               <div style={{ fontFamily: "'Libre Baskerville', serif", fontStyle: 'italic', fontSize: 13, color: 'var(--ink-soft)' }}>
                 {t('stats.noData')}
               </div>
@@ -133,7 +133,7 @@ export function StatsScreen() {
                 const name = language === 'en' ? c.ne : c.n
                 const pct  = Math.round(ratio * 100)
                 return (
-                  <div key={c.n} style={{ display: 'flex', alignItems: 'center', gap: 12, border: '1px solid var(--rule)', padding: '10px 14px', background: 'rgba(255,253,243,0.55)', boxShadow: 'var(--shadow)' }}>
+                  <div key={c.n} style={{ display: 'flex', alignItems: 'center', gap: 12, border: '1px solid var(--rule)', padding: '10px 14px', background: 'var(--surface)', boxShadow: 'var(--shadow)' }}>
                     <FlagEmoji emoji={c.f} width={40} height={26} />
                     <div style={{ flex: 1 }}>
                       <div style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: 14 }}>{name}</div>

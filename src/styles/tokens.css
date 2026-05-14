@@ -16,11 +16,23 @@
   --shadow:     0 1px 0 rgba(26,18,9,0.06), 0 18px 30px -22px rgba(26,18,9,0.35);
 }
 
+/* ── Surface tokens (semi-transparent card backgrounds) ───── */
+:root {
+  --surface:        rgba(255,253,243,0.55);
+  --surface-hi:     rgba(255,253,243,0.75);
+  --surface-input:  rgba(255,253,243,0.85);
+  --surface-subtle: rgba(255,253,243,0.45);
+}
+
 /* ── Dark mode ────────────────────────────────────────────── */
 body.dark {
-  --paper:      #1c1408;
-  --paper-2:    #251b0c;
-  --paper-3:    #2e2210;
+  --paper:          #1c1408;
+  --paper-2:        #251b0c;
+  --paper-3:        #2e2210;
+  --surface:        rgba(38,26,12,0.85);
+  --surface-hi:     rgba(46,32,14,0.90);
+  --surface-input:  rgba(32,22,10,0.92);
+  --surface-subtle: rgba(30,20,8,0.75);
   --ink:        #f0e6cc;
   --ink-2:      #d4c4a0;
   --ink-soft:   #9e8460;

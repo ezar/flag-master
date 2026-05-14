@@ -92,7 +92,7 @@ export function ReviewScreen() {
               key={c.n}
               style={{
                 border:         '1px solid var(--rule)',
-                background:     'rgba(255,253,243,0.65)',
+                background:     'var(--surface)',
                 padding:        '14px 10px 12px',
                 display:        'flex',
                 flexDirection:  'column',

@@ -32,7 +32,7 @@ export function OptionsGrid({ options, mode, correctName, onAnswer }: Props) {
           const isCorrect  = opt.n === correctName
           const isSelected = selected === opt.n
 
-          let bg     = 'rgba(255,253,243,0.65)'
+          let bg     = 'var(--surface)'
           let border = '1px solid var(--rule)'
           if (revealed && isCorrect)                { bg = 'var(--ok-bg)';  border = '1px solid var(--ok)'  }
           if (revealed && isSelected && !isCorrect) { bg = 'var(--err-bg)'; border = '1px solid var(--err)' }
@@ -104,7 +104,7 @@ export function OptionsGrid({ options, mode, correctName, onAnswer }: Props) {
         const isCorrect  = opt.n === correctName
         const isSelected = selected === opt.n
 
-        let bg     = 'rgba(255,253,243,0.65)'
+        let bg     = 'var(--surface)'
         let border = '1px solid var(--rule)'
         let color  = 'var(--ink)'
         if (revealed && isCorrect)                { bg = 'var(--ok-bg)';  border = '1px solid var(--ok)';  color = '#eef7ed' }

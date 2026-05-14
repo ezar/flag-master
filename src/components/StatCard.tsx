@@ -27,7 +27,7 @@ export function StatCard({ bestStreak, dailyStreak, totalGames, totalCorrect, to
     <div
       style={{
         border: '1px solid var(--rule)',
-        background: 'rgba(255,253,243,0.45)',
+        background: 'var(--surface-subtle)',
         padding: '14px 14px 12px',
         marginTop: 4,
         position: 'relative',

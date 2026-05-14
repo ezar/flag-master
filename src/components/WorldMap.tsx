@@ -12,7 +12,7 @@ export function WorldMap() {
   return (
     <div style={{
       border:     '1px solid var(--rule)',
-      background: 'rgba(255,253,243,0.55)',
+      background: 'var(--surface)',
       marginTop:  4,
       boxShadow:  'var(--shadow)',
       overflow:   'hidden',
@@ -90,7 +90,7 @@ export function WorldMap() {
               : ''
 
             // Visual state
-            let bg          = 'rgba(255,253,243,0.75)'
+            let bg          = 'var(--surface-hi)'
             let borderColor = 'var(--rule)'
             let statusLabel = t('map.countries', { n: total })
             let statusColor = 'var(--ink-soft)'

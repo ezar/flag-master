@@ -1,0 +1,41 @@
+- generic [ref=e1]:
+  - generic:
+    - img:
+      - generic: "N"
+    - generic:
+      - generic: Compendium · MMXXVI
+      - generic: Flag·Master
+      - generic: Un atlas ilustrado para jóvenes exploradores
+  - generic [ref=e6]:
+    - generic [ref=e7]:
+      - generic [ref=e8]: 🧭
+      - heading "Flag·Master" [level=1] [ref=e9]
+      - generic [ref=e10]: Crear perfil
+    - generic [ref=e12]:
+      - heading "Crear perfil" [level=2] [ref=e13]
+      - generic [ref=e14]:
+        - generic [ref=e15]: Elige un avatar
+        - generic [ref=e16]:
+          - button "🧭" [ref=e17] [cursor=pointer]
+          - button "⚓" [ref=e18] [cursor=pointer]
+          - button "🗺️" [ref=e19] [cursor=pointer]
+          - button "🌊" [ref=e20] [cursor=pointer]
+          - button "✈️" [ref=e21] [cursor=pointer]
+          - button "🏆" [ref=e22] [cursor=pointer]
+          - button "🌍" [ref=e23] [cursor=pointer]
+          - button "🌟" [ref=e24] [cursor=pointer]
+          - button "🦁" [ref=e25] [cursor=pointer]
+          - button "🐬" [ref=e26] [cursor=pointer]
+          - button "🦅" [ref=e27] [cursor=pointer]
+          - button "🎯" [ref=e28] [cursor=pointer]
+          - button "🧩" [ref=e29] [cursor=pointer]
+          - button "📚" [ref=e30] [cursor=pointer]
+          - button "🎮" [ref=e31] [cursor=pointer]
+          - button "🌺" [ref=e32] [cursor=pointer]
+          - button "⛵" [ref=e33] [cursor=pointer]
+          - button "🔭" [ref=e34] [cursor=pointer]
+      - generic [ref=e35]:
+        - generic [ref=e36]: Nombre
+        - textbox "p.ej. Javier" [active] [ref=e37]
+      - button "Crear perfil →" [disabled] [ref=e39]
+    - generic [ref=e40]: ✦ Septentrionem · Meridiem · Orientem · Occidentem ✦

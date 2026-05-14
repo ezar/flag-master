@@ -24,7 +24,7 @@ export function FlagStage({ country, mode, hint, onTimeout }: Props) {
     <div
       style={{
         border:   '1px solid var(--rule)',
-        background: 'rgba(255,253,243,0.7)',
+        background: 'var(--surface-hi)',
         padding:  '22px 16px',
         textAlign: 'center',
         position: 'relative',

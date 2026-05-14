@@ -91,11 +91,11 @@ export function StudyScreen() {
           </p>
 
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:28 }}>
-            <div style={{ border:'1px solid var(--rule)', background:'rgba(255,253,243,0.55)', padding:'14px 8px' }}>
+            <div style={{ border:'1px solid var(--rule)', background:'var(--surface)', padding:'14px 8px' }}>
               <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:26, color:'var(--ok)' }}>{initialDeck.length}</div>
               <div style={{ fontFamily:"'DM Mono', monospace", fontSize:9, letterSpacing:'0.18em', color:'var(--ink-soft)', textTransform:'uppercase', marginTop:4 }}>{t('study.learned')}</div>
             </div>
-            <div style={{ border:'1px solid var(--rule)', background:'rgba(255,253,243,0.55)', padding:'14px 8px' }}>
+            <div style={{ border:'1px solid var(--rule)', background:'var(--surface)', padding:'14px 8px' }}>
               <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:26, color:'var(--gold)' }}>{totalShown}</div>
               <div style={{ fontFamily:"'DM Mono', monospace", fontSize:9, letterSpacing:'0.18em', color:'var(--ink-soft)', textTransform:'uppercase', marginTop:4 }}>{t('study.total')}</div>
             </div>
@@ -149,7 +149,7 @@ export function StudyScreen() {
               transition={{ duration:0.18 }}
             >
               {/* Flag card */}
-              <div style={{ border:'1px solid var(--rule)', background:'rgba(255,253,243,0.7)', padding:'32px 24px', textAlign:'center', boxShadow:'var(--shadow)', marginBottom:20 }}>
+              <div style={{ border:'1px solid var(--rule)', background:'var(--surface-hi)', padding:'32px 24px', textAlign:'center', boxShadow:'var(--shadow)', marginBottom:20 }}>
                 <FlagEmoji
                   emoji={current.country.f}
                   style={{ width:'100%', maxWidth: isDesktop ? 380 : 260, height:'auto', minHeight: isDesktop ? 140 : 100, objectFit:'contain', display:'block', margin:'0 auto', filter:'drop-shadow(0 4px 14px rgba(26,18,9,0.2))', borderRadius:3 }}

@@ -81,7 +81,7 @@ export function ResultScreen() {
           <div key={label} style={{
             padding: '10px 6px',
             border: '1px solid var(--rule)',
-            background: 'rgba(255,253,243,0.55)',
+            background: 'var(--surface)',
           }}>
             <div style={{
               fontFamily: "'Playfair Display', serif",
@@ -128,7 +128,7 @@ export function ResultScreen() {
                   gap: 12,
                   border: '1px solid var(--rule)',
                   padding: '8px 12px',
-                  background: 'rgba(255,253,243,0.55)',
+                  background: 'var(--surface)',
                 }}>
                   <FlagEmoji emoji={c.f} width={40} height={26} />
                   <div>

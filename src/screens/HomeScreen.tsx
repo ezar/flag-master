@@ -111,7 +111,7 @@ export function HomeScreen() {
       </div>
       <div style={{ display:'grid', gap:isDesktop ? 7 : 9, gridTemplateColumns: isDesktop ? '1fr 1fr' : '1fr' }}>
         {MODES.map(m => (
-          <button key={m.id} onClick={() => setMode(m.id)} style={{ display:'flex', alignItems:'center', gap:14, padding:'12px 14px', border: mode===m.id ? '1px solid var(--gold)' : '1px solid var(--rule)', background: mode===m.id ? 'rgba(255,253,243,0.85)' : 'rgba(255,253,243,0.55)', cursor:'pointer', textAlign:'left', color:'var(--ink)', transition:'all .18s ease' }}>
+          <button key={m.id} onClick={() => setMode(m.id)} style={{ display:'flex', alignItems:'center', gap:14, padding:'12px 14px', border: mode===m.id ? '1px solid var(--gold)' : '1px solid var(--rule)', background: mode===m.id ? 'var(--surface-input)' : 'var(--surface)', cursor:'pointer', textAlign:'left', color:'var(--ink)', transition:'all .18s ease' }}>
             <div style={{ fontFamily:"'Playfair Display', serif", fontStyle:'italic', fontSize:22, color:'var(--gold)', width:26, textAlign:'center', lineHeight:1 }}>{m.roman}</div>
             <div style={{ flex:1 }}>
               <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:15 }}>{m.title}</div>
@@ -209,7 +209,7 @@ export function HomeScreen() {
                 { icon:'📊', label: t('home.stats'),  desc: language==='en' ? 'Mastery by region, hardest flags' : 'Maestría por región, más difíciles', action: goStats  },
                 { icon:'📖', label: t('home.review'), desc: language==='en' ? 'Browse all 147 flags'             : 'Navega las 147 banderas',            action: goReview },
               ].map(({ icon, label, desc, action }) => (
-                <button key={label} onClick={action} style={{ display:'flex', alignItems:'center', gap:14, border:'1px solid var(--rule)', background:'rgba(255,253,243,0.6)', padding:'14px 16px', cursor:'pointer', textAlign:'left', transition:'all .15s', color:'var(--ink)' }}>
+                <button key={label} onClick={action} style={{ display:'flex', alignItems:'center', gap:14, border:'1px solid var(--rule)', background:'var(--surface)', padding:'14px 16px', cursor:'pointer', textAlign:'left', transition:'all .15s', color:'var(--ink)' }}>
                   <span style={{ fontSize:26, lineHeight:1, flexShrink:0 }}>{icon}</span>
                   <div>
                     <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:15 }}>{label}</div>
@@ -226,7 +226,7 @@ export function HomeScreen() {
               {activeProfile && (
                 <button
                   onClick={goProfiles}
-                  style={{ display:'flex', alignItems:'center', gap:10, border:'1px solid var(--rule)', background:'rgba(255,253,243,0.6)', padding:'10px 14px', cursor:'pointer', textAlign:'left', transition:'all .15s', width:'100%' }}
+                  style={{ display:'flex', alignItems:'center', gap:10, border:'1px solid var(--rule)', background:'var(--surface)', padding:'10px 14px', cursor:'pointer', textAlign:'left', transition:'all .15s', width:'100%' }}
                 >
                   <span style={{ fontSize:22, lineHeight:1 }}>{activeProfile.avatar}</span>
                   <div style={{ flex:1, minWidth:0 }}>
@@ -281,7 +281,7 @@ export function HomeScreen() {
       {activeProfile && (
         <button
           onClick={goProfiles}
-          style={{ position:'absolute', top:14, left:16, zIndex:10, background:'rgba(255,253,243,0.7)', border:'1px solid var(--rule)', height:34, cursor:'pointer', display:'flex', alignItems:'center', gap:7, padding:'0 10px', borderRadius:2, transition:'all .15s' }}
+          style={{ position:'absolute', top:14, left:16, zIndex:10, background:'var(--surface-hi)', border:'1px solid var(--rule)', height:34, cursor:'pointer', display:'flex', alignItems:'center', gap:7, padding:'0 10px', borderRadius:2, transition:'all .15s' }}
           title={t('profile.switch')}
         >
           <span style={{ fontSize:18, lineHeight:1 }}>{activeProfile.avatar}</span>
@@ -330,7 +330,7 @@ export function HomeScreen() {
 
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginTop:8 }}>
           {[{ label:`📊 ${t('home.stats')}`, action:goStats }, { label:`📖 ${t('home.review')}`, action:goReview }].map(({ label, action }) => (
-            <button key={label} onClick={action} style={{ border:'1px solid var(--rule)', background:'rgba(255,253,243,0.55)', padding:'10px 8px', cursor:'pointer', fontFamily:"'DM Mono', monospace", fontSize:9.5, letterSpacing:'0.18em', color:'var(--ink-soft)', textTransform:'uppercase', transition:'all .15s' }}>
+            <button key={label} onClick={action} style={{ border:'1px solid var(--rule)', background:'var(--surface)', padding:'10px 8px', cursor:'pointer', fontFamily:"'DM Mono', monospace", fontSize:9.5, letterSpacing:'0.18em', color:'var(--ink-soft)', textTransform:'uppercase', transition:'all .15s' }}>
               {label}
             </button>
           ))}

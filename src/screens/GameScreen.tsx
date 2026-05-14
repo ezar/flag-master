@@ -117,7 +117,7 @@ export function GameScreen() {
   // ── Shared answer area ─────────────────────────────────────────────────
   const answerArea = mode === 'type' ? (
     <div style={{ marginTop:22 }}>
-      <div style={{ border:'1px solid var(--rule)', background:'rgba(255,253,243,0.85)', padding:'12px 12px', display:'flex', gap:10, alignItems:'center' }}>
+      <div style={{ border:'1px solid var(--rule)', background:'var(--surface-input)', padding:'12px 12px', display:'flex', gap:10, alignItems:'center' }}>
         <input
           value={writeValue}
           onChange={e => setWriteValue(e.target.value)}
