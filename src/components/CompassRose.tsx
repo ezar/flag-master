@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion'
 
-export function CompassRose() {
+interface Props { size?: number }
+
+export function CompassRose({ size = 170 }: Props) {
   return (
     <div
       aria-hidden="true"
@@ -10,8 +12,8 @@ export function CompassRose() {
         alignItems: 'center',
         justifyContent: 'center',
         margin: '6px auto 0',
-        width: 170,
-        height: 170,
+        width: size,
+        height: size,
       }}
     >
       <motion.svg

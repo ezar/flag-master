@@ -7,7 +7,19 @@ import { useGameStore, type GameMode } from '../store/gameStore'
 import { getPool }        from '../engine/questionEngine'
 import { FM_COUNTRIES, FM_REGIONS } from '../data/countries'
 import { useT }           from '../i18n/useT'
+import { useDesktop }     from '../hooks/useDesktop'
 import type { Stage }     from '../engine/questionEngine'
+
+// ── Shared decorative divider ──────────────────────────────────────────────
+function GoldDivider() {
+  return (
+    <div style={{ height: 7, position: 'relative', margin: '2px 0' }}>
+      <div style={{ position:'absolute', left:0, right:0, top:0,    height:1, background:'var(--ink)', opacity:.55 }} />
+      <div style={{ position:'absolute', left:0, right:0, bottom:0, height:1, background:'var(--ink)', opacity:.25 }} />
+      <div style={{ position:'absolute', left:'50%', top:'50%', transform:'translate(-50%,-50%) rotate(45deg)', width:7, height:7, background:'var(--gold)' }} />
+    </div>
+  )
+}
 
 export function HomeScreen() {
   const {
@@ -17,21 +29,21 @@ export function HomeScreen() {
     dailyStreak, goStats, goReview, language,
   } = useGameStore()
 
-  const t = useT()
+  const t         = useT()
+  const isDesktop = useDesktop()
   const [settingsOpen, setSettingsOpen] = useState(false)
+
   const basePool  = getPool(stage, FM_COUNTRIES)
   const poolCount = regionFilter
     ? basePool.filter(c => c.r === regionFilter).length
     : basePool.length
 
-  // Dynamic difficulty options (translated)
   const DIFFICULTIES: { id: Stage; icon: string; name: string; sub: string }[] = [
     { id: 'easy',   icon: '🌿', name: t('diff.easy.name'),   sub: t('diff.easy.sub')   },
     { id: 'medium', icon: '⚓', name: t('diff.medium.name'), sub: t('diff.medium.sub') },
     { id: 'hard',   icon: '🗺️', name: t('diff.hard.name'),   sub: t('diff.hard.sub')   },
   ]
 
-  // Dynamic game modes (translated)
   const MODES: { id: GameMode; roman: string; title: string; desc: string }[] = [
     { id: 'flag2country', roman: 'I',   title: t('mode.flag2country.title'), desc: t('mode.flag2country.desc') },
     { id: 'country2flag', roman: 'II',  title: t('mode.country2flag.title'), desc: t('mode.country2flag.desc') },
@@ -41,266 +53,259 @@ export function HomeScreen() {
     { id: 'lightning',    roman: 'VI',  title: t('mode.lightning.title'),    desc: t('mode.lightning.desc')    },
   ]
 
+  const regionPills = [
+    { id: null,    label: t('home.allRegions') },
+    ...FM_REGIONS.map(r => ({ id: r.id, label: language === 'en' ? r.nameEn : r.name })),
+  ]
+
+  // ── Reusable sections ──────────────────────────────────────────────────
+  const difficultySection = (
+    <>
+      <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', margin:'0 0 10px' }}>
+        <h2 style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:18 }}>
+          {t('home.difficulty')}
+        </h2>
+        <span style={{ fontFamily:"'DM Mono', monospace", fontSize:9.5, letterSpacing:'0.22em', color:'var(--ink-soft)', textTransform:'uppercase' }}>
+          {t('home.countries', { n: poolCount })}
+        </span>
+      </div>
+
+      {/* Region filter pills */}
+      <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginBottom:10 }}>
+        {regionPills.map(pill => (
+          <button
+            key={String(pill.id)}
+            onClick={() => setRegionFilter(pill.id)}
+            style={{ background: regionFilter===pill.id ? 'var(--ink)' : 'transparent', color: regionFilter===pill.id ? 'var(--paper)' : 'var(--ink-soft)', border:`1px solid ${regionFilter===pill.id ? 'var(--ink)' : 'var(--rule)'}`, padding:'4px 10px', cursor:'pointer', fontFamily:"'DM Mono', monospace", fontSize:8.5, letterSpacing:'0.18em', textTransform:'uppercase', borderRadius:2, transition:'all .15s' }}
+          >
+            {pill.label}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8 }}>
+        {DIFFICULTIES.map(d => (
+          <button key={d.id} onClick={() => setStage(d.id)} style={{ background: stage===d.id ? 'var(--ink)' : 'transparent', border:'1px solid var(--rule)', padding:'12px 8px 10px', cursor:'pointer', textAlign:'center', color: stage===d.id ? 'var(--paper)' : 'var(--ink)', transition:'all .18s ease', boxShadow: stage===d.id ? '0 6px 18px -10px rgba(26,18,9,0.6)' : 'none' }}>
+            <div style={{ fontSize:20, lineHeight:1 }}>{d.icon}</div>
+            <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:14, marginTop:6 }}>{d.name}</div>
+            <div style={{ fontFamily:"'DM Mono', monospace", fontSize:9, letterSpacing:'0.18em', color: stage===d.id ? 'rgba(245,237,214,0.7)' : 'var(--ink-soft)', marginTop:3 }}>{d.sub}</div>
+          </button>
+        ))}
+      </div>
+    </>
+  )
+
+  const modesSection = (
+    <>
+      <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', margin:'22px 0 10px' }}>
+        <h2 style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:18 }}>
+          {t('home.modes')}
+        </h2>
+        <span style={{ fontFamily:"'DM Mono', monospace", fontSize:9.5, letterSpacing:'0.22em', color:'var(--ink-soft)', textTransform:'uppercase' }}>
+          {t('home.chooseOne')}
+        </span>
+      </div>
+      <div style={{ display:'grid', gap:isDesktop ? 7 : 9 }}>
+        {MODES.map(m => (
+          <button key={m.id} onClick={() => setMode(m.id)} style={{ display:'flex', alignItems:'center', gap:14, padding:'12px 14px', border: mode===m.id ? '1px solid var(--gold)' : '1px solid var(--rule)', background: mode===m.id ? 'rgba(255,253,243,0.85)' : 'rgba(255,253,243,0.55)', cursor:'pointer', textAlign:'left', color:'var(--ink)', transition:'all .18s ease' }}>
+            <div style={{ fontFamily:"'Playfair Display', serif", fontStyle:'italic', fontSize:22, color:'var(--gold)', width:26, textAlign:'center', lineHeight:1 }}>{m.roman}</div>
+            <div style={{ flex:1 }}>
+              <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:15 }}>{m.title}</div>
+              <div style={{ fontSize:11.5, color:'var(--ink-soft)', marginTop:2, fontStyle:'italic' }}>{m.desc}</div>
+            </div>
+            <div style={{ fontFamily:"'Playfair Display', serif", fontSize:20, color: mode===m.id ? 'var(--gold)' : 'var(--ink-soft)' }}>→</div>
+          </button>
+        ))}
+      </div>
+    </>
+  )
+
+  const zarparBtn = (
+    <button
+      onClick={startGame}
+      style={{ display:'block', width:'100%', marginTop:22, background:'var(--ink)', color:'var(--gold)', border:'none', padding:'16px 8px', fontFamily:"'DM Mono', monospace", fontSize:11, letterSpacing:'0.32em', textTransform:'uppercase', cursor:'pointer', boxShadow:'0 6px 18px -10px rgba(26,18,9,0.6)' }}
+    >
+      {t('home.sail')}
+    </button>
+  )
+
+  // ── DESKTOP: two-column layout ─────────────────────────────────────────
+  if (isDesktop) {
+    return (
+      <div style={{ display:'flex', height:'100dvh' }}>
+        <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+
+        {/* ── LEFT SIDEBAR ──────────────────────────────── */}
+        <aside style={{
+          width:        300,
+          flexShrink:   0,
+          borderRight:  '1px solid var(--rule)',
+          padding:      '28px 24px 24px',
+          display:      'flex',
+          flexDirection:'column',
+          gap:          14,
+          overflowY:    'auto',
+          position:     'sticky',
+          top:          0,
+          height:       '100dvh',
+          alignSelf:    'flex-start',
+        }}>
+
+          {/* Decorative nautical lines */}
+          <div aria-hidden="true" style={{ position:'absolute', inset:0, pointerEvents:'none', zIndex:0, opacity:0.6 }}>
+            <svg viewBox="0 0 300 800" preserveAspectRatio="xMidYMid slice" style={{ width:'100%', height:'100%', display:'block' }}>
+              <g fill="none" stroke="var(--ink)" strokeWidth="0.5" opacity="0.07">
+                <circle cx="150" cy="160" r="160"/>
+                <circle cx="150" cy="160" r="100"/>
+                <circle cx="150" cy="160" r="50"/>
+                <line x1="150" y1="0"   x2="150" y2="800"/>
+                <line x1="0"   y1="160" x2="300" y2="160"/>
+                <line x1="0"   y1="0"   x2="300" y2="320"/>
+                <line x1="300" y1="0"   x2="0"   y2="320"/>
+              </g>
+            </svg>
+          </div>
+
+          <div style={{ position:'relative', zIndex:1, display:'flex', flexDirection:'column', gap:14, flex:1 }}>
+            {/* Compass */}
+            <CompassRose size={110} />
+
+            {/* Brand */}
+            <div style={{ textAlign:'center' }}>
+              <div style={{ fontFamily:"'DM Mono', monospace", fontSize:9, letterSpacing:'0.36em', color:'var(--ink-soft)', textTransform:'uppercase' }}>
+                {t('app.eyebrow')}
+              </div>
+              <h1 style={{ fontFamily:"'Playfair Display', serif", fontWeight:900, fontStyle:'italic', fontSize:34, lineHeight:1, letterSpacing:'-0.01em', margin:'4px 0 3px', color:'var(--ink)' }}>
+                Flag<span style={{ color:'var(--gold)', fontStyle:'italic', fontWeight:400 }}>·</span>Master
+              </h1>
+              <div style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:'italic', color:'var(--ink-soft)', fontSize:11.5 }}>
+                {t('app.subtitle')}
+              </div>
+            </div>
+
+            <GoldDivider />
+
+            {/* Logbook */}
+            <StatCard
+              bestStreak={bestStreak}
+              dailyStreak={dailyStreak}
+              totalGames={totalGames}
+              totalCorrect={totalCorrect}
+              totalQuestions={totalQuestions}
+            />
+
+            {/* Quick nav */}
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:7 }}>
+              {[
+                { label:`📊 ${t('home.stats')}`,  action: goStats  },
+                { label:`📖 ${t('home.review')}`, action: goReview },
+              ].map(({ label, action }) => (
+                <button key={label} onClick={action} style={{ border:'1px solid var(--rule)', background:'rgba(255,253,243,0.55)', padding:'9px 6px', cursor:'pointer', fontFamily:"'DM Mono', monospace", fontSize:8.5, letterSpacing:'0.16em', color:'var(--ink-soft)', textTransform:'uppercase', transition:'all .15s' }}>
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {/* Footer + settings */}
+            <div style={{ marginTop:'auto', paddingTop:16, borderTop:'1px solid var(--rule)', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+              <div style={{ fontFamily:"'DM Mono', monospace", fontSize:8, letterSpacing:'0.2em', color:'var(--ink-soft)', textTransform:'uppercase', lineHeight:1.6 }}>
+                ✦ Septentrionem<br/>· Meridiem ✦
+              </div>
+              <button
+                onClick={() => setSettingsOpen(true)}
+                style={{ background:'none', border:'1px solid var(--rule)', width:32, height:32, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', color:'var(--ink-soft)', fontSize:15, borderRadius:2 }}
+                title={t('settings.title')}
+              >
+                ⚙
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        {/* ── RIGHT CONTENT ─────────────────────────────── */}
+        <main style={{ flex:1, overflowY:'auto', height:'100dvh', padding:'28px 28px 40px' }}>
+          <WorldMap />
+          <div style={{ marginTop:22 }}>
+            {difficultySection}
+          </div>
+          <div style={{ marginTop:4 }}>
+            {modesSection}
+          </div>
+          {zarparBtn}
+          <div style={{ marginTop:24, textAlign:'center', fontFamily:"'DM Mono', monospace", fontSize:9, letterSpacing:'0.3em', color:'var(--ink-soft)', textTransform:'uppercase' }}>
+            {t('home.footer')}
+          </div>
+        </main>
+      </div>
+    )
+  }
+
+  // ── MOBILE: single column ─────────────────────────────────────────────
   return (
-    <div style={{ position: 'relative', padding: '22px 22px 28px', minHeight: '100dvh' }}>
+    <div style={{ position:'relative', padding:'22px 22px 28px', minHeight:'100dvh' }}>
       <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 
-      {/* Settings button — top right */}
-      <button
-        onClick={() => setSettingsOpen(true)}
-        style={{
-          position:      'absolute',
-          top:           16,
-          right:         16,
-          zIndex:        10,
-          background:    'none',
-          border:        '1px solid var(--rule)',
-          width:         34,
-          height:        34,
-          cursor:        'pointer',
-          display:       'flex',
-          alignItems:    'center',
-          justifyContent:'center',
-          color:         'var(--ink-soft)',
-          fontSize:      16,
-          borderRadius:  2,
-          transition:    'all .15s',
-        }}
-        title={t('settings.title')}
-        aria-label={t('settings.title')}
-      >
-        ⚙
-      </button>
+      {/* Settings button */}
+      <button onClick={() => setSettingsOpen(true)} style={{ position:'absolute', top:16, right:16, zIndex:10, background:'none', border:'1px solid var(--rule)', width:34, height:34, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', color:'var(--ink-soft)', fontSize:16, borderRadius:2, transition:'all .15s' }} title={t('settings.title')}>⚙</button>
 
-      {/* ── Nautical chart lines (decorative bg) ── */}
-      <div
-        aria-hidden="true"
-        style={{ position:'absolute', inset:0, pointerEvents:'none', zIndex:0, opacity:0.9 }}
-      >
-        <svg
-          viewBox="0 0 430 900"
-          preserveAspectRatio="xMidYMid slice"
-          style={{ width:'100%', height:'100%', display:'block' }}
-        >
+      {/* Nautical chart lines */}
+      <div aria-hidden="true" style={{ position:'absolute', inset:0, pointerEvents:'none', zIndex:0, opacity:0.9 }}>
+        <svg viewBox="0 0 430 900" preserveAspectRatio="xMidYMid slice" style={{ width:'100%', height:'100%', display:'block' }}>
           <g fill="none" stroke="var(--ink)" strokeWidth="0.6" opacity="0.07">
-            <circle cx="215" cy="180" r="240"/>
-            <circle cx="215" cy="180" r="180" opacity="0.5"/>
-            <circle cx="215" cy="180" r="120"/>
-            <circle cx="215" cy="180" r="60"  opacity="0.5"/>
-            <path d="M -50 180 Q 215 80 480 180"/>
-            <path d="M -50 220 Q 215 320 480 220"/>
-            <path d="M -50 140 Q 215 -20 480 140"/>
-            <path d="M 0 700 Q 215 600 430 700"/>
-            <path d="M 0 760 Q 215 820 430 760"/>
+            <circle cx="215" cy="180" r="240"/><circle cx="215" cy="180" r="180" opacity="0.5"/>
+            <circle cx="215" cy="180" r="120"/><circle cx="215" cy="180" r="60" opacity="0.5"/>
+            <path d="M -50 180 Q 215 80 480 180"/><path d="M -50 220 Q 215 320 480 220"/>
             <line x1="215" y1="-20" x2="215" y2="900"/>
             <line x1="-20" y1="180" x2="450" y2="180"/>
-            <line x1="-20" y1="450" x2="450" y2="450"/>
             <line x1="40"  y1="-20" x2="380" y2="900"/>
             <line x1="380" y1="-20" x2="40"  y2="900"/>
           </g>
         </svg>
       </div>
 
-      {/* ── Content (above the decorative bg) ── */}
-      <div style={{ position: 'relative', zIndex: 1 }}>
-
-        {/* Compass */}
+      <div style={{ position:'relative', zIndex:1 }}>
         <CompassRose />
 
-        {/* Brand */}
-        <div style={{ textAlign: 'center', marginTop: 4 }}>
-          <div style={{
-            fontFamily: "'DM Mono', monospace",
-            fontSize: 10.5,
-            letterSpacing: '0.36em',
-            color: 'var(--ink-soft)',
-            textTransform: 'uppercase',
-          }}>
+        <div style={{ textAlign:'center', marginTop:4 }}>
+          <div style={{ fontFamily:"'DM Mono', monospace", fontSize:10.5, letterSpacing:'0.36em', color:'var(--ink-soft)', textTransform:'uppercase' }}>
             {t('app.eyebrow')}
           </div>
-          <h1 style={{
-            fontFamily: "'Playfair Display', serif",
-            fontWeight: 900,
-            fontStyle: 'italic',
-            fontSize: 46,
-            lineHeight: 1,
-            letterSpacing: '-0.01em',
-            margin: '6px 0 4px',
-            color: 'var(--ink)',
-          }}>
-            Flag
-            <span style={{ color: 'var(--gold)', fontStyle: 'italic', fontWeight: 400 }}>·</span>
-            Master
+          <h1 style={{ fontFamily:"'Playfair Display', serif", fontWeight:900, fontStyle:'italic', fontSize:46, lineHeight:1, letterSpacing:'-0.01em', margin:'6px 0 4px', color:'var(--ink)' }}>
+            Flag<span style={{ color:'var(--gold)', fontStyle:'italic', fontWeight:400 }}>·</span>Master
           </h1>
-          <div style={{
-            fontFamily: "'Libre Baskerville', serif",
-            fontStyle: 'italic',
-            color: 'var(--ink-soft)',
-            fontSize: 13.5,
-            marginTop: 2,
-          }}>
+          <div style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:'italic', color:'var(--ink-soft)', fontSize:13.5, marginTop:2 }}>
             {t('app.subtitle')}
           </div>
         </div>
 
-        {/* Double rule with gold diamond */}
-        <div style={{ height: 7, position: 'relative', margin: '16px 6px' }}>
+        <div style={{ height:7, position:'relative', margin:'16px 6px' }}>
           <div style={{ position:'absolute', left:0, right:0, top:0,    height:1, background:'var(--ink)', opacity:.55 }} />
           <div style={{ position:'absolute', left:0, right:0, bottom:0, height:1, background:'var(--ink)', opacity:.25 }} />
-          <div style={{
-            position: 'absolute',
-            left: '50%', top: '50%',
-            transform: 'translate(-50%, -50%) rotate(45deg)',
-            width: 7, height: 7,
-            background: 'var(--gold)',
-          }} />
+          <div style={{ position:'absolute', left:'50%', top:'50%', transform:'translate(-50%,-50%) rotate(45deg)', width:7, height:7, background:'var(--gold)' }} />
         </div>
 
-        {/* Stats */}
-        <StatCard
-          bestStreak={bestStreak}
-          dailyStreak={dailyStreak}
-          totalGames={totalGames}
-          totalCorrect={totalCorrect}
-          totalQuestions={totalQuestions}
-        />
+        <StatCard bestStreak={bestStreak} dailyStreak={dailyStreak} totalGames={totalGames} totalCorrect={totalCorrect} totalQuestions={totalQuestions} />
 
-        {/* Quick nav: Stats + Review */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 8 }}>
-          {[
-            { label: `📊 ${t('home.stats')}`,  action: goStats  },
-            { label: `📖 ${t('home.review')}`, action: goReview },
-          ].map(({ label, action }) => (
-            <button
-              key={label}
-              onClick={action}
-              style={{ border: '1px solid var(--rule)', background: 'rgba(255,253,243,0.55)', padding: '10px 8px', cursor: 'pointer', fontFamily: "'DM Mono', monospace", fontSize: 9.5, letterSpacing: '0.18em', color: 'var(--ink-soft)', textTransform: 'uppercase', transition: 'all .15s' }}
-            >
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginTop:8 }}>
+          {[{ label:`📊 ${t('home.stats')}`, action:goStats }, { label:`📖 ${t('home.review')}`, action:goReview }].map(({ label, action }) => (
+            <button key={label} onClick={action} style={{ border:'1px solid var(--rule)', background:'rgba(255,253,243,0.55)', padding:'10px 8px', cursor:'pointer', fontFamily:"'DM Mono', monospace", fontSize:9.5, letterSpacing:'0.18em', color:'var(--ink-soft)', textTransform:'uppercase', transition:'all .15s' }}>
               {label}
             </button>
           ))}
         </div>
 
-        {/* World map — continent progression */}
         <WorldMap />
 
-        {/* Difficulty header */}
-        <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', margin:'22px 2px 10px' }}>
-          <h2 style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:18 }}>
-            {t('home.difficulty')}
-          </h2>
-          <span style={{ fontFamily:"'DM Mono', monospace", fontSize:9.5, letterSpacing:'0.22em', color:'var(--ink-soft)', textTransform:'uppercase' }}>
-            {t('home.countries', { n: poolCount })}
-          </span>
+        <div style={{ margin:'22px 0 0' }}>
+          {difficultySection}
         </div>
 
-        {/* Region filter pills */}
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>
-          {[{ id: null, label: t('home.allRegions') }, ...FM_REGIONS.map(r => ({ id: r.id, label: language === 'en' ? r.nameEn : r.name }))].map(pill => (
-            <button
-              key={String(pill.id)}
-              onClick={() => setRegionFilter(pill.id)}
-              style={{ background: regionFilter === pill.id ? 'var(--ink)' : 'transparent', color: regionFilter === pill.id ? 'var(--paper)' : 'var(--ink-soft)', border: `1px solid ${regionFilter === pill.id ? 'var(--ink)' : 'var(--rule)'}`, padding: '4px 10px', cursor: 'pointer', fontFamily: "'DM Mono', monospace", fontSize: 8.5, letterSpacing: '0.18em', textTransform: 'uppercase', borderRadius: 2, transition: 'all .15s' }}
-            >
-              {pill.label}
-            </button>
-          ))}
-        </div>
+        {modesSection}
+        {zarparBtn}
 
-        {/* Difficulty buttons */}
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8 }}>
-          {DIFFICULTIES.map(d => (
-            <button
-              key={d.id}
-              onClick={() => setStage(d.id)}
-              style={{
-                background:  stage === d.id ? 'var(--ink)' : 'transparent',
-                border:      '1px solid var(--rule)',
-                padding:     '12px 8px 10px',
-                cursor:      'pointer',
-                textAlign:   'center',
-                color:       stage === d.id ? 'var(--paper)' : 'var(--ink)',
-                transition:  'all .18s ease',
-                boxShadow:   stage === d.id ? '0 6px 18px -10px rgba(26,18,9,0.6)' : 'none',
-              }}
-            >
-              <div style={{ fontSize:20, lineHeight:1 }}>{d.icon}</div>
-              <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:14, marginTop:6 }}>{d.name}</div>
-              <div style={{ fontFamily:"'DM Mono', monospace", fontSize:9, letterSpacing:'0.18em', color: stage === d.id ? 'rgba(245,237,214,0.7)' : 'var(--ink-soft)', marginTop:3 }}>{d.sub}</div>
-            </button>
-          ))}
-        </div>
-
-        {/* Mode header */}
-        <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', margin:'22px 2px 10px' }}>
-          <h2 style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:18 }}>
-            {t('home.modes')}
-          </h2>
-          <span style={{ fontFamily:"'DM Mono', monospace", fontSize:9.5, letterSpacing:'0.22em', color:'var(--ink-soft)', textTransform:'uppercase' }}>
-            {t('home.chooseOne')}
-          </span>
-        </div>
-
-        {/* Mode buttons */}
-        <div style={{ display:'grid', gap:9 }}>
-          {MODES.map(m => (
-            <button
-              key={m.id}
-              onClick={() => setMode(m.id)}
-              style={{
-                display:    'flex',
-                alignItems: 'center',
-                gap:        14,
-                padding:    '14px 14px',
-                border:     mode === m.id ? '1px solid var(--gold)' : '1px solid var(--rule)',
-                background: mode === m.id ? 'rgba(255,253,243,0.85)' : 'rgba(255,253,243,0.55)',
-                cursor:     'pointer',
-                textAlign:  'left',
-                color:      'var(--ink)',
-                transition: 'all .18s ease',
-              }}
-            >
-              <div style={{ fontFamily:"'Playfair Display', serif", fontStyle:'italic', fontSize:24, color:'var(--gold)', width:28, textAlign:'center', lineHeight:1 }}>
-                {m.roman}
-              </div>
-              <div style={{ flex:1 }}>
-                <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:16 }}>{m.title}</div>
-                <div style={{ fontSize:12, color:'var(--ink-soft)', marginTop:2, fontStyle:'italic' }}>{m.desc}</div>
-              </div>
-              <div style={{ fontFamily:"'Playfair Display', serif", fontSize:22, color: mode === m.id ? 'var(--gold)' : 'var(--ink-soft)' }}>
-                →
-              </div>
-            </button>
-          ))}
-        </div>
-
-        {/* CTA — Zarpar */}
-        <button
-          onClick={startGame}
-          style={{
-            display:     'block',
-            width:       '100%',
-            marginTop:   22,
-            background:  'var(--ink)',
-            color:       'var(--gold)',
-            border:      'none',
-            padding:     '16px 8px',
-            fontFamily:  "'DM Mono', monospace",
-            fontSize:    11,
-            letterSpacing:'0.32em',
-            textTransform:'uppercase',
-            cursor:      'pointer',
-            boxShadow:   '0 6px 18px -10px rgba(26,18,9,0.6)',
-          }}
-        >
-          {t('home.sail')}
-        </button>
-
-        {/* Footer */}
         <div style={{ marginTop:26, textAlign:'center', fontFamily:"'DM Mono', monospace", fontSize:9.5, letterSpacing:'0.32em', color:'var(--ink-soft)', textTransform:'uppercase' }}>
           {t('home.footer')}
         </div>
-
       </div>
     </div>
   )

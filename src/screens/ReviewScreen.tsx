@@ -3,10 +3,12 @@ import { FM_COUNTRIES, FM_REGIONS } from '../data/countries'
 import { useGameStore } from '../store/gameStore'
 import { FlagEmoji } from '../components/FlagEmoji'
 import { useT } from '../i18n/useT'
+import { useDesktop } from '../hooks/useDesktop'
 
 export function ReviewScreen() {
   const { goHome, language } = useGameStore()
-  const t = useT()
+  const t         = useT()
+  const isDesktop = useDesktop()
   const [regionFilter, setRegionFilter] = useState<string | null>(null)
 
   const filtered = regionFilter
@@ -81,8 +83,8 @@ export function ReviewScreen() {
         ))}
       </div>
 
-      {/* Flag grid */}
-      <div style={{ flex: 1, padding: '14px 12px 28px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, alignContent: 'start' }}>
+      {/* Flag grid — 2 cols mobile, 3 cols tablet, 4 cols desktop */}
+      <div style={{ flex: 1, padding: '14px 12px 28px', display: 'grid', gridTemplateColumns: isDesktop ? 'repeat(4, 1fr)' : '1fr 1fr', gap: isDesktop ? 12 : 10, alignContent: 'start' }}>
         {filtered.map(c => {
           const name = language === 'en' ? c.ne : c.n
           return (
