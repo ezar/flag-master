@@ -26,8 +26,11 @@ export function HomeScreen() {
     stage, mode, regionFilter,
     setStage, setMode, setRegionFilter, startGame,
     bestStreak, totalGames, totalCorrect, totalQuestions,
-    dailyStreak, goStats, goReview, language,
+    dailyStreak, goStats, goReview, goProfiles, language,
+    profiles, activeProfileId,
   } = useGameStore()
+
+  const activeProfile = profiles.find(p => p.id === activeProfileId)
 
   const t         = useT()
   const isDesktop = useDesktop()
@@ -168,6 +171,22 @@ export function HomeScreen() {
           </div>
 
           <div style={{ position:'relative', zIndex:1, display:'flex', flexDirection:'column', gap:20, flex:1 }}>
+
+            {/* Active profile chip */}
+            {activeProfile && (
+              <button
+                onClick={goProfiles}
+                style={{ display:'flex', alignItems:'center', gap:10, border:'1px solid var(--rule)', background:'rgba(255,253,243,0.6)', padding:'10px 14px', cursor:'pointer', textAlign:'left', transition:'all .15s' }}
+              >
+                <span style={{ fontSize:24, lineHeight:1 }}>{activeProfile.avatar}</span>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:15, color:'var(--ink)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{activeProfile.name}</div>
+                  <div style={{ fontFamily:"'DM Mono', monospace", fontSize:8.5, letterSpacing:'0.16em', color:'var(--ink-soft)', textTransform:'uppercase', marginTop:2 }}>{t('profile.switch')}</div>
+                </div>
+                <span style={{ color:'var(--gold)', fontSize:16 }}>⇄</span>
+              </button>
+            )}
+
             {/* Compass */}
             <CompassRose size={150} />
 

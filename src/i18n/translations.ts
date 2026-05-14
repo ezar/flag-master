@@ -113,6 +113,18 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'settings.reset.cancel': 'Cancelar',
     'settings.footer':       'FlagMaster · Atlas de Banderas',
 
+    // ── Profiles ─────────────────────────────────────────────────
+    'profile.select':        '¿Quién juega?',
+    'profile.create':        'Crear perfil',
+    'profile.name':          'Nombre',
+    'profile.namePlaceholder':'p.ej. Javier',
+    'profile.avatar':        'Elige un avatar',
+    'profile.add':           'Añadir perfil',
+    'profile.switch':        'Cambiar perfil',
+    'profile.delete':        'Eliminar perfil',
+    'profile.deleteConfirm': '⚠ Confirmar eliminación',
+    'profile.noGames':       'Sin partidas aún',
+
     // ── Fun facts / Stats / Review ───────────────────────────────
     'fun.label':      '💡 ¿Sabías que…',
     'stats.title':    'Estadísticas',
@@ -250,6 +262,18 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'settings.reset.confirm':'⚠ Confirm reset',
     'settings.reset.cancel': 'Cancel',
     'settings.footer':       'FlagMaster · Atlas of Flags',
+
+    // ── Profiles ─────────────────────────────────────────────────
+    'profile.select':        "Who's playing?",
+    'profile.create':        'Create profile',
+    'profile.name':          'Name',
+    'profile.namePlaceholder':'e.g. Javier',
+    'profile.avatar':        'Choose an avatar',
+    'profile.add':           'Add profile',
+    'profile.switch':        'Switch profile',
+    'profile.delete':        'Delete profile',
+    'profile.deleteConfirm': '⚠ Confirm delete',
+    'profile.noGames':       'No games yet',
 
     // ── Fun facts / Stats / Review ───────────────────────────────
     'fun.label':      '💡 Did you know…',

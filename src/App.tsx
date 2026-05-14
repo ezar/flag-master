@@ -1,10 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useGameStore } from './store/gameStore'
-import { HomeScreen }   from './screens/HomeScreen'
-import { GameScreen }   from './screens/GameScreen'
-import { ResultScreen } from './screens/ResultScreen'
-import { StatsScreen }  from './screens/StatsScreen'
-import { ReviewScreen } from './screens/ReviewScreen'
+import { HomeScreen }    from './screens/HomeScreen'
+import { GameScreen }    from './screens/GameScreen'
+import { ResultScreen }  from './screens/ResultScreen'
+import { StatsScreen }   from './screens/StatsScreen'
+import { ReviewScreen }  from './screens/ReviewScreen'
+import { ProfileScreen } from './screens/ProfileScreen'
 
 export default function App() {
   const screen = useGameStore(s => s.screen)
@@ -18,12 +19,14 @@ export default function App() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.18, ease: 'easeInOut' }}
+          style={{ width: '100%' }}
         >
-          {screen === 'home'    && <HomeScreen />}
-          {screen === 'game'    && <GameScreen />}
-          {screen === 'results' && <ResultScreen />}
-          {screen === 'stats'   && <StatsScreen />}
-          {screen === 'review'  && <ReviewScreen />}
+          {screen === 'profiles' && <ProfileScreen />}
+          {screen === 'home'     && <HomeScreen />}
+          {screen === 'game'     && <GameScreen />}
+          {screen === 'results'  && <ResultScreen />}
+          {screen === 'stats'    && <StatsScreen />}
+          {screen === 'review'   && <ReviewScreen />}
         </motion.div>
       </AnimatePresence>
     </div>
