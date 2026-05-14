@@ -206,7 +206,7 @@ export function GameScreen() {
       </header>
 
       {/* ── QUESTION AREA ──────────────────────────────── */}
-      <div style={{ padding: '22px 22px 26px' }}>
+      <div style={{ padding: '22px 22px 26px', minHeight: 'calc(100dvh - 106px)' }}>
         {/* Question label */}
         <div style={{
           fontFamily:    "'DM Mono', monospace",

@@ -42,7 +42,7 @@ export function HomeScreen() {
   ]
 
   return (
-    <div style={{ position: 'relative', padding: '22px 22px 28px' }}>
+    <div style={{ position: 'relative', padding: '22px 22px 28px', minHeight: '100dvh' }}>
       <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 
       {/* Settings button — top right */}

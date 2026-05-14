@@ -44,7 +44,7 @@ export function ResultScreen() {
   }
 
   return (
-    <div style={{ padding:'26px 22px 28px', textAlign:'center' }}>
+    <div style={{ padding:'26px 22px 40px', textAlign:'center', minHeight:'100dvh' }}>
 
       {/* Hero */}
       <div style={{ fontSize:64, lineHeight:1, animation:'pop-in .6s cubic-bezier(0.34, 1.56, 0.64, 1)' }}>
