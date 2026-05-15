@@ -16,30 +16,31 @@ export default function App() {
   const notifEnabled  = useGameStore(s => s.notifEnabled)
   const dailyStreak   = useGameStore(s => s.dailyStreak)
   const lastPlayed    = useGameStore(s => s.lastPlayedDate)
+  const language      = useGameStore(s => s.language)
 
   // Apply / remove dark class on body
   useEffect(() => {
     document.body.classList.toggle('dark', darkMode)
   }, [darkMode])
 
-  // Streak-at-risk notification: if it's after 19:00 and user hasn't played today
+  // Streak-at-risk notification: fires at 19:00 if user hasn't played today
   useEffect(() => {
     if (!notifEnabled || !dailyStreak || Notification.permission !== 'granted') return
     const yesterday = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10)
-    if (lastPlayed !== yesterday) return  // already played today or no streak yesterday
-    const now  = new Date()
+    if (lastPlayed !== yesterday) return  // already played today or no streak to protect
+    const now     = new Date()
     const msTo7pm = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 19, 0, 0).getTime() - now.getTime()
-    const delay = msTo7pm > 0 ? msTo7pm : 0
-    const timer = setTimeout(() => {
-      if (document.visibilityState === 'hidden' || true) {
-        new Notification('🧭 FlagMaster', {
-          body: `¡Tu racha de ${dailyStreak} días está en peligro! Juega una partida hoy.`,
-          icon: '/flag-master/icon-192.png',
-        })
+    const delay   = msTo7pm > 0 ? msTo7pm : 0
+    const timer   = setTimeout(() => {
+      if (document.visibilityState === 'hidden') {
+        const body = language === 'en'
+          ? `Your ${dailyStreak}-day streak is at risk! Play a round today.`
+          : `¡Tu racha de ${dailyStreak} días está en peligro! Juega una partida hoy.`
+        new Notification('🧭 FlagMaster', { body, icon: '/flag-master/icon-192.png' })
       }
     }, delay)
     return () => clearTimeout(timer)
-  }, [notifEnabled, dailyStreak, lastPlayed])
+  }, [notifEnabled, dailyStreak, lastPlayed, language])
 
   return (
     <div className="app">

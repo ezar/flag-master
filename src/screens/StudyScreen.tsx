@@ -19,11 +19,14 @@ export function StudyScreen() {
   const isDesktop = useDesktop()
 
   // Build initial deck — if region-filtered pool too small, use full stage pool
-  const initialDeck = useMemo<CardState[]>(() => {
-    const pool      = getPool(stage, FM_COUNTRIES)
-    const filtered  = regionFilter ? pool.filter(c => c.r === regionFilter) : pool
-    const src       = filtered.length >= 4 ? filtered : pool
-    return shuffle(src).map(country => ({ country, attempts: 0, known: false }))
+  const { initialDeck, regionIgnored } = useMemo(() => {
+    const pool     = getPool(stage, FM_COUNTRIES)
+    const filtered = regionFilter ? pool.filter(c => c.r === regionFilter) : pool
+    const useFull  = filtered.length < 4
+    return {
+      initialDeck:   shuffle(useFull ? pool : filtered).map(country => ({ country, attempts: 0, known: false })),
+      regionIgnored: useFull && !!regionFilter,
+    }
   }, [stage, regionFilter])
 
   const [deck,      setDeck]      = useState<CardState[]>(initialDeck)
@@ -132,6 +135,11 @@ export function StudyScreen() {
             {unknownCount}
           </div>
         </div>
+        {regionIgnored && (
+          <div style={{ fontFamily:"'DM Mono', monospace", fontSize:8, letterSpacing:'0.16em', color:'rgba(245,237,214,0.55)', textTransform:'uppercase', marginTop:6, textAlign:'center' }}>
+            {language === 'en' ? '⚠ Region too small — showing full deck' : '⚠ Región pequeña — mostrando todas las cartas'}
+          </div>
+        )}
         {/* Progress bar */}
         <div style={{ height:3, background:'rgba(255,255,255,0.12)', marginTop:10, borderRadius:2, overflow:'hidden' }}>
           <div style={{ height:'100%', width:`${progress}%`, background:'var(--gold)', transition:'width 0.4s ease', borderRadius:2 }} />

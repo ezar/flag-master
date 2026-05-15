@@ -46,9 +46,12 @@ export function HomeScreen() {
   }, [musicEnabled])
 
   const basePool  = getPool(stage, FM_COUNTRIES)
+  const modePool  = (mode === 'currency' as GameMode) ? basePool.filter(c => c.curr)
+                  : (mode === 'language' as GameMode) ? basePool.filter(c => c.lang)
+                  : basePool
   const poolCount = regionFilter
-    ? basePool.filter(c => c.r === regionFilter).length
-    : basePool.length
+    ? modePool.filter(c => c.r === regionFilter).length || modePool.length
+    : modePool.length
 
   const DIFFICULTIES: { id: Stage; icon: string; name: string; sub: string }[] = [
     { id: 'easy',   icon: '🌿', name: t('diff.easy.name'),   sub: t('diff.easy.sub')   },
