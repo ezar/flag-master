@@ -59,16 +59,17 @@ export function HomeScreen() {
     { id: 'hard',   icon: '🗺️', name: t('diff.hard.name'),   sub: t('diff.hard.sub')   },
   ]
 
-  const MODES: { id: GameMode; roman: string; title: string; desc: string; study?: boolean }[] = [
+  type ModeEntry = { id: GameMode | 'study'; roman: string; title: string; desc: string }
+  const MODES: ModeEntry[] = [
     { id: 'flag2country', roman: 'I',    title: t('mode.flag2country.title'), desc: t('mode.flag2country.desc') },
     { id: 'country2flag', roman: 'II',   title: t('mode.country2flag.title'), desc: t('mode.country2flag.desc') },
     { id: 'hint',         roman: 'III',  title: t('mode.hint.title'),         desc: t('mode.hint.desc')         },
     { id: 'capital',      roman: 'IV',   title: t('mode.capital.title'),      desc: t('mode.capital.desc')      },
     { id: 'type',         roman: 'V',    title: t('mode.type.title'),         desc: t('mode.type.desc')         },
     { id: 'lightning',    roman: 'VI',   title: t('mode.lightning.title'),    desc: t('mode.lightning.desc')    },
-    { id: 'currency' as GameMode, roman: 'VII',  title: t('mode.currency.title'), desc: t('mode.currency.desc') },
-    { id: 'language' as GameMode, roman: 'VIII', title: t('mode.language.title'), desc: t('mode.language.desc') },
-    { id: 'study' as GameMode, roman: '◈', title: t('study.title'), desc: language === 'en' ? 'Flash cards — know it / don\'t know it' : 'Flash cards — lo sé / no lo sé', study: true },
+    { id: 'currency',     roman: 'VII',  title: t('mode.currency.title'),     desc: t('mode.currency.desc')     },
+    { id: 'language',     roman: 'VIII', title: t('mode.language.title'),     desc: t('mode.language.desc')     },
+    { id: 'study',        roman: '◈',   title: t('study.title'),             desc: language === 'en' ? 'Flash cards — know it / don\'t know it' : 'Flash cards — lo sé / no lo sé' },
   ]
 
   const regionPills = [
@@ -125,7 +126,7 @@ export function HomeScreen() {
       </div>
       <div style={{ display:'grid', gap:isDesktop ? 7 : 9, gridTemplateColumns: isDesktop ? '1fr 1fr' : '1fr' }}>
         {MODES.map(m => (
-          <button key={m.id} onClick={() => setMode(m.id)} style={{ display:'flex', alignItems:'center', gap:14, padding:'12px 14px', border: mode===m.id ? '1px solid var(--gold)' : '1px solid var(--rule)', background: mode===m.id ? 'var(--surface-input)' : 'var(--surface)', cursor:'pointer', textAlign:'left', color:'var(--ink)', transition:'all .18s ease' }}>
+          <button key={m.id} onClick={() => m.id === 'study' ? goStudy() : setMode(m.id)} style={{ display:'flex', alignItems:'center', gap:14, padding:'12px 14px', border: mode===m.id ? '1px solid var(--gold)' : '1px solid var(--rule)', background: mode===m.id ? 'var(--surface-input)' : 'var(--surface)', cursor:'pointer', textAlign:'left', color:'var(--ink)', transition:'all .18s ease' }}>
             <div style={{ fontFamily:"'Playfair Display', serif", fontStyle:'italic', fontSize:22, color:'var(--gold)', width:26, textAlign:'center', lineHeight:1 }}>{m.roman}</div>
             <div style={{ flex:1 }}>
               <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:15 }}>{m.title}</div>
@@ -140,10 +141,10 @@ export function HomeScreen() {
 
   const zarparBtn = (
     <button
-      onClick={mode === ('study' as GameMode) ? goStudy : startGame}
+      onClick={startGame}
       style={{ display:'block', width:'100%', marginTop:22, background:'var(--chrome-bg)', color:'var(--gold)', border:'none', padding:'16px 8px', fontFamily:"'DM Mono', monospace", fontSize:11, letterSpacing:'0.32em', textTransform:'uppercase', cursor:'pointer', boxShadow:'0 6px 18px -10px rgba(26,18,9,0.6)' }}
     >
-      {mode === ('study' as GameMode) ? (language === 'en' ? 'Start study →' : 'Estudiar →') : t('home.sail')}
+      {t('home.sail')}
     </button>
   )
 

@@ -63,9 +63,11 @@ function scheduleChime(ac: AudioContext, dest: GainNode): void {
 }
 
 export function startAmbient(): void {
-  if (!audioEnabled || ambientMaster) return
+  if (ambientMaster) return
   try {
     const ac = getCtx()
+    // iOS suspends AudioContext until user gesture — resume silently
+    if (ac.state === 'suspended') { ac.resume().catch(() => {}) }
 
     ambientMaster = ac.createGain()
     ambientMaster.gain.setValueAtTime(0, ac.currentTime)
@@ -94,9 +96,10 @@ export function startAmbient(): void {
 export function stopAmbient(): void {
   if (!ambientMaster) return
   if (chimeTimer) { clearTimeout(chimeTimer); chimeTimer = null }
+  const dying = ambientMaster
+  ambientMaster = null  // clear immediately so startAmbient can restart
   try {
     const ac = getCtx()
-    ambientMaster.gain.linearRampToValueAtTime(0, ac.currentTime + 1.5)
+    dying.gain.linearRampToValueAtTime(0, ac.currentTime + 1.5)
   } catch { /* ignore */ }
-  setTimeout(() => { ambientMaster = null }, 2000)
 }
