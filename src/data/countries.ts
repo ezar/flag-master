@@ -5,7 +5,9 @@ export interface Country {
   c:   string   // capital
   s:   'easy' | 'medium' | 'hard'
   r:   'europe' | 'americas' | 'asia' | 'africa' | 'oceania'
-  fun?: { es: string; en: string }
+  fun?:  { es: string; en: string }
+  curr?: { es: string; en: string }  // moneda / currency
+  lang?: { es: string; en: string }  // idioma oficial / official language
 }
 
 export interface Region {
@@ -28,26 +30,41 @@ export const FM_COUNTRIES: Country[] = [
 
   // ── EUROPE · EASY ─────────────────────────────────────────────────────────
   { f:'🇪🇸', n:'España',         ne:'Spain',          c:'Madrid',          s:'easy',   r:'europe',
-    fun:{es:'Es el país con más bares per cápita del mundo',en:'Has the most bars per capita in the world'} },
+    fun:{es:'Es el país con más bares per cápita del mundo',en:'Has the most bars per capita in the world'},
+    curr:{es:'Euro',en:'Euro'}, lang:{es:'Español',en:'Spanish'} },
   { f:'🇫🇷', n:'Francia',        ne:'France',         c:'París',           s:'easy',   r:'europe',
-    fun:{es:'Es el país más visitado del mundo, con 90 millones de turistas al año',en:'Is the world\'s most visited country with 90 million tourists a year'} },
-  { f:'🇩🇪', n:'Alemania',       ne:'Germany',        c:'Berlín',          s:'easy',   r:'europe' },
+    fun:{es:'Es el país más visitado del mundo, con 90 millones de turistas al año',en:'Is the world\'s most visited country with 90 million tourists a year'},
+    curr:{es:'Euro',en:'Euro'}, lang:{es:'Francés',en:'French'} },
+  { f:'🇩🇪', n:'Alemania',       ne:'Germany',        c:'Berlín',          s:'easy',   r:'europe',
+    curr:{es:'Euro',en:'Euro'}, lang:{es:'Alemán',en:'German'} },
   { f:'🇮🇹', n:'Italia',         ne:'Italy',          c:'Roma',            s:'easy',   r:'europe',
-    fun:{es:'Alberga más sitios Patrimonio Mundial UNESCO que ningún otro país',en:'Has more UNESCO World Heritage Sites than any other country'} },
+    fun:{es:'Alberga más sitios Patrimonio Mundial UNESCO que ningún otro país',en:'Has more UNESCO World Heritage Sites than any other country'},
+    curr:{es:'Euro',en:'Euro'}, lang:{es:'Italiano',en:'Italian'} },
   { f:'🇵🇹', n:'Portugal',       ne:'Portugal',       c:'Lisboa',          s:'easy',   r:'europe',
-    fun:{es:'Su idioma es hablado por más de 250 millones de personas en todo el mundo',en:'Its language is spoken by over 250 million people worldwide'} },
-  { f:'🇬🇧', n:'Reino Unido',    ne:'United Kingdom', c:'Londres',         s:'easy',   r:'europe' },
-  { f:'🇮🇪', n:'Irlanda',        ne:'Ireland',        c:'Dublín',          s:'easy',   r:'europe' },
-  { f:'🇳🇱', n:'Países Bajos',   ne:'Netherlands',    c:'Ámsterdam',       s:'easy',   r:'europe' },
-  { f:'🇧🇪', n:'Bélgica',        ne:'Belgium',        c:'Bruselas',        s:'easy',   r:'europe' },
+    fun:{es:'Su idioma es hablado por más de 250 millones de personas en todo el mundo',en:'Its language is spoken by over 250 million people worldwide'},
+    curr:{es:'Euro',en:'Euro'}, lang:{es:'Portugués',en:'Portuguese'} },
+  { f:'🇬🇧', n:'Reino Unido',    ne:'United Kingdom', c:'Londres',         s:'easy',   r:'europe',
+    curr:{es:'Libra esterlina',en:'Pound sterling'}, lang:{es:'Inglés',en:'English'} },
+  { f:'🇮🇪', n:'Irlanda',        ne:'Ireland',        c:'Dublín',          s:'easy',   r:'europe',
+    curr:{es:'Euro',en:'Euro'}, lang:{es:'Inglés',en:'English'} },
+  { f:'🇳🇱', n:'Países Bajos',   ne:'Netherlands',    c:'Ámsterdam',       s:'easy',   r:'europe',
+    curr:{es:'Euro',en:'Euro'}, lang:{es:'Neerlandés',en:'Dutch'} },
+  { f:'🇧🇪', n:'Bélgica',        ne:'Belgium',        c:'Bruselas',        s:'easy',   r:'europe',
+    curr:{es:'Euro',en:'Euro'}, lang:{es:'Francés',en:'French'} },
   { f:'🇨🇭', n:'Suiza',          ne:'Switzerland',    c:'Berna',           s:'easy',   r:'europe',
-    fun:{es:'Tiene 4 idiomas oficiales: alemán, francés, italiano y romanche',en:'Has 4 official languages: German, French, Italian and Romansh'} },
-  { f:'🇦🇹', n:'Austria',        ne:'Austria',        c:'Viena',           s:'easy',   r:'europe' },
-  { f:'🇸🇪', n:'Suecia',         ne:'Sweden',         c:'Estocolmo',       s:'easy',   r:'europe' },
+    fun:{es:'Tiene 4 idiomas oficiales: alemán, francés, italiano y romanche',en:'Has 4 official languages: German, French, Italian and Romansh'},
+    curr:{es:'Franco suizo',en:'Swiss franc'}, lang:{es:'Alemán',en:'German'} },
+  { f:'🇦🇹', n:'Austria',        ne:'Austria',        c:'Viena',           s:'easy',   r:'europe',
+    curr:{es:'Euro',en:'Euro'}, lang:{es:'Alemán',en:'German'} },
+  { f:'🇸🇪', n:'Suecia',         ne:'Sweden',         c:'Estocolmo',       s:'easy',   r:'europe',
+    curr:{es:'Corona sueca',en:'Swedish krona'}, lang:{es:'Sueco',en:'Swedish'} },
   { f:'🇳🇴', n:'Noruega',        ne:'Norway',         c:'Oslo',            s:'easy',   r:'europe',
-    fun:{es:'El Sol de medianoche brilla durante 76 días al año en el norte del país',en:'The midnight sun shines for 76 days a year in the north of the country'} },
-  { f:'🇩🇰', n:'Dinamarca',      ne:'Denmark',        c:'Copenhague',      s:'easy',   r:'europe' },
-  { f:'🇫🇮', n:'Finlandia',      ne:'Finland',        c:'Helsinki',        s:'easy',   r:'europe' },
+    fun:{es:'El Sol de medianoche brilla durante 76 días al año en el norte del país',en:'The midnight sun shines for 76 days a year in the north of the country'},
+    curr:{es:'Corona noruega',en:'Norwegian krone'}, lang:{es:'Noruego',en:'Norwegian'} },
+  { f:'🇩🇰', n:'Dinamarca',      ne:'Denmark',        c:'Copenhague',      s:'easy',   r:'europe',
+    curr:{es:'Corona danesa',en:'Danish krone'}, lang:{es:'Danés',en:'Danish'} },
+  { f:'🇫🇮', n:'Finlandia',      ne:'Finland',        c:'Helsinki',        s:'easy',   r:'europe',
+    curr:{es:'Euro',en:'Euro'}, lang:{es:'Finlandés',en:'Finnish'} },
 
   // ── EUROPE · MEDIUM ───────────────────────────────────────────────────────
   { f:'🇵🇱', n:'Polonia',               ne:'Poland',              c:'Varsovia',   s:'medium', r:'europe' },
@@ -93,14 +110,19 @@ export const FM_COUNTRIES: Country[] = [
   { f:'🇽🇰', n:'Kosovo',                ne:'Kosovo',              c:'Pristina',   s:'hard',   r:'europe' },
 
   // ── AMERICAS · EASY ───────────────────────────────────────────────────────
-  { f:'🇺🇸', n:'Estados Unidos',  ne:'United States',  c:'Washington D.C.', s:'easy',   r:'americas' },
+  { f:'🇺🇸', n:'Estados Unidos',  ne:'United States',  c:'Washington D.C.', s:'easy',   r:'americas',
+    curr:{es:'Dólar',en:'Dollar'}, lang:{es:'Inglés',en:'English'} },
   { f:'🇨🇦', n:'Canadá',          ne:'Canada',         c:'Ottawa',           s:'easy',   r:'americas',
-    fun:{es:'Tiene la línea costera más larga del mundo',en:'Has the world\'s longest coastline'} },
+    fun:{es:'Tiene la línea costera más larga del mundo',en:'Has the world\'s longest coastline'},
+    curr:{es:'Dólar canadiense',en:'Canadian dollar'}, lang:{es:'Inglés',en:'English'} },
   { f:'🇲🇽', n:'México',          ne:'Mexico',         c:'Ciudad de México', s:'easy',   r:'americas',
-    fun:{es:'Ciudad de México tiene más museos que cualquier otra ciudad del mundo',en:'Mexico City has more museums than any other city in the world'} },
+    fun:{es:'Ciudad de México tiene más museos que cualquier otra ciudad del mundo',en:'Mexico City has more museums than any other city in the world'},
+    curr:{es:'Peso mexicano',en:'Mexican peso'}, lang:{es:'Español',en:'Spanish'} },
   { f:'🇧🇷', n:'Brasil',          ne:'Brazil',         c:'Brasilia',         s:'easy',   r:'americas',
-    fun:{es:'Alberga el río Amazonas, el más caudaloso del mundo',en:'Is home to the Amazon River, the world\'s largest by volume'} },
-  { f:'🇦🇷', n:'Argentina',       ne:'Argentina',      c:'Buenos Aires',     s:'easy',   r:'americas' },
+    fun:{es:'Alberga el río Amazonas, el más caudaloso del mundo',en:'Is home to the Amazon River, the world\'s largest by volume'},
+    curr:{es:'Real',en:'Real'}, lang:{es:'Portugués',en:'Portuguese'} },
+  { f:'🇦🇷', n:'Argentina',       ne:'Argentina',      c:'Buenos Aires',     s:'easy',   r:'americas',
+    curr:{es:'Peso argentino',en:'Argentine peso'}, lang:{es:'Español',en:'Spanish'} },
 
   // ── AMERICAS · MEDIUM ─────────────────────────────────────────────────────
   { f:'🇨🇱', n:'Chile',           ne:'Chile',          c:'Santiago',         s:'medium', r:'americas' },
@@ -134,8 +156,10 @@ export const FM_COUNTRIES: Country[] = [
 
   // ── ASIA · EASY ───────────────────────────────────────────────────────────
   { f:'🇯🇵', n:'Japón',           ne:'Japan',          c:'Tokio',            s:'easy',   r:'asia',
-    fun:{es:'Tiene más de 6.800 islas y la esperanza de vida más alta del mundo',en:'Has over 6,800 islands and the world\'s highest life expectancy'} },
-  { f:'🇨🇳', n:'China',           ne:'China',          c:'Pekín',            s:'easy',   r:'asia' },
+    fun:{es:'Tiene más de 6.800 islas y la esperanza de vida más alta del mundo',en:'Has over 6,800 islands and the world\'s highest life expectancy'},
+    curr:{es:'Yen',en:'Yen'}, lang:{es:'Japonés',en:'Japanese'} },
+  { f:'🇨🇳', n:'China',           ne:'China',          c:'Pekín',            s:'easy',   r:'asia',
+    curr:{es:'Yuan',en:'Yuan'}, lang:{es:'Chino mandarín',en:'Mandarin Chinese'} },
 
   // ── ASIA · MEDIUM ─────────────────────────────────────────────────────────
   { f:'🇮🇳', n:'India',           ne:'India',          c:'Nueva Delhi',      s:'medium', r:'asia',

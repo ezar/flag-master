@@ -14,6 +14,14 @@ interface Props {
   onTimeout?: () => void   // only for 'lightning' mode
 }
 
+function speakText(text: string, lang: string) {
+  if (!('speechSynthesis' in window)) return
+  const utt = new SpeechSynthesisUtterance(text)
+  utt.lang = lang === 'en' ? 'en-US' : 'es-ES'
+  speechSynthesis.cancel()
+  speechSynthesis.speak(utt)
+}
+
 export function FlagStage({ country, mode, hint, onTimeout }: Props) {
   const t         = useT()
   const language  = useGameStore(s => s.language)
@@ -93,14 +101,17 @@ export function FlagStage({ country, mode, hint, onTimeout }: Props) {
 
       {/* country2flag: show country name, hide flag */}
       {mode === 'country2flag' && (
-        <div style={{
-          fontFamily:    "'Playfair Display', serif",
-          fontWeight:    700,
-          fontSize:      24,
-          letterSpacing: '0.01em',
-          padding:       '10px 0',
-        }}>
-          {name}
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:10 }}>
+          <div style={{
+            fontFamily:    "'Playfair Display', serif",
+            fontWeight:    700,
+            fontSize:      24,
+            letterSpacing: '0.01em',
+            padding:       '10px 0',
+          }}>
+            {name}
+          </div>
+          <button onClick={() => speakText(name, language)} style={{ background:'none', border:'none', cursor:'pointer', fontSize:18, opacity:0.6, padding:'4px' }} title="Pronunciar">🔊</button>
         </div>
       )}
 
@@ -117,25 +128,17 @@ export function FlagStage({ country, mode, hint, onTimeout }: Props) {
         </div>
       )}
 
-      {/* capital mode: country name + prompt */}
-      {mode === 'capital' && (
+      {/* capital / currency / language: country name + prompt */}
+      {(mode === 'capital' || mode === 'currency' || mode === 'language') && (
         <>
-          <div style={{
-            fontFamily: "'Playfair Display', serif",
-            fontWeight: 700,
-            fontSize:   22,
-            marginTop:  14,
-          }}>
-            {name}
+          <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:10, marginTop:14 }}>
+            <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:22 }}>
+              {name}
+            </div>
+            <button onClick={() => speakText(name, language)} style={{ background:'none', border:'none', cursor:'pointer', fontSize:16, opacity:0.6, padding:'4px' }} title="Pronunciar">🔊</button>
           </div>
-          <div style={{
-            fontFamily: "'Libre Baskerville', serif",
-            fontStyle:  'italic',
-            color:      'var(--ink-soft)',
-            fontSize:   13,
-            marginTop:  10,
-          }}>
-            {t('game.capital.prompt')}
+          <div style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:'italic', color:'var(--ink-soft)', fontSize:13, marginTop:10 }}>
+            {t(`game.${mode}.prompt`)}
           </div>
         </>
       )}

@@ -158,6 +158,31 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'review.back':    '‹ Inicio',
     'review.all':     'Todas',
 
+    // ── Currency & Language modes ─────────────────────────────────
+    'mode.currency.title':    '💰 Monedas',
+    'mode.currency.desc':     'Identifica la moneda del país',
+    'mode.language.title':    '🗣️ Idiomas',
+    'mode.language.desc':     'Identifica el idioma oficial',
+    'mode.label.currency':    'VII · Monedas',
+    'mode.label.language':    'VIII · Idiomas',
+    'game.currency.prompt':   '¿Cuál es su moneda?',
+    'game.language.prompt':   '¿Cuál es su idioma oficial?',
+
+    // ── Daily challenge ───────────────────────────────────────────
+    'daily.title':        'Desafío Diario',
+    'daily.dayN':         'Día #{{n}}',
+    'daily.subtitle':     'Una bandera al día · 6 intentos',
+    'daily.attempt':      'Intento {{n}} de 6',
+    'daily.correct':      '¡Acertaste!',
+    'daily.failed':       'Sin más intentos',
+    'daily.answer':       'Era {{name}}',
+    'daily.alreadyPlayed':'Ya jugaste hoy',
+    'daily.comeback':     'Vuelve mañana',
+    'daily.share':        'Compartir resultado',
+    'daily.copied':       '¡Copiado!',
+    'daily.back':         '‹ Inicio',
+    'daily.hint':         'La imagen se revela con cada intento fallido',
+
     // ── World Map ─────────────────────────────────────────────────
     'map.title':      'Atlas del explorador',
     'map.subtitle':   'Conquista el mundo',
@@ -327,6 +352,31 @@ export const TRANSLATIONS: Record<Lang, Record<string, string>> = {
     'review.title':   'Flag Review',
     'review.back':    '‹ Home',
     'review.all':     'All',
+
+    // ── Currency & Language modes ─────────────────────────────────
+    'mode.currency.title':    '💰 Currencies',
+    'mode.currency.desc':     'Identify the country\'s currency',
+    'mode.language.title':    '🗣️ Languages',
+    'mode.language.desc':     'Identify the official language',
+    'mode.label.currency':    'VII · Currencies',
+    'mode.label.language':    'VIII · Languages',
+    'game.currency.prompt':   'What is its currency?',
+    'game.language.prompt':   'What is its official language?',
+
+    // ── Daily challenge ───────────────────────────────────────────
+    'daily.title':        'Daily Challenge',
+    'daily.dayN':         'Day #{{n}}',
+    'daily.subtitle':     'One flag a day · 6 attempts',
+    'daily.attempt':      'Attempt {{n}} of 6',
+    'daily.correct':      'Correct!',
+    'daily.failed':       'No more attempts',
+    'daily.answer':       'It was {{name}}',
+    'daily.alreadyPlayed':'Already played today',
+    'daily.comeback':     'Come back tomorrow',
+    'daily.share':        'Share result',
+    'daily.copied':       'Copied!',
+    'daily.back':         '‹ Home',
+    'daily.hint':         'Image reveals with each wrong attempt',
 
     // ── World Map ─────────────────────────────────────────────────
     'map.title':      "Explorer's Atlas",

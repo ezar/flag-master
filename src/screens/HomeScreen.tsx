@@ -24,7 +24,7 @@ function GoldDivider() {
 export function HomeScreen() {
   const {
     stage, mode, regionFilter,
-    setStage, setMode, setRegionFilter, startGame, goStudy,
+    setStage, setMode, setRegionFilter, startGame, goStudy, goDaily,
     bestStreak, totalGames, totalCorrect, totalQuestions,
     dailyStreak, goStats, goReview, goProfiles, language,
     profiles, activeProfileId,
@@ -54,6 +54,8 @@ export function HomeScreen() {
     { id: 'capital',      roman: 'IV',   title: t('mode.capital.title'),      desc: t('mode.capital.desc')      },
     { id: 'type',         roman: 'V',    title: t('mode.type.title'),         desc: t('mode.type.desc')         },
     { id: 'lightning',    roman: 'VI',   title: t('mode.lightning.title'),    desc: t('mode.lightning.desc')    },
+    { id: 'currency' as GameMode, roman: 'VII',  title: t('mode.currency.title'), desc: t('mode.currency.desc') },
+    { id: 'language' as GameMode, roman: 'VIII', title: t('mode.language.title'), desc: t('mode.language.desc') },
     { id: 'study' as GameMode, roman: '◈', title: t('study.title'), desc: language === 'en' ? 'Flash cards — know it / don\'t know it' : 'Flash cards — lo sé / no lo sé', study: true },
   ]
 
@@ -206,6 +208,7 @@ export function HomeScreen() {
             {/* Nav buttons — big, prominent */}
             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
               {[
+                { icon:'🌍', label: t('daily.title'), desc: language==='en' ? 'One flag a day · 6 attempts'       : 'Una bandera al día · 6 intentos',    action: goDaily  },
                 { icon:'📊', label: t('home.stats'),  desc: language==='en' ? 'Mastery by region, hardest flags' : 'Maestría por región, más difíciles', action: goStats  },
                 { icon:'📖', label: t('home.review'), desc: language==='en' ? 'Browse all 147 flags'             : 'Navega las 147 banderas',            action: goReview },
               ].map(({ icon, label, desc, action }) => (
@@ -328,8 +331,8 @@ export function HomeScreen() {
 
         <StatCard bestStreak={bestStreak} dailyStreak={dailyStreak} totalGames={totalGames} totalCorrect={totalCorrect} totalQuestions={totalQuestions} />
 
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8, marginTop:8 }}>
-          {[{ label:`📊 ${t('home.stats')}`, action:goStats }, { label:`📖 ${t('home.review')}`, action:goReview }].map(({ label, action }) => (
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, marginTop:8 }}>
+          {[{ label:`🌍 ${t('daily.title')}`, action:goDaily }, { label:`📊 ${t('home.stats')}`, action:goStats }, { label:`📖 ${t('home.review')}`, action:goReview }].map(({ label, action }) => (
             <button key={label} onClick={action} style={{ border:'1px solid var(--rule)', background:'var(--surface)', padding:'10px 8px', cursor:'pointer', fontFamily:"'DM Mono', monospace", fontSize:9.5, letterSpacing:'0.18em', color:'var(--ink-soft)', textTransform:'uppercase', transition:'all .15s' }}>
               {label}
             </button>

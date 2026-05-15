@@ -1,13 +1,13 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { FM_COUNTRIES, FM_REGIONS, type Country } from '../data/countries'
-import { getPool, shuffle, pickDistractors, type Stage } from '../engine/questionEngine'
+import { getPool, shuffle, pickDistractors, getWeightedPool, type Stage } from '../engine/questionEngine'
 import { setAudioEnabled } from '../audio/audioEngine'
 import { type Lang } from '../i18n/translations'
 
 export type { Stage }
-export type GameMode = 'flag2country' | 'country2flag' | 'hint' | 'capital' | 'type' | 'lightning'
-export type Screen   = 'home' | 'game' | 'results' | 'stats' | 'review' | 'profiles' | 'study'
+export type GameMode = 'flag2country' | 'country2flag' | 'hint' | 'capital' | 'type' | 'lightning' | 'currency' | 'language'
+export type Screen   = 'home' | 'game' | 'results' | 'stats' | 'review' | 'profiles' | 'study' | 'daily'
 
 export type MasteryEntry = { seen: number; hits: number }
 export type MasteryMap   = Record<string, MasteryEntry>
@@ -29,6 +29,7 @@ export interface Profile {
   masteryCountries: MasteryMap
   dailyStreak:      number
   lastPlayedDate:   string | null
+  lastDailyDate:    string | null   // when last daily challenge was played
 }
 
 export const PROFILE_AVATARS = [
@@ -48,6 +49,7 @@ const DEFAULT_PROFILE_STATS: Omit<Profile, 'id' | 'name' | 'avatar'> = {
   masteryCountries: {},
   dailyStreak:      0,
   lastPlayedDate:   null,
+  lastDailyDate:    null,
 }
 
 const POINTS_BASE: Record<Stage, number> = { easy: 10, medium: 15, hard: 20 }
@@ -101,6 +103,8 @@ interface GameState {
   totalQuestions:   number
   masteryCountries: MasteryMap
 
+  lastDailyDate:    string | null
+
   // Session (never persisted)
   pool:           Country[]
   questions:      Country[]
@@ -139,6 +143,8 @@ interface GameActions {
   setDarkMode:     (v: boolean) => void
   setNotifEnabled: (v: boolean) => void
   goStudy:         () => void
+  goDaily:         () => void
+  setDailyResult:  (date: string) => void
   setRegionFilter: (r: string | null) => void
 
   resetProgress: () => void
@@ -165,6 +171,7 @@ function syncToProfile(state: GameState): Profile[] {
     masteryCountries: state.masteryCountries,
     dailyStreak:      state.dailyStreak,
     lastPlayedDate:   state.lastPlayedDate,
+    lastDailyDate:    state.lastDailyDate,
   })
 }
 
@@ -190,6 +197,7 @@ export const useGameStore = create<GameState & GameActions>()(
       regionFilter:     null,
       dailyStreak:      0,
       lastPlayedDate:   null,
+      lastDailyDate:    null,
       bestStreak:       0,
       totalGames:       0,
       totalCorrect:     0,
@@ -242,6 +250,7 @@ export const useGameStore = create<GameState & GameActions>()(
           masteryCountries: target.masteryCountries,
           dailyStreak:      target.dailyStreak,
           lastPlayedDate:   target.lastPlayedDate,
+          lastDailyDate:    target.lastDailyDate,
         })
       },
 
@@ -283,12 +292,17 @@ export const useGameStore = create<GameState & GameActions>()(
 
       // ── Game actions ────────────────────────────────────────────────────
       startGame: () => {
-        const { stage, regionFilter } = get()
-        const pool        = getPool(stage, FM_COUNTRIES)
-        const source      = regionFilter ? pool.filter(c => c.r === regionFilter) : pool
+        const { stage, mode, regionFilter, masteryCountries } = get()
+        // Base pool filtered by stage + mode-specific data requirements
+        let pool = getPool(stage, FM_COUNTRIES)
+        if (mode === 'currency') pool = pool.filter(c => c.curr)
+        if (mode === 'language') pool = pool.filter(c => c.lang)
+        // Adaptive weighting: struggling countries appear twice
+        const source       = regionFilter ? pool.filter(c => c.r === regionFilter) : pool
         const questionPool = source.length >= 4 ? source : pool
-        const questions   = shuffle(questionPool).slice(0, Math.min(QUESTIONS_PER_ROUND, questionPool.length))
-        const current     = questions[0]
+        const weighted     = getWeightedPool(questionPool, masteryCountries)
+        const questions    = shuffle(weighted).slice(0, Math.min(QUESTIONS_PER_ROUND, weighted.length))
+        const current      = questions[0]
         set({
           screen:         'game',
           pool,
@@ -351,6 +365,13 @@ export const useGameStore = create<GameState & GameActions>()(
       goHome:    () => set({ screen: 'home' }),
       goStats:   () => set({ screen: 'stats' }),
       goReview:  () => set({ screen: 'review' }),
+      goDaily:   () => set({ screen: 'daily' }),
+      setDailyResult: (date) => {
+        set(state => {
+          const updated = { lastDailyDate: date }
+          return { ...updated, profiles: syncToProfile({ ...state, ...updated }) }
+        })
+      },
 
       setStage: (stage) => {
         set(state => ({ stage, profiles: syncToProfile({ ...state, stage }) }))
@@ -398,6 +419,7 @@ export const useGameStore = create<GameState & GameActions>()(
         regionFilter:     state.regionFilter,
         dailyStreak:      state.dailyStreak,
         lastPlayedDate:   state.lastPlayedDate,
+        lastDailyDate:    state.lastDailyDate,
         bestStreak:       state.bestStreak,
         totalGames:       state.totalGames,
         totalCorrect:     state.totalCorrect,

@@ -111,7 +111,10 @@ export function OptionsGrid({ options, mode, correctName, onAnswer }: Props) {
         if (revealed && isSelected && !isCorrect) { bg = 'var(--err-bg)'; border = '1px solid var(--err)'; color = '#fbe9e9' }
 
         // Label shown in the button body
-        const label = mode === 'capital' ? opt.c : (language === 'en' ? opt.ne : opt.n)
+        const label = mode === 'capital'   ? opt.c
+          : mode === 'currency' ? (language === 'en' ? (opt.curr?.en ?? opt.c) : (opt.curr?.es ?? opt.c))
+          : mode === 'language' ? (language === 'en' ? (opt.lang?.en ?? opt.c) : (opt.lang?.es ?? opt.c))
+          : (language === 'en' ? opt.ne : opt.n)
 
         const letterColor = revealed && (isCorrect || (isSelected && !isCorrect))
           ? '#fff'

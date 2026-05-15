@@ -64,3 +64,26 @@ export function pickDistractors(correct: Country, pool: Country[], n: number): C
   const others = pool.filter(c => c.n !== correct.n)
   return shuffle(others).slice(0, n)
 }
+
+/** Weighted pool: struggling countries (seen≥3, hit rate<40%) appear twice */
+export function getWeightedPool(
+  pool: Country[],
+  mastery: Record<string, { seen: number; hits: number }>
+): Country[] {
+  const result: Country[] = []
+  for (const c of pool) {
+    result.push(c)
+    const m = mastery[c.n]
+    if (m && m.seen >= 3 && m.hits / m.seen < 0.4) result.push(c)
+  }
+  return result
+}
+
+/** Deterministic daily country from ISO date string */
+export function getDailyCountry(countries: Country[], dateStr: string): Country {
+  let hash = 0
+  for (let i = 0; i < dateStr.length; i++) {
+    hash = (Math.imul(hash, 31) + dateStr.charCodeAt(i)) | 0
+  }
+  return countries[Math.abs(hash) % countries.length]
+}

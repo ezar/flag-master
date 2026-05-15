@@ -163,8 +163,20 @@ export function StudyScreen() {
                       animate={{ opacity:1, y:0 }}
                       style={{ marginTop:20 }}
                     >
-                      <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize: isDesktop ? 28 : 22, color:'var(--ink)' }}>
-                        {name}
+                      <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:10 }}>
+                        <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize: isDesktop ? 28 : 22, color:'var(--ink)' }}>
+                          {name}
+                        </div>
+                        <button
+                          onClick={() => {
+                            if (!('speechSynthesis' in window)) return
+                            const utt = new SpeechSynthesisUtterance(name ?? '')
+                            utt.lang = language === 'en' ? 'en-US' : 'es-ES'
+                            speechSynthesis.cancel(); speechSynthesis.speak(utt)
+                          }}
+                          style={{ background:'none', border:'none', cursor:'pointer', fontSize:20, opacity:0.6, padding:'4px' }}
+                          title="Pronunciar"
+                        >🔊</button>
                       </div>
                       <div style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:'italic', fontSize:13, color:'var(--ink-soft)', marginTop:6 }}>
                         {current.country.c}
