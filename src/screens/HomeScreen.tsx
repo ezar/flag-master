@@ -33,17 +33,17 @@ export function HomeScreen() {
 
   const activeProfile = profiles.find(p => p.id === activeProfileId)
 
-  const audioEnabled = useGameStore(s => s.audioEnabled)
+  const musicEnabled = useGameStore(s => s.musicEnabled)
   const t            = useT()
   const isDesktop    = useDesktop()
   const [settingsOpen, setSettingsOpen] = useState(false)
 
-  // Ambient music — start on mount, stop on unmount or audio off
+  // Ambient music — start on mount, stop on unmount or music disabled
   useEffect(() => {
-    if (audioEnabled) startAmbient()
+    if (musicEnabled) startAmbient()
     else stopAmbient()
     return () => stopAmbient()
-  }, [audioEnabled])
+  }, [musicEnabled])
 
   const basePool  = getPool(stage, FM_COUNTRIES)
   const poolCount = regionFilter

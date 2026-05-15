@@ -81,6 +81,7 @@ interface GameState {
 
   // Device preferences (shared across profiles)
   audioEnabled:    boolean
+  musicEnabled:    boolean
   language:        Lang
   darkMode:        boolean
   notifEnabled:    boolean
@@ -139,6 +140,7 @@ interface GameActions {
   setStage:        (s: Stage) => void
   setMode:         (m: GameMode) => void
   setAudio:        (v: boolean) => void
+  setMusic:        (v: boolean) => void
   setLanguage:     (l: Lang) => void
   setDarkMode:     (v: boolean) => void
   setNotifEnabled: (v: boolean) => void
@@ -183,6 +185,7 @@ export const useGameStore = create<GameState & GameActions>()(
 
       // Device prefs
       audioEnabled:   true,
+      musicEnabled:   true,
       language:       'es' as Lang,
       darkMode:       false,
       notifEnabled:   false,
@@ -386,6 +389,7 @@ export const useGameStore = create<GameState & GameActions>()(
         setAudioEnabled(v)
         set({ audioEnabled: v })
       },
+      setMusic: (v) => set({ musicEnabled: v }),
       setLanguage:     (language)    => set({ language }),
       setDarkMode:     (darkMode)    => set({ darkMode }),
       setNotifEnabled: (notifEnabled)=> set({ notifEnabled }),
@@ -408,6 +412,7 @@ export const useGameStore = create<GameState & GameActions>()(
       name: 'flagmaster_v3',
       partialize: (state) => ({
         audioEnabled:     state.audioEnabled,
+        musicEnabled:     state.musicEnabled,
         language:         state.language,
         darkMode:         state.darkMode,
         notifEnabled:     state.notifEnabled,

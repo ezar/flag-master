@@ -10,7 +10,7 @@ interface Props {
 }
 
 export function SettingsModal({ open, onClose }: Props) {
-  const { audioEnabled, stage, language, darkMode, notifEnabled, setAudio, setStage, setLanguage, setDarkMode, setNotifEnabled, resetProgress } = useGameStore()
+  const { audioEnabled, musicEnabled, stage, language, darkMode, notifEnabled, setAudio, setMusic, setStage, setLanguage, setDarkMode, setNotifEnabled, resetProgress } = useGameStore()
   const t = useT()
   const [confirmReset, setConfirmReset] = useState(false)
 
@@ -180,6 +180,17 @@ export function SettingsModal({ open, onClose }: Props) {
                     boxShadow:    '0 1px 4px rgba(26,18,9,0.3)',
                     transition:   'left 0.2s ease',
                   }}/>
+                </button>
+              </div>
+
+              {/* Music */}
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'16px 0', borderBottom:'1px solid var(--rule)' }}>
+                <div>
+                  <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:16, color:'var(--ink)' }}>{t('settings.music')}</div>
+                  <div style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:'italic', fontSize:12, color:'var(--ink-soft)', marginTop:2 }}>{t('settings.music.desc')}</div>
+                </div>
+                <button onClick={() => setMusic(!musicEnabled)} style={{ width:52, height:28, borderRadius:14, border:'none', background: musicEnabled ? 'var(--gold)' : 'var(--rule)', cursor:'pointer', position:'relative', transition:'background 0.2s ease', flexShrink:0 }}>
+                  <div style={{ position:'absolute', top:3, left: musicEnabled ? 27 : 3, width:22, height:22, borderRadius:'50%', background:'var(--toggle-thumb)', boxShadow:'0 1px 4px rgba(26,18,9,0.3)', transition:'left 0.2s ease' }}/>
                 </button>
               </div>
 
