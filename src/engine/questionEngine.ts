@@ -79,11 +79,11 @@ export function getWeightedPool(
   return result
 }
 
-/** Deterministic daily country from ISO date string */
+/** Deterministic daily country — cycles through all countries, no repeats for 147 days */
 export function getDailyCountry(countries: Country[], dateStr: string): Country {
-  let hash = 0
-  for (let i = 0; i < dateStr.length; i++) {
-    hash = (Math.imul(hash, 31) + dateStr.charCodeAt(i)) | 0
-  }
-  return countries[Math.abs(hash) % countries.length]
+  const epoch  = Date.UTC(2026, 0, 1)
+  const day    = Math.floor((new Date(dateStr).getTime() - epoch) / 86_400_000)
+  // Multiplicative skip: gcd(43, 147) = 1 → full 147-day cycle with no repeats
+  const index  = (((day * 43) % countries.length) + countries.length) % countries.length
+  return countries[index]
 }

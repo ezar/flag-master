@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { startAmbient, stopAmbient } from '../audio/audioEngine'
 import { CompassRose }    from '../components/CompassRose'
 import { StatCard }       from '../components/StatCard'
 import { WorldMap }       from '../components/WorldMap'
@@ -32,9 +33,17 @@ export function HomeScreen() {
 
   const activeProfile = profiles.find(p => p.id === activeProfileId)
 
-  const t         = useT()
-  const isDesktop = useDesktop()
+  const audioEnabled = useGameStore(s => s.audioEnabled)
+  const t            = useT()
+  const isDesktop    = useDesktop()
   const [settingsOpen, setSettingsOpen] = useState(false)
+
+  // Ambient music — start on mount, stop on unmount or audio off
+  useEffect(() => {
+    if (audioEnabled) startAmbient()
+    else stopAmbient()
+    return () => stopAmbient()
+  }, [audioEnabled])
 
   const basePool  = getPool(stage, FM_COUNTRIES)
   const poolCount = regionFilter
