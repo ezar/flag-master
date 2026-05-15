@@ -18,10 +18,11 @@ export function StudyScreen() {
   const t         = useT()
   const isDesktop = useDesktop()
 
-  // Build initial deck
+  // Build initial deck — if region-filtered pool too small, use full stage pool
   const initialDeck = useMemo<CardState[]>(() => {
-    const pool = getPool(stage, FM_COUNTRIES)
-    const src  = regionFilter ? pool.filter(c => c.r === regionFilter) : pool
+    const pool      = getPool(stage, FM_COUNTRIES)
+    const filtered  = regionFilter ? pool.filter(c => c.r === regionFilter) : pool
+    const src       = filtered.length >= 4 ? filtered : pool
     return shuffle(src).map(country => ({ country, attempts: 0, known: false }))
   }, [stage, regionFilter])
 
