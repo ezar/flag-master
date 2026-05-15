@@ -77,7 +77,7 @@ export function HomeScreen() {
       </div>
 
       {/* Region filter pills */}
-      <div style={{ display:'flex', gap:6, flexWrap:'wrap', marginBottom:10 }}>
+      <div style={{ display:'flex', gap:6, flexWrap:'nowrap', overflowX:'auto', marginBottom:10, scrollbarWidth:'none', WebkitOverflowScrolling:'touch' } as React.CSSProperties}>
         {regionPills.map(pill => (
           <button
             key={String(pill.id)}
