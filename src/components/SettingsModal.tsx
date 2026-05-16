@@ -157,6 +157,9 @@ export function SettingsModal({ open, onClose }: Props) {
                 {/* Toggle */}
                 <button
                   onClick={() => setAudio(!audioEnabled)}
+                  role="switch"
+                  aria-checked={audioEnabled}
+                  aria-label={t('settings.audio')}
                   style={{
                     width:        52,
                     height:       28,
@@ -189,7 +192,7 @@ export function SettingsModal({ open, onClose }: Props) {
                   <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:16, color:'var(--ink)' }}>{t('settings.music')}</div>
                   <div style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:'italic', fontSize:12, color:'var(--ink-soft)', marginTop:2 }}>{t('settings.music.desc')}</div>
                 </div>
-                <button onClick={() => setMusic(!musicEnabled)} style={{ width:52, height:28, borderRadius:14, border:'none', background: musicEnabled ? 'var(--gold)' : 'var(--rule)', cursor:'pointer', position:'relative', transition:'background 0.2s ease', flexShrink:0 }}>
+                <button onClick={() => setMusic(!musicEnabled)} role="switch" aria-checked={musicEnabled} aria-label={t('settings.music')} style={{ width:52, height:28, borderRadius:14, border:'none', background: musicEnabled ? 'var(--gold)' : 'var(--rule)', cursor:'pointer', position:'relative', transition:'background 0.2s ease', flexShrink:0 }}>
                   <div style={{ position:'absolute', top:3, left: musicEnabled ? 27 : 3, width:22, height:22, borderRadius:'50%', background:'var(--toggle-thumb)', boxShadow:'0 1px 4px rgba(26,18,9,0.3)', transition:'left 0.2s ease' }}/>
                 </button>
               </div>
@@ -200,7 +203,7 @@ export function SettingsModal({ open, onClose }: Props) {
                   <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:16, color:'var(--ink)' }}>{t('settings.dark')}</div>
                   <div style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:'italic', fontSize:12, color:'var(--ink-soft)', marginTop:2 }}>{t('settings.dark.desc')}</div>
                 </div>
-                <button onClick={() => setDarkMode(!darkMode)} style={{ width:52, height:28, borderRadius:14, border:'none', background: darkMode ? 'var(--gold)' : 'var(--rule)', cursor:'pointer', position:'relative', transition:'background 0.2s ease', flexShrink:0 }}>
+                <button onClick={() => setDarkMode(!darkMode)} role="switch" aria-checked={darkMode} aria-label={t('settings.dark')} style={{ width:52, height:28, borderRadius:14, border:'none', background: darkMode ? 'var(--gold)' : 'var(--rule)', cursor:'pointer', position:'relative', transition:'background 0.2s ease', flexShrink:0 }}>
                   <div style={{ position:'absolute', top:3, left: darkMode ? 27 : 3, width:22, height:22, borderRadius:'50%', background:'var(--toggle-thumb)', boxShadow:'0 1px 4px rgba(26,18,9,0.3)', transition:'left 0.2s ease' }}/>
                 </button>
               </div>
@@ -215,7 +218,7 @@ export function SettingsModal({ open, onClose }: Props) {
                   {Notification.permission === 'denied' ? (
                     <span style={{ fontFamily:"'DM Mono', monospace", fontSize:9, color:'var(--err)', letterSpacing:'0.12em' }}>{t('settings.notif.denied')}</span>
                   ) : (
-                    <button onClick={handleNotifToggle} style={{ width:52, height:28, borderRadius:14, border:'none', background: notifEnabled ? 'var(--gold)' : 'var(--rule)', cursor:'pointer', position:'relative', transition:'background 0.2s ease', flexShrink:0 }}>
+                    <button onClick={handleNotifToggle} role="switch" aria-checked={notifEnabled} aria-label={t('settings.notif')} style={{ width:52, height:28, borderRadius:14, border:'none', background: notifEnabled ? 'var(--gold)' : 'var(--rule)', cursor:'pointer', position:'relative', transition:'background 0.2s ease', flexShrink:0 }}>
                       <div style={{ position:'absolute', top:3, left: notifEnabled ? 27 : 3, width:22, height:22, borderRadius:'50%', background:'var(--toggle-thumb)', boxShadow:'0 1px 4px rgba(26,18,9,0.3)', transition:'left 0.2s ease' }}/>
                     </button>
                   )}

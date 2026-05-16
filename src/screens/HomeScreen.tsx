@@ -142,14 +142,24 @@ export function HomeScreen() {
   )
 
   const zarparBtn = (
-    <motion.button
-      onClick={startGame}
-      style={{ display:'block', width:'100%', marginTop:22, background:'var(--chrome-bg)', color:'var(--gold)', border:'none', padding:'16px 8px', fontFamily:"'DM Mono', monospace", fontSize:11, letterSpacing:'0.32em', textTransform:'uppercase', cursor:'pointer', boxShadow:'0 6px 18px -10px rgba(26,18,9,0.6)' }}
-      whileHover={{ scale:1.02, boxShadow:'0 12px 28px -10px rgba(26,18,9,0.7)' }}
-      whileTap={{ scale:0.97 }}
-    >
-      {t('home.sail')}
-    </motion.button>
+    <>
+      <motion.button
+        onClick={startGame}
+        style={{ display:'block', width:'100%', marginTop:22, background:'var(--chrome-bg)', color:'var(--gold)', border:'none', padding:'16px 8px', fontFamily:"'DM Mono', monospace", fontSize:11, letterSpacing:'0.32em', textTransform:'uppercase', cursor:'pointer', boxShadow:'0 6px 18px -10px rgba(26,18,9,0.6)' }}
+        whileHover={{ scale:1.02, boxShadow:'0 12px 28px -10px rgba(26,18,9,0.7)' }}
+        whileTap={{ scale:0.97 }}
+      >
+        {t('home.sail')}
+      </motion.button>
+      {totalGames === 0 && (
+        <div style={{ textAlign:'center', marginTop:10, animation:'hint-bounce 1.4s ease-in-out infinite' }}>
+          <span style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:'italic', fontSize:12, color:'var(--gold)', opacity:0.85 }}>
+            {language === 'en' ? '✦ Tap to start your first game!' : '✦ ¡Pulsa para empezar tu primera partida!'}
+          </span>
+        </div>
+      )}
+      <style>{`@keyframes hint-bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }`}</style>
+    </>
   )
 
   // ── DESKTOP: two-column layout ─────────────────────────────────────────

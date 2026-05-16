@@ -32,6 +32,7 @@ export function GameScreen() {
   const [writeValue,        setWriteValue]         = useState('')
   const [writeFeedback,     setWriteFeedback]      = useState<string | null>(null)
   const [quitConfirm,       setQuitConfirm]        = useState(false)
+  const [keyOption,         setKeyOption]          = useState<typeof currentOptions[0] | null>(null)
 
   // Score count-up animation
   const [displayScore, setDisplayScore] = useState(score)
@@ -50,6 +51,26 @@ export function GameScreen() {
     }
     requestAnimationFrame(step)
   }, [score])
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement) return  // don't intercept typing
+      if (e.key === 'Escape') { setQuitConfirm(q => !q); return }
+      if (e.key === 'Enter' && answered) { handleNext(); return }
+      if (answered || mode === 'type') return
+      const idx = ['1','2','3','4'].indexOf(e.key)
+      if (idx !== -1 && currentOptions[idx]) {
+        setKeyOption(currentOptions[idx])
+        setTimeout(() => setKeyOption(null), 50)  // pulse then reset
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [answered, mode, currentOptions, quitConfirm])
+
+  // Reset keyboard option when question changes
+  useEffect(() => { setKeyOption(null) }, [qIndex])
 
   // Streak pulse
   const streakRef   = useRef<HTMLDivElement>(null)
@@ -176,7 +197,7 @@ export function GameScreen() {
       )}
     </div>
   ) : (
-    <OptionsGrid key={qIndex} options={currentOptions} mode={mode} correctName={country.n} onAnswer={handleAnswer} />
+    <OptionsGrid key={qIndex} options={currentOptions} mode={mode} correctName={country.n} onAnswer={handleAnswer} triggerOption={keyOption} />
   )
 
   const feedbackAndNext = (
