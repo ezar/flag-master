@@ -64,3 +64,12 @@ body.dark {
   --rule:       rgba(240,230,204,0.12);
   --shadow:     0 1px 0 rgba(0,0,0,0.4), 0 18px 30px -22px rgba(0,0,0,0.7);
 }
+
+/* ── Hide scrollbars globally (scroll still works) ── */
+* {
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE/Edge */
+}
+*::-webkit-scrollbar {
+  display: none;                /* Chrome/Safari */
+}

@@ -203,7 +203,7 @@ export function HomeScreen() {
           <div style={{ position:'relative', zIndex:1, display:'flex', flexDirection:'column', gap:20, flex:1 }}>
 
             {/* Compass */}
-            <CompassRose size={150} />
+            <CompassRose size={120} />
 
             {/* Brand */}
             <div style={{ textAlign:'center' }}>
