@@ -2,11 +2,12 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { FM_COUNTRIES, FM_REGIONS, type Country } from '../data/countries'
 import { getPool, shuffle, pickDistractors, getWeightedPool, type Stage } from '../engine/questionEngine'
+import { checkNewAchievements } from '../data/achievements'
 import { setAudioEnabled } from '../audio/audioEngine'
 import { type Lang } from '../i18n/translations'
 
 export type { Stage }
-export type GameMode = 'flag2country' | 'country2flag' | 'hint' | 'capital' | 'type' | 'lightning' | 'currency' | 'language'
+export type GameMode = 'flag2country' | 'country2flag' | 'hint' | 'capital' | 'type' | 'lightning' | 'currency' | 'language' | 'marathon'
 export type Screen   = 'home' | 'game' | 'results' | 'stats' | 'review' | 'profiles' | 'study' | 'daily'
 
 export type MasteryEntry = { seen: number; hits: number }
@@ -29,7 +30,8 @@ export interface Profile {
   masteryCountries: MasteryMap
   dailyStreak:      number
   lastPlayedDate:   string | null
-  lastDailyDate:    string | null   // when last daily challenge was played
+  lastDailyDate:    string | null
+  achievements:     string[]
 }
 
 export const PROFILE_AVATARS = [
@@ -50,6 +52,7 @@ const DEFAULT_PROFILE_STATS: Omit<Profile, 'id' | 'name' | 'avatar'> = {
   dailyStreak:      0,
   lastPlayedDate:   null,
   lastDailyDate:    null,
+  achievements:     [],
 }
 
 const POINTS_BASE: Record<Stage, number> = { easy: 10, medium: 15, hard: 20 }
@@ -105,8 +108,11 @@ interface GameState {
   masteryCountries: MasteryMap
 
   lastDailyDate:    string | null
+  achievements:     string[]
 
   // Session (never persisted)
+  lives:               number
+  pendingAchievements: string[]
   pool:           Country[]
   questions:      Country[]
   qIndex:         number
@@ -144,9 +150,10 @@ interface GameActions {
   setLanguage:     (l: Lang) => void
   setDarkMode:     (v: boolean) => void
   setNotifEnabled: (v: boolean) => void
-  goStudy:         () => void
-  goDaily:         () => void
-  setDailyResult:  (date: string) => void
+  goStudy:             () => void
+  goDaily:             () => void
+  setDailyResult:      (date: string) => void
+  dismissAchievements: () => void
   setRegionFilter: (r: string | null) => void
 
   resetProgress: () => void
@@ -174,6 +181,7 @@ function syncToProfile(state: GameState): Profile[] {
     dailyStreak:      state.dailyStreak,
     lastPlayedDate:   state.lastPlayedDate,
     lastDailyDate:    state.lastDailyDate,
+    achievements:     state.achievements,
   })
 }
 
@@ -201,6 +209,7 @@ export const useGameStore = create<GameState & GameActions>()(
       dailyStreak:      0,
       lastPlayedDate:   null,
       lastDailyDate:    null,
+      achievements:     [] as string[],
       bestStreak:       0,
       totalGames:       0,
       totalCorrect:     0,
@@ -208,6 +217,8 @@ export const useGameStore = create<GameState & GameActions>()(
       masteryCountries: {},
 
       // Session
+      lives:               0,
+      pendingAchievements: [] as string[],
       pool:           [],
       questions:      [],
       qIndex:         0,
@@ -254,6 +265,7 @@ export const useGameStore = create<GameState & GameActions>()(
           dailyStreak:      target.dailyStreak,
           lastPlayedDate:   target.lastPlayedDate,
           lastDailyDate:    target.lastDailyDate,
+          achievements:     target.achievements,
         })
       },
 
@@ -296,20 +308,32 @@ export const useGameStore = create<GameState & GameActions>()(
       // ── Game actions ────────────────────────────────────────────────────
       startGame: () => {
         const { stage, mode, regionFilter, masteryCountries } = get()
-        // Base pool filtered by stage + mode-specific data requirements
         let pool = getPool(stage, FM_COUNTRIES)
         if (mode === 'currency') pool = pool.filter(c => c.curr)
         if (mode === 'language') pool = pool.filter(c => c.lang)
-        // Adaptive weighting: struggling countries appear twice
-        const source       = regionFilter ? pool.filter(c => c.r === regionFilter) : pool
-        const questionPool = source.length >= 4 ? source : pool
-        const weighted     = getWeightedPool(questionPool, masteryCountries)
-        const questions    = shuffle(weighted).slice(0, Math.min(QUESTIONS_PER_ROUND, weighted.length))
-        const current      = questions[0]
+
+        let questions: Country[]
+        let lives = 0
+
+        if (mode === 'marathon') {
+          // Large repeating pool — effectively infinite for a session
+          const repeats = Math.max(3, Math.ceil(150 / pool.length))
+          questions = Array.from({ length: repeats }, () => shuffle(pool)).flat()
+          lives = 3
+        } else {
+          const source       = regionFilter ? pool.filter(c => c.r === regionFilter) : pool
+          const questionPool = source.length >= 4 ? source : pool
+          const weighted     = getWeightedPool(questionPool, masteryCountries)
+          questions          = shuffle(weighted).slice(0, Math.min(QUESTIONS_PER_ROUND, weighted.length))
+        }
+
+        const current = questions[0]
         set({
-          screen:         'game',
+          screen:              'game',
           pool,
           questions,
+          lives,
+          pendingAchievements: [],
           qIndex:         0,
           currentCountry: current,
           currentOptions: buildOptions(current, pool),
@@ -323,7 +347,8 @@ export const useGameStore = create<GameState & GameActions>()(
       },
 
       nextQuestion: () => {
-        const { qIndex, questions, pool } = get()
+        const { qIndex, questions, pool, mode, lives } = get()
+        if (mode === 'marathon' && lives === 0) { get().finishGame(); return }
         const next = qIndex + 1
         if (next >= questions.length) { get().finishGame(); return }
         const current = questions[next]
@@ -331,7 +356,7 @@ export const useGameStore = create<GameState & GameActions>()(
       },
 
       answer: (isCorrect: boolean) => {
-        const { stage, score, streak, maxStreak, correct, wrongList, currentCountry, masteryCountries } = get()
+        const { stage, score, streak, maxStreak, correct, wrongList, currentCountry, masteryCountries, mode, lives } = get()
         const updatedMastery = currentCountry ? {
           ...masteryCountries,
           [currentCountry.n]: {
@@ -343,25 +368,36 @@ export const useGameStore = create<GameState & GameActions>()(
           const newStreak = streak + 1
           set({ score: score + POINTS_BASE[stage] + streak * 2, streak: newStreak, maxStreak: Math.max(maxStreak, newStreak), correct: correct + 1, answered: true, masteryCountries: updatedMastery })
         } else {
-          set({ streak: 0, answered: true, wrongList: currentCountry ? [...wrongList, currentCountry] : wrongList, masteryCountries: updatedMastery })
+          const newLives = mode === 'marathon' ? Math.max(0, lives - 1) : lives
+          set({ streak: 0, lives: newLives, answered: true, wrongList: currentCountry ? [...wrongList, currentCountry] : wrongList, masteryCountries: updatedMastery })
         }
       },
 
       finishGame: () => {
-        const { bestStreak, totalGames, totalCorrect, totalQuestions, correct, maxStreak, dailyStreak, lastPlayedDate } = get()
+        const { bestStreak, totalGames, totalCorrect, totalQuestions, correct, maxStreak, dailyStreak, lastPlayedDate, mode, qIndex, achievements, lastDailyDate } = get()
         const today     = new Date().toISOString().slice(0, 10)
         const yesterday = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10)
-        const newDailyStreak = lastPlayedDate === today ? dailyStreak : lastPlayedDate === yesterday ? dailyStreak + 1 : 1
+        const newDailyStreak  = lastPlayedDate === today ? dailyStreak : lastPlayedDate === yesterday ? dailyStreak + 1 : 1
+        const newTotalGames   = totalGames + 1
+        const newTotalCorrect = totalCorrect + correct
+        const questionsPlayed = mode === 'marathon' ? qIndex + 1 : QUESTIONS_PER_ROUND
+        // Achievement check after stats update
+        const newAchs = checkNewAchievements(
+          achievements,
+          { totalGames: newTotalGames, totalCorrect: newTotalCorrect, dailyStreak: newDailyStreak, lastDailyDate },
+          { correct, maxStreak, mode }
+        )
         const newState = {
-          screen:         'results' as Screen,
-          bestStreak:     Math.max(bestStreak, maxStreak),
-          totalGames:     totalGames + 1,
-          totalCorrect:   totalCorrect + correct,
-          totalQuestions: totalQuestions + QUESTIONS_PER_ROUND,
-          dailyStreak:    newDailyStreak,
-          lastPlayedDate: today,
+          screen:              'results' as Screen,
+          bestStreak:          Math.max(bestStreak, maxStreak),
+          totalGames:          newTotalGames,
+          totalCorrect:        newTotalCorrect,
+          totalQuestions:      totalQuestions + questionsPlayed,
+          dailyStreak:         newDailyStreak,
+          lastPlayedDate:      today,
+          achievements:        [...achievements, ...newAchs],
+          pendingAchievements: newAchs,
         }
-        // Sync to profile too
         set(state => ({ ...newState, profiles: syncToProfile({ ...state, ...newState }) }))
       },
 
@@ -371,10 +407,16 @@ export const useGameStore = create<GameState & GameActions>()(
       goDaily:   () => set({ screen: 'daily' }),
       setDailyResult: (date) => {
         set(state => {
-          const updated = { lastDailyDate: date }
+          const newAchs    = !state.achievements.includes('daily') ? ['daily'] : []
+          const updated    = {
+            lastDailyDate:       date,
+            achievements:        [...state.achievements, ...newAchs],
+            pendingAchievements: newAchs,
+          }
           return { ...updated, profiles: syncToProfile({ ...state, ...updated }) }
         })
       },
+      dismissAchievements: () => set({ pendingAchievements: [] }),
 
       setStage: (stage) => {
         set(state => ({ stage, profiles: syncToProfile({ ...state, stage }) }))
@@ -425,6 +467,7 @@ export const useGameStore = create<GameState & GameActions>()(
         dailyStreak:      state.dailyStreak,
         lastPlayedDate:   state.lastPlayedDate,
         lastDailyDate:    state.lastDailyDate,
+        achievements:     state.achievements,
         bestStreak:       state.bestStreak,
         totalGames:       state.totalGames,
         totalCorrect:     state.totalCorrect,

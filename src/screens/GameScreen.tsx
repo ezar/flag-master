@@ -18,7 +18,7 @@ export function GameScreen() {
   const {
     mode, stage, qIndex,
     currentCountry, currentOptions,
-    score, streak, answered,
+    score, streak, answered, lives,
     answer, nextQuestion, goHome,
     language,
   } = useGameStore()
@@ -104,10 +104,18 @@ export function GameScreen() {
           </div>
           <div style={{ fontFamily:"'DM Mono', monospace", fontSize:9, letterSpacing:'0.18em', color:'rgba(245,237,214,0.55)', textTransform:'uppercase' }}>{t('game.streak')}</div>
         </div>
-        <div style={{ marginLeft:'auto', textAlign:'right' }}>
-          <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:20, lineHeight:1, color:'var(--chrome-text)' }}>{qIndex + 1}/{QUESTIONS_PER_ROUND}</div>
-          <div style={{ fontFamily:"'DM Mono', monospace", fontSize:9, letterSpacing:'0.18em', color:'rgba(245,237,214,0.55)', textTransform:'uppercase' }}>{t('game.question')}</div>
-        </div>
+        {mode === 'marathon' ? (
+          <div style={{ marginLeft:'auto', display:'flex', gap:4, alignItems:'center' }}>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <span key={i} style={{ fontSize:18, opacity: i < lives ? 1 : 0.2, transition:'opacity .3s' }}>❤️</span>
+            ))}
+          </div>
+        ) : (
+          <div style={{ marginLeft:'auto', textAlign:'right' }}>
+            <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:20, lineHeight:1, color:'var(--chrome-text)' }}>{qIndex + 1}/{QUESTIONS_PER_ROUND}</div>
+            <div style={{ fontFamily:"'DM Mono', monospace", fontSize:9, letterSpacing:'0.18em', color:'rgba(245,237,214,0.55)', textTransform:'uppercase' }}>{t('game.question')}</div>
+          </div>
+        )}
       </div>
 
       <ProgressBar current={qIndex} total={QUESTIONS_PER_ROUND} />

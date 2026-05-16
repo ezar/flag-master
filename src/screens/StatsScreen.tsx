@@ -1,5 +1,6 @@
 import { useGameStore, regionMastery, isMastered } from '../store/gameStore'
 import { FM_REGIONS, FM_COUNTRIES } from '../data/countries'
+import { ACHIEVEMENTS } from '../data/achievements'
 import { FlagEmoji } from '../components/FlagEmoji'
 import { useT } from '../i18n/useT'
 import { useDesktop } from '../hooks/useDesktop'
@@ -20,7 +21,7 @@ function SectionLabel({ label }: { label: string }) {
 }
 
 export function StatsScreen() {
-  const { masteryCountries, dailyStreak, bestStreak, totalGames, totalCorrect, totalQuestions, goHome, language } = useGameStore()
+  const { masteryCountries, dailyStreak, bestStreak, totalGames, totalCorrect, totalQuestions, achievements, goHome, language } = useGameStore()
   const t         = useT()
   const isDesktop = useDesktop()
   const acc       = totalQuestions > 0 ? Math.round((100 * totalCorrect) / totalQuestions) : null
@@ -111,6 +112,24 @@ export function StatsScreen() {
                   </div>
                   <div style={{ height: 5, background: 'var(--rule)', borderRadius: 3, overflow: 'hidden' }}>
                     <div style={{ height: '100%', width: `${pct}%`, background: mastery >= 0.99 ? 'var(--gold)' : 'linear-gradient(to right, var(--gold-light), var(--gold))', transition: 'width 0.6s ease', borderRadius: 3 }} />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+
+        {/* Achievements */}
+        <div>
+          <SectionLabel label={language === 'en' ? 'Achievements' : 'Logros'} />
+          <div style={{ display:'grid', gridTemplateColumns: isDesktop ? 'repeat(5, 1fr)' : 'repeat(3, 1fr)', gap:8 }}>
+            {ACHIEVEMENTS.map(ach => {
+              const unlocked = achievements.includes(ach.id)
+              return (
+                <div key={ach.id} style={{ border:`1px solid ${unlocked ? 'var(--gold)' : 'var(--rule)'}`, background: unlocked ? 'rgba(184,135,42,0.1)' : 'var(--surface-subtle)', padding:'12px 8px', textAlign:'center', opacity: unlocked ? 1 : 0.45, transition:'all .3s' }}>
+                  <div style={{ fontSize:28, lineHeight:1, marginBottom:6, filter: unlocked ? 'none' : 'grayscale(1)' }}>{ach.emoji}</div>
+                  <div style={{ fontFamily:"'DM Mono', monospace", fontSize:8, letterSpacing:'0.14em', color: unlocked ? 'var(--gold)' : 'var(--ink-soft)', textTransform:'uppercase', lineHeight:1.3 }}>
+                    {language === 'en' ? ach.title.en : ach.title.es}
                   </div>
                 </div>
               )

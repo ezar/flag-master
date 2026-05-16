@@ -69,6 +69,7 @@ export function HomeScreen() {
     { id: 'lightning',    roman: 'VI',   title: t('mode.lightning.title'),    desc: t('mode.lightning.desc')    },
     { id: 'currency',     roman: 'VII',  title: t('mode.currency.title'),     desc: t('mode.currency.desc')     },
     { id: 'language',     roman: 'VIII', title: t('mode.language.title'),     desc: t('mode.language.desc')     },
+    { id: 'marathon',     roman: '∞',   title: language === 'en' ? '❤️ Marathon' : '❤️ Maratón', desc: language === 'en' ? '3 lives — how far can you go?' : '3 vidas — ¿hasta dónde llegas?' },
     { id: 'study',        roman: '◈',   title: t('study.title'),             desc: language === 'en' ? 'Flash cards — know it / don\'t know it' : 'Flash cards — lo sé / no lo sé' },
   ]
 

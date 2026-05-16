@@ -9,7 +9,8 @@ import { ReviewScreen }  from './screens/ReviewScreen'
 import { ProfileScreen } from './screens/ProfileScreen'
 import { StudyScreen }   from './screens/StudyScreen'
 import { DailyScreen }  from './screens/DailyScreen'
-import { ErrorBoundary } from './components/ErrorBoundary'
+import { ErrorBoundary }     from './components/ErrorBoundary'
+import { AchievementToast } from './components/AchievementToast'
 
 export default function App() {
   const screen        = useGameStore(s => s.screen)
@@ -45,6 +46,7 @@ export default function App() {
 
   return (
     <div className="app">
+      <AchievementToast />
       <ErrorBoundary>
       <AnimatePresence mode="wait">
         <motion.div
