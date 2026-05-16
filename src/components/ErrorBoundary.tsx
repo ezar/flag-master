@@ -30,7 +30,7 @@ export class ErrorBoundary extends Component<Props, State> {
         }}>
           <div style={{ fontSize: 48, marginBottom: 16 }}>🧭</div>
           <h1 style={{ fontFamily:"'Playfair Display', serif", fontStyle:'italic', fontWeight:900, fontSize:28, marginBottom:12 }}>
-            Algo naufragó
+            Algo naufragó · Something crashed
           </h1>
           <p style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:'italic', fontSize:14, color:'var(--ink-soft)', marginBottom:28, maxWidth:360 }}>
             {this.state.error.message}
@@ -39,7 +39,7 @@ export class ErrorBoundary extends Component<Props, State> {
             onClick={() => window.location.reload()}
             style={{ background:'var(--chrome-bg)', color:'var(--gold)', border:'none', padding:'13px 28px', fontFamily:"'DM Mono', monospace", fontSize:10, letterSpacing:'0.28em', textTransform:'uppercase', cursor:'pointer' }}
           >
-            Recargar →
+            Recargar · Reload →
           </button>
         </div>
       )

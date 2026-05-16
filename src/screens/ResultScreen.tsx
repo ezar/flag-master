@@ -18,20 +18,25 @@ export function ResultScreen() {
   const {
     score, correct, maxStreak,
     wrongList, startGame, goHome,
-    language,
+    language, mode, qIndex,
   } = useGameStore()
 
-  const t = useT()
+  const t          = useT()
   const [copied, setCopied] = useState(false)
-
-  const pct     = correct / QUESTIONS_PER_ROUND
-  const tierDef = TIER_KEYS.find(tk => pct >= tk.min) ?? TIER_KEYS[TIER_KEYS.length - 1]
+  const isMarathon = mode === 'marathon'
+  const total      = isMarathon ? qIndex + 1 : QUESTIONS_PER_ROUND
+  const pct        = correct / total
+  const tierDef    = TIER_KEYS.find(tk => pct >= tk.min) ?? TIER_KEYS[TIER_KEYS.length - 1]
 
   async function handleShare() {
-    const stars = '⭐'.repeat(Math.round(pct * 5))
-    const text = language === 'en'
-      ? `🌍 FlagMaster — ${t(`tier.${tierDef.key}.title`)}\n${stars}\n${correct}/${QUESTIONS_PER_ROUND} correct · ${score} pts · ×${maxStreak} streak\nhttps://ezar.github.io/flag-master/`
-      : `🌍 FlagMaster — ${t(`tier.${tierDef.key}.title`)}\n${stars}\n${correct}/${QUESTIONS_PER_ROUND} aciertos · ${score} pts · ×${maxStreak} racha\nhttps://ezar.github.io/flag-master/`
+    const stars = isMarathon ? '🏃' : '⭐'.repeat(Math.round(pct * 5))
+    const text = isMarathon
+      ? (language === 'en'
+        ? `🏃 FlagMaster Marathon\n${correct}/${total} correct · ${score} pts · ×${maxStreak} streak\nhttps://ezar.github.io/flag-master/`
+        : `🏃 FlagMaster Maratón\n${correct}/${total} aciertos · ${score} pts · ×${maxStreak} racha\nhttps://ezar.github.io/flag-master/`)
+      : (language === 'en'
+        ? `🌍 FlagMaster — ${t(`tier.${tierDef.key}.title`)}\n${stars}\n${correct}/${QUESTIONS_PER_ROUND} correct · ${score} pts · ×${maxStreak} streak\nhttps://ezar.github.io/flag-master/`
+        : `🌍 FlagMaster — ${t(`tier.${tierDef.key}.title`)}\n${stars}\n${correct}/${QUESTIONS_PER_ROUND} aciertos · ${score} pts · ×${maxStreak} racha\nhttps://ezar.github.io/flag-master/`)
     try {
       if (navigator.share) {
         await navigator.share({ title: 'FlagMaster', text })
@@ -71,12 +76,18 @@ export function ResultScreen() {
 
       <div style={{ height:1, background:'var(--rule)', margin:'18px 0 16px' }} />
 
+      {isMarathon && (
+        <div style={{ fontFamily:"'DM Mono', monospace", fontSize:9, letterSpacing:'0.2em', color:'var(--ink-soft)', textTransform:'uppercase', marginBottom:8 }}>
+          {language === 'en' ? `${total} questions attempted` : `${total} preguntas respondidas`}
+        </div>
+      )}
+
       {/* Stats strip */}
       <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:8, margin:'4px 0' }}>
         {[
-          { value: score,                                label: t('result.points'), gold: true  },
-          { value: `${correct}/${QUESTIONS_PER_ROUND}`,  label: t('result.correct'), gold: false },
-          { value: maxStreak,                            label: t('result.streak'),  gold: false },
+          { value: score,                   label: t('result.points'),  gold: true  },
+          { value: `${correct}/${total}`,   label: t('result.correct'), gold: false },
+          { value: maxStreak,               label: t('result.streak'),  gold: false },
         ].map(({ value, label, gold }) => (
           <div key={label} style={{
             padding: '10px 6px',

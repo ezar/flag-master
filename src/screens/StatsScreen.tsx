@@ -21,7 +21,7 @@ function SectionLabel({ label }: { label: string }) {
 }
 
 export function StatsScreen() {
-  const { masteryCountries, dailyStreak, bestStreak, totalGames, totalCorrect, totalQuestions, achievements, goHome, language } = useGameStore()
+  const { masteryCountries, dailyStreak, bestStreak, totalGames, totalCorrect, totalQuestions, achievements, profiles, activeProfileId, goHome, language } = useGameStore()
   const t         = useT()
   const isDesktop = useDesktop()
   const acc       = totalQuestions > 0 ? Math.round((100 * totalCorrect) / totalQuestions) : null
@@ -118,6 +118,39 @@ export function StatsScreen() {
             })}
           </div>
         </div>
+
+        {/* Leaderboard — only shown when 2+ profiles exist */}
+        {profiles.length >= 2 && (
+          <div>
+            <SectionLabel label={language === 'en' ? 'Leaderboard' : 'Clasificación'} />
+            <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
+              {[...profiles]
+                .sort((a, b) => b.totalCorrect - a.totalCorrect)
+                .map((p, i) => {
+                  const isActive = p.id === activeProfileId
+                  const acc = p.totalQuestions > 0 ? Math.round(100 * p.totalCorrect / p.totalQuestions) : 0
+                  return (
+                    <div key={p.id} style={{ display:'flex', alignItems:'center', gap:12, border:`1px solid ${isActive ? 'var(--gold)' : 'var(--rule)'}`, background: isActive ? 'rgba(184,135,42,0.08)' : 'var(--surface)', padding:'10px 14px', boxShadow:'var(--shadow)' }}>
+                      <div style={{ fontFamily:"'DM Mono', monospace", fontSize:12, color:'var(--gold)', width:20, textAlign:'center', flexShrink:0 }}>
+                        {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}.`}
+                      </div>
+                      <div style={{ fontSize:22, lineHeight:1, flexShrink:0 }}>{p.avatar}</div>
+                      <div style={{ flex:1 }}>
+                        <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:14, color:'var(--ink)' }}>{p.name}</div>
+                        <div style={{ fontFamily:"'DM Mono', monospace", fontSize:8, letterSpacing:'0.14em', color:'var(--ink-soft)', textTransform:'uppercase', marginTop:2 }}>
+                          {p.totalGames} {language === 'en' ? 'games' : 'partidas'} · 🔥{p.dailyStreak}
+                        </div>
+                      </div>
+                      <div style={{ textAlign:'right' }}>
+                        <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:18, color:'var(--ink)' }}>{p.totalCorrect}</div>
+                        <div style={{ fontFamily:"'DM Mono', monospace", fontSize:8, color:'var(--ink-soft)', letterSpacing:'0.1em' }}>{acc}% {language === 'en' ? 'acc' : 'prec'}</div>
+                      </div>
+                    </div>
+                  )
+                })}
+            </div>
+          </div>
+        )}
 
         {/* Achievements */}
         <div>

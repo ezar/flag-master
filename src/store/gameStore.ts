@@ -265,7 +265,7 @@ export const useGameStore = create<GameState & GameActions>()(
           dailyStreak:      target.dailyStreak,
           lastPlayedDate:   target.lastPlayedDate,
           lastDailyDate:    target.lastDailyDate,
-          achievements:     target.achievements,
+          achievements:     target.achievements ?? [],
         })
       },
 
@@ -374,7 +374,8 @@ export const useGameStore = create<GameState & GameActions>()(
       },
 
       finishGame: () => {
-        const { bestStreak, totalGames, totalCorrect, totalQuestions, correct, maxStreak, dailyStreak, lastPlayedDate, mode, qIndex, achievements, lastDailyDate } = get()
+        const { bestStreak, totalGames, totalCorrect, totalQuestions, correct, maxStreak, dailyStreak, lastPlayedDate, mode, qIndex, lastDailyDate } = get()
+        const achievements = get().achievements ?? []
         const today     = new Date().toISOString().slice(0, 10)
         const yesterday = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10)
         const newDailyStreak  = lastPlayedDate === today ? dailyStreak : lastPlayedDate === yesterday ? dailyStreak + 1 : 1

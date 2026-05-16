@@ -63,7 +63,7 @@ export function checkNewAchievements(
   stats: { totalGames: number; totalCorrect: number; dailyStreak: number; lastDailyDate: string | null },
   session: { correct: number; maxStreak: number; mode: string }
 ): string[] {
-  const has = (id: string) => unlocked.includes(id)
+  const has = (id: string) => (unlocked ?? []).includes(id)
   const next: string[] = []
 
   if (!has('first_game')   && stats.totalGames >= 1)       next.push('first_game')
@@ -75,7 +75,7 @@ export function checkNewAchievements(
   if (!has('thousand')     && stats.totalCorrect >= 1000)   next.push('thousand')
   if (!has('marathon')     && session.mode === 'marathon')  next.push('marathon')
   if (!has('daily')        && !!stats.lastDailyDate)        next.push('daily')
-  if (!has('lightning_10') && session.maxStreak >= 10 && session.mode === 'lightning') next.push('lightning_10')
+  if (!has('lightning_10') && session.maxStreak >= 5 && session.mode === 'lightning') next.push('lightning_10')
 
   return next
 }
