@@ -14,7 +14,7 @@ function getDayNumber(): number {
 }
 
 export function DailyScreen() {
-  const { goHome, language, lastDailyDate, setDailyResult } = useGameStore()
+  const { goHome, language, lastDailyDate, lastDailyGuesses, setDailyResult } = useGameStore()
   const t         = useT()
   const isDesktop = useDesktop()
 
@@ -25,8 +25,9 @@ export function DailyScreen() {
 
   const alreadyPlayed = lastDailyDate === today
 
-  // Local game state
-  const [guesses,  setGuesses]  = useState<boolean[]>([])
+  // Local game state — initialise from saved if already played today
+  const savedGuesses = alreadyPlayed ? (lastDailyGuesses ?? []) : []
+  const [guesses,  setGuesses]  = useState<boolean[]>(savedGuesses)
   const [done,     setDone]     = useState(alreadyPlayed)
   const [options,  setOptions]  = useState<typeof FM_COUNTRIES>(() =>
     shuffle([country, ...pickDistractors(country, FM_COUNTRIES, 3)])
@@ -45,7 +46,7 @@ export function DailyScreen() {
 
     if (correct || next.length >= MAX_ATTEMPTS) {
       setDone(true)
-      setDailyResult(today)
+      setDailyResult(today, next)
     } else {
       // Fresh distractors for next attempt
       setOptions(shuffle([country, ...pickDistractors(country, FM_COUNTRIES, 3)]))

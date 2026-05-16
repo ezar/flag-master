@@ -31,6 +31,7 @@ export function GameScreen() {
   const [lastPointsEarned,  setLastPointsEarned]  = useState(0)
   const [writeValue,        setWriteValue]         = useState('')
   const [writeFeedback,     setWriteFeedback]      = useState<string | null>(null)
+  const [quitConfirm,       setQuitConfirm]        = useState(false)
 
   // Score count-up animation
   const [displayScore, setDisplayScore] = useState(score)
@@ -112,7 +113,7 @@ export function GameScreen() {
   const gameHeader = (
     <header style={{ background:'var(--chrome-bg)', color:'var(--chrome-text)', padding:'14px 16px 0', boxShadow:'0 2px 0 var(--gold)' }}>
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-        <button onClick={goHome} style={{ background:'none', border:'none', color:'var(--chrome-text)', fontFamily:"'DM Mono', monospace", fontSize:10, letterSpacing:'0.2em', cursor:'pointer', padding:'6px 0', textTransform:'uppercase' }}>
+        <button onClick={() => qIndex > 0 || answered ? setQuitConfirm(true) : goHome()} aria-label={t('game.back')} style={{ background:'none', border:'none', color:'var(--chrome-text)', fontFamily:"'DM Mono', monospace", fontSize:10, letterSpacing:'0.2em', cursor:'pointer', padding:'6px 0', textTransform:'uppercase' }}>
           {t('game.back')}
         </button>
         <div style={{ fontFamily:"'Playfair Display', serif", fontStyle:'italic', fontSize:14, color:'var(--gold-light)' }}>
@@ -193,6 +194,37 @@ export function GameScreen() {
     </>
   )
 
+  const quitDialog = quitConfirm && (
+    <motion.div
+      initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
+      onClick={() => setQuitConfirm(false)}
+      style={{ position:'fixed', inset:0, zIndex:150, background:'rgba(0,0,0,0.55)', display:'flex', alignItems:'center', justifyContent:'center', padding:24 }}
+    >
+      <motion.div
+        initial={{ scale:0.88, opacity:0 }} animate={{ scale:1, opacity:1 }}
+        transition={{ type:'spring', stiffness:380, damping:26 }}
+        onClick={e => e.stopPropagation()}
+        style={{ background:'var(--paper)', border:'1px solid var(--rule)', maxWidth:320, width:'100%', padding:'28px 24px', textAlign:'center', boxShadow:'var(--shadow)' }}
+      >
+        <div style={{ fontSize:36, marginBottom:12 }}>🚩</div>
+        <h2 style={{ fontFamily:"'Playfair Display', serif", fontStyle:'italic', fontWeight:700, fontSize:22, color:'var(--ink)', marginBottom:8 }}>
+          {language === 'en' ? 'Abandon game?' : '¿Abandonar la partida?'}
+        </h2>
+        <p style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:'italic', fontSize:13, color:'var(--ink-soft)', marginBottom:22 }}>
+          {language === 'en' ? 'Your progress will be lost.' : 'Perderás el progreso actual.'}
+        </p>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10 }}>
+          <button onClick={() => setQuitConfirm(false)} style={{ padding:'12px', border:'1px solid var(--rule)', background:'transparent', color:'var(--ink)', fontFamily:"'DM Mono', monospace", fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', cursor:'pointer' }}>
+            {language === 'en' ? 'Continue' : 'Continuar'}
+          </button>
+          <button onClick={goHome} style={{ padding:'12px', border:'none', background:'var(--chrome-bg)', color:'var(--gold)', fontFamily:"'DM Mono', monospace", fontSize:10, letterSpacing:'0.22em', textTransform:'uppercase', cursor:'pointer' }}>
+            {language === 'en' ? 'Quit' : 'Abandonar'}
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  )
+
   const styles = (
     <style>{`
       @keyframes flicker { 0%,100%{opacity:1} 50%{opacity:.55} }
@@ -205,7 +237,8 @@ export function GameScreen() {
     return (
       <div style={{ display:'flex', flexDirection:'column', minHeight:'100dvh' }}>
         {gameHeader}
-        <div style={{ display:'flex', flex:1 }}>
+        {quitDialog}
+      <div style={{ display:'flex', flex:1 }}>
           {/* Left — flag stage */}
           <div style={{ flex:'0 0 50%', padding:'28px 28px 28px 32px', display:'flex', flexDirection:'column', justifyContent:'center', borderRight:'1px solid var(--rule)', background:'var(--paper-2)' }}>
             <div style={{ fontFamily:"'DM Mono', monospace", fontSize:10, letterSpacing:'0.28em', color:'var(--ink-soft)', textTransform:'uppercase', textAlign:'center', marginBottom:14 }}>
@@ -228,6 +261,7 @@ export function GameScreen() {
   // ── MOBILE: single column ─────────────────────────────────────────────
   return (
     <div>
+      {quitDialog}
       {gameHeader}
       <div style={{ padding:'22px 22px 26px', minHeight:'calc(100dvh - 106px)' }}>
         <div style={{ fontFamily:"'DM Mono', monospace", fontSize:10, letterSpacing:'0.28em', color:'var(--ink-soft)', textTransform:'uppercase', textAlign:'center', marginBottom:12 }}>

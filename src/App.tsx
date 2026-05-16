@@ -11,6 +11,7 @@ import { StudyScreen }   from './screens/StudyScreen'
 import { DailyScreen }  from './screens/DailyScreen'
 import { ErrorBoundary }     from './components/ErrorBoundary'
 import { AchievementToast } from './components/AchievementToast'
+import { useRegisterSW }    from 'virtual:pwa-register/react'
 
 export default function App() {
   const screen        = useGameStore(s => s.screen)
@@ -19,6 +20,9 @@ export default function App() {
   const dailyStreak   = useGameStore(s => s.dailyStreak)
   const lastPlayed    = useGameStore(s => s.lastPlayedDate)
   const language      = useGameStore(s => s.language)
+
+  // PWA update notification
+  const { needRefresh: [needRefresh], updateServiceWorker } = useRegisterSW()
 
   // Apply / remove dark class on body
   useEffect(() => {
@@ -47,6 +51,16 @@ export default function App() {
   return (
     <div className="app">
       <AchievementToast />
+      {needRefresh && (
+        <div style={{ position:'fixed', bottom:16, left:'50%', transform:'translateX(-50%)', zIndex:300, background:'var(--chrome-bg)', color:'var(--chrome-text)', border:'1px solid var(--gold)', padding:'12px 18px', display:'flex', alignItems:'center', gap:14, boxShadow:'var(--shadow)', whiteSpace:'nowrap' }}>
+          <span style={{ fontFamily:"'DM Mono', monospace", fontSize:9.5, letterSpacing:'0.18em', textTransform:'uppercase' }}>
+            {language === 'en' ? 'Update available' : 'Nueva versión disponible'}
+          </span>
+          <button onClick={() => updateServiceWorker(true)} style={{ background:'var(--gold)', color:'var(--chrome-bg)', border:'none', padding:'6px 14px', fontFamily:"'DM Mono', monospace", fontSize:9, letterSpacing:'0.18em', textTransform:'uppercase', cursor:'pointer' }}>
+            {language === 'en' ? 'Update' : 'Actualizar'}
+          </button>
+        </div>
+      )}
       <ErrorBoundary>
       <AnimatePresence mode="wait">
         <motion.div

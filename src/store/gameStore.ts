@@ -31,13 +31,14 @@ export interface Profile {
   dailyStreak:      number
   lastPlayedDate:   string | null
   lastDailyDate:    string | null
-  achievements:     string[]
-  gameHistory:      GameResult[]
+  achievements:      string[]
+  gameHistory:       GameResult[]
+  lastDailyGuesses:  boolean[] | null
 }
 
 export interface GameResult {
   date:      string
-  mode:      string
+  mode:      GameMode
   correct:   number
   total:     number
   score:     number
@@ -62,8 +63,9 @@ const DEFAULT_PROFILE_STATS: Omit<Profile, 'id' | 'name' | 'avatar'> = {
   dailyStreak:      0,
   lastPlayedDate:   null,
   lastDailyDate:    null,
-  achievements:     [],
-  gameHistory:      [],
+  achievements:      [],
+  gameHistory:       [],
+  lastDailyGuesses:  null,
 }
 
 const POINTS_BASE: Record<Stage, number> = { easy: 10, medium: 15, hard: 20 }
@@ -118,9 +120,10 @@ interface GameState {
   totalQuestions:   number
   masteryCountries: MasteryMap
 
-  lastDailyDate:    string | null
-  achievements:     string[]
-  gameHistory:      GameResult[]
+  lastDailyDate:     string | null
+  lastDailyGuesses:  boolean[] | null
+  achievements:      string[]
+  gameHistory:       GameResult[]
 
   // Session (never persisted)
   lives:               number
@@ -164,7 +167,7 @@ interface GameActions {
   setNotifEnabled: (v: boolean) => void
   goStudy:             () => void
   goDaily:             () => void
-  setDailyResult:      (date: string) => void
+  setDailyResult:      (date: string, guesses: boolean[]) => void
   dismissAchievements: () => void
   setRegionFilter: (r: string | null) => void
 
@@ -193,6 +196,7 @@ function syncToProfile(state: GameState): Profile[] {
     dailyStreak:      state.dailyStreak,
     lastPlayedDate:   state.lastPlayedDate,
     lastDailyDate:    state.lastDailyDate,
+    lastDailyGuesses: state.lastDailyGuesses,
     achievements:     state.achievements,
     gameHistory:      state.gameHistory,
   })
@@ -222,6 +226,7 @@ export const useGameStore = create<GameState & GameActions>()(
       dailyStreak:      0,
       lastPlayedDate:   null,
       lastDailyDate:    null,
+      lastDailyGuesses: null as boolean[] | null,
       achievements:     [] as string[],
       gameHistory:      [] as GameResult[],
       bestStreak:       0,
@@ -279,8 +284,9 @@ export const useGameStore = create<GameState & GameActions>()(
           dailyStreak:      target.dailyStreak,
           lastPlayedDate:   target.lastPlayedDate,
           lastDailyDate:    target.lastDailyDate,
-          achievements:     target.achievements ?? [],
-          gameHistory:      target.gameHistory   ?? [],
+          achievements:      target.achievements      ?? [],
+          gameHistory:       target.gameHistory       ?? [],
+          lastDailyGuesses:  target.lastDailyGuesses  ?? null,
         })
       },
 
@@ -425,11 +431,12 @@ export const useGameStore = create<GameState & GameActions>()(
       goStats:   () => set({ screen: 'stats' }),
       goReview:  () => set({ screen: 'review' }),
       goDaily:   () => set({ screen: 'daily' }),
-      setDailyResult: (date) => {
+      setDailyResult: (date, guesses) => {
         set(state => {
           const newAchs    = !state.achievements.includes('daily') ? ['daily'] : []
           const updated    = {
             lastDailyDate:       date,
+            lastDailyGuesses:    guesses,
             achievements:        [...state.achievements, ...newAchs],
             pendingAchievements: newAchs,
           }
@@ -487,6 +494,7 @@ export const useGameStore = create<GameState & GameActions>()(
         dailyStreak:      state.dailyStreak,
         lastPlayedDate:   state.lastPlayedDate,
         lastDailyDate:    state.lastDailyDate,
+        lastDailyGuesses: state.lastDailyGuesses,
         achievements:     state.achievements,
         gameHistory:      state.gameHistory,
         bestStreak:       state.bestStreak,
