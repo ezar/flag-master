@@ -369,6 +369,8 @@ export const FM_COUNTRIES: Country[] = [
     fun:{es:'Es el único país-continente del mundo',en:'Is the only country that is also a continent'} },
   { f:'🇳🇿', n:'Nueva Zelanda',   ne:'New Zealand',    c:'Wellington',       s:'medium', r:'oceania',
     fun:{es:'Fue el primer país del mundo en dar el voto a la mujer, en 1893',en:'Was the first country in the world to grant women the right to vote, in 1893'} },
-  { f:'🇵🇬', n:'Papúa Nueva Guinea', ne:'Papua New Guinea', c:'Port Moresby', s:'hard', r:'oceania' },
-  { f:'🇫🇯', n:'Fiyi',            ne:'Fiji',           c:'Suva',             s:'hard',   r:'oceania' },
+  { f:'🇵🇬', n:'Papúa Nueva Guinea', ne:'Papua New Guinea', c:'Port Moresby', s:'hard', r:'oceania',
+    curr:{es:'Kina',en:'Kina'}, lang:{es:'Inglés',en:'English'} },
+  { f:'🇫🇯', n:'Fiyi',            ne:'Fiji',           c:'Suva',             s:'hard',   r:'oceania',
+    curr:{es:'Dólar fiyiano',en:'Fijian dollar'}, lang:{es:'Inglés',en:'English'} },
 ]
