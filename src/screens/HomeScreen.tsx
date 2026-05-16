@@ -165,7 +165,7 @@ export function HomeScreen() {
   // ── DESKTOP: two-column layout ─────────────────────────────────────────
   if (isDesktop) {
     return (
-      <div style={{ display:'flex', minHeight:'100dvh', alignItems:'flex-start' }}>
+      <div style={{ display:'flex', height:'100dvh', overflow:'hidden', alignItems:'flex-start' }}>
         <SettingsModal open={settingsOpen} onClose={() => setSettingsOpen(false)} />
 
         {/* ── LEFT SIDEBAR ──────────────────────────────── */}
@@ -284,8 +284,8 @@ export function HomeScreen() {
           </div>
         </aside>
 
-        {/* ── RIGHT CONTENT — window scrolls, not inner div ── */}
-        <main style={{ flex:1, padding:'28px 40px 60px', minHeight:'100dvh' }}>
+        {/* ── RIGHT CONTENT — scrolls internally ── */}
+        <main style={{ flex:1, padding:'28px 40px 60px', height:'100dvh', overflowY:'auto' }}>
           <WorldMap />
           <div style={{ marginTop:22 }}>
             {difficultySection}

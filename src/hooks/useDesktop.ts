@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 
-/** Returns true when viewport width ≥ breakpoint (default 720px). SSR-safe. */
-export function useDesktop(breakpoint = 720): boolean {
+/** Returns true when viewport width ≥ breakpoint (default 960px). SSR-safe. */
+export function useDesktop(breakpoint = 960): boolean {
   const [isDesktop, setIsDesktop] = useState(
     typeof window !== 'undefined' ? window.innerWidth >= breakpoint : false
   )

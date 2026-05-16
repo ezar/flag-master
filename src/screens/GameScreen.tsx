@@ -256,12 +256,12 @@ export function GameScreen() {
   // ── DESKTOP: flag left · options right ─────────────────────────────────
   if (isDesktop) {
     return (
-      <div style={{ display:'flex', flexDirection:'column', minHeight:'100dvh' }}>
+      <div style={{ display:'flex', flexDirection:'column', height:'100dvh', overflow:'hidden' }}>
         {gameHeader}
         {quitDialog}
-      <div style={{ display:'flex', flex:1 }}>
+        <div style={{ display:'flex', flex:1, overflow:'hidden' }}>
           {/* Left — flag stage */}
-          <div style={{ flex:'0 0 50%', padding:'28px 28px 28px 32px', display:'flex', flexDirection:'column', justifyContent:'center', borderRight:'1px solid var(--rule)', background:'var(--paper-2)' }}>
+          <div style={{ flex:'0 0 50%', padding:'28px 28px 28px 32px', display:'flex', flexDirection:'column', justifyContent:'center', borderRight:'1px solid var(--rule)', background:'var(--paper-2)', overflowY:'auto' }}>
             <div style={{ fontFamily:"'DM Mono', monospace", fontSize:10, letterSpacing:'0.28em', color:'var(--ink-soft)', textTransform:'uppercase', textAlign:'center', marginBottom:14 }}>
               {questionLine}
             </div>
