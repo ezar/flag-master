@@ -21,7 +21,7 @@ function SectionLabel({ label }: { label: string }) {
 }
 
 export function StatsScreen() {
-  const { masteryCountries, dailyStreak, bestStreak, totalGames, totalCorrect, totalQuestions, achievements, profiles, activeProfileId, goHome, language } = useGameStore()
+  const { masteryCountries, dailyStreak, bestStreak, totalGames, totalCorrect, totalQuestions, achievements, gameHistory, profiles, activeProfileId, goHome, language } = useGameStore()
   const t         = useT()
   const isDesktop = useDesktop()
   const acc       = totalQuestions > 0 ? Math.round((100 * totalCorrect) / totalQuestions) : null
@@ -118,6 +118,38 @@ export function StatsScreen() {
             })}
           </div>
         </div>
+
+        {/* Game history */}
+        {(gameHistory ?? []).length > 0 && (
+          <div>
+            <SectionLabel label={language === 'en' ? 'Recent games' : 'Últimas partidas'} />
+            <div style={{ display:'flex', flexDirection:'column', gap:5 }}>
+              {(gameHistory ?? []).map((g, i) => {
+                const pct = g.total > 0 ? Math.round(100 * g.correct / g.total) : 0
+                const modeLabel = g.mode === 'marathon' ? (language === 'en' ? 'Marathon' : 'Maratón')
+                  : g.mode === 'currency' ? (language === 'en' ? 'Currencies' : 'Monedas')
+                  : g.mode === 'language' ? (language === 'en' ? 'Languages' : 'Idiomas')
+                  : g.mode
+                return (
+                  <div key={i} style={{ display:'flex', alignItems:'center', gap:10, border:'1px solid var(--rule)', background:'var(--surface)', padding:'8px 12px' }}>
+                    <div style={{ fontFamily:"'DM Mono', monospace", fontSize:8, letterSpacing:'0.12em', color:'var(--ink-soft)', textTransform:'uppercase', width:60, flexShrink:0 }}>
+                      {g.date.slice(5)}
+                    </div>
+                    <div style={{ fontFamily:"'DM Mono', monospace", fontSize:8, letterSpacing:'0.12em', color:'var(--gold)', textTransform:'uppercase', flex:1 }}>
+                      {modeLabel}
+                    </div>
+                    <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:14, color: pct >= 80 ? 'var(--ok)' : pct >= 50 ? 'var(--ink)' : 'var(--err)' }}>
+                      {g.correct}/{g.total}
+                    </div>
+                    <div style={{ fontFamily:"'DM Mono', monospace", fontSize:8, color:'var(--ink-soft)', letterSpacing:'0.1em', width:36, textAlign:'right' }}>
+                      ×{g.maxStreak}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Leaderboard — only shown when 2+ profiles exist */}
         {profiles.length >= 2 && (

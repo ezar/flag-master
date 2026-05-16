@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useGameStore } from '../store/gameStore'
 import { FlagEmoji } from '../components/FlagEmoji'
+import { Confetti }  from '../components/Confetti'
 import { useT } from '../i18n/useT'
 
 const QUESTIONS_PER_ROUND = 10
@@ -48,8 +49,14 @@ export function ResultScreen() {
     } catch { /* user cancelled */ }
   }
 
+  // Marathon: deduplicate wrongList by country, cap at 10
+  const displayWrong = isMarathon
+    ? wrongList.filter((c, i, arr) => arr.findIndex(x => x.n === c.n) === i).slice(0, 10)
+    : wrongList
+
   return (
     <div style={{ padding:'26px 22px 40px', textAlign:'center', minHeight:'100dvh' }}>
+      <Confetti active={pct >= 1 && !isMarathon} />
 
       {/* Hero */}
       <div style={{ fontSize:64, lineHeight:1, animation:'pop-in .6s cubic-bezier(0.34, 1.56, 0.64, 1)' }}>
@@ -130,7 +137,7 @@ export function ResultScreen() {
             {t('result.review')}
           </div>
           <div style={{ display:'grid', gap:6 }}>
-            {wrongList.map(c => {
+            {displayWrong.map(c => {
               const name = language === 'en' ? c.ne : c.n
               return (
                 <div key={c.n} style={{

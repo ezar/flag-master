@@ -32,6 +32,16 @@ export interface Profile {
   lastPlayedDate:   string | null
   lastDailyDate:    string | null
   achievements:     string[]
+  gameHistory:      GameResult[]
+}
+
+export interface GameResult {
+  date:      string
+  mode:      string
+  correct:   number
+  total:     number
+  score:     number
+  maxStreak: number
 }
 
 export const PROFILE_AVATARS = [
@@ -53,6 +63,7 @@ const DEFAULT_PROFILE_STATS: Omit<Profile, 'id' | 'name' | 'avatar'> = {
   lastPlayedDate:   null,
   lastDailyDate:    null,
   achievements:     [],
+  gameHistory:      [],
 }
 
 const POINTS_BASE: Record<Stage, number> = { easy: 10, medium: 15, hard: 20 }
@@ -109,6 +120,7 @@ interface GameState {
 
   lastDailyDate:    string | null
   achievements:     string[]
+  gameHistory:      GameResult[]
 
   // Session (never persisted)
   lives:               number
@@ -182,6 +194,7 @@ function syncToProfile(state: GameState): Profile[] {
     lastPlayedDate:   state.lastPlayedDate,
     lastDailyDate:    state.lastDailyDate,
     achievements:     state.achievements,
+    gameHistory:      state.gameHistory,
   })
 }
 
@@ -210,6 +223,7 @@ export const useGameStore = create<GameState & GameActions>()(
       lastPlayedDate:   null,
       lastDailyDate:    null,
       achievements:     [] as string[],
+      gameHistory:      [] as GameResult[],
       bestStreak:       0,
       totalGames:       0,
       totalCorrect:     0,
@@ -266,6 +280,7 @@ export const useGameStore = create<GameState & GameActions>()(
           lastPlayedDate:   target.lastPlayedDate,
           lastDailyDate:    target.lastDailyDate,
           achievements:     target.achievements ?? [],
+          gameHistory:      target.gameHistory   ?? [],
         })
       },
 
@@ -388,6 +403,9 @@ export const useGameStore = create<GameState & GameActions>()(
           { totalGames: newTotalGames, totalCorrect: newTotalCorrect, dailyStreak: newDailyStreak, lastDailyDate },
           { correct, maxStreak, mode }
         )
+        const currentScore = get().score
+        const newEntry: GameResult = { date: today, mode, correct, total: questionsPlayed, score: currentScore, maxStreak }
+        const newHistory = [newEntry, ...(get().gameHistory ?? [])].slice(0, 10)
         const newState = {
           screen:              'results' as Screen,
           bestStreak:          Math.max(bestStreak, maxStreak),
@@ -398,6 +416,7 @@ export const useGameStore = create<GameState & GameActions>()(
           lastPlayedDate:      today,
           achievements:        [...achievements, ...newAchs],
           pendingAchievements: newAchs,
+          gameHistory:         newHistory,
         }
         set(state => ({ ...newState, profiles: syncToProfile({ ...state, ...newState }) }))
       },
@@ -469,6 +488,7 @@ export const useGameStore = create<GameState & GameActions>()(
         lastPlayedDate:   state.lastPlayedDate,
         lastDailyDate:    state.lastDailyDate,
         achievements:     state.achievements,
+        gameHistory:      state.gameHistory,
         bestStreak:       state.bestStreak,
         totalGames:       state.totalGames,
         totalCorrect:     state.totalCorrect,
