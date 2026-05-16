@@ -1,8 +1,18 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { useGameStore } from '../store/gameStore'
 import { FlagEmoji } from '../components/FlagEmoji'
 import { Confetti }  from '../components/Confetti'
 import { useT } from '../i18n/useT'
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  show:   { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
+}
+const staggerItem = {
+  hidden: { opacity: 0, y: 22 },
+  show:   { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 320, damping: 26 } },
+}
 
 const QUESTIONS_PER_ROUND = 10
 
@@ -58,10 +68,12 @@ export function ResultScreen() {
     <div style={{ padding:'26px 22px 40px', textAlign:'center', minHeight:'100dvh' }}>
       <Confetti active={pct >= 1 && !isMarathon} />
 
+      <motion.div variants={staggerContainer} initial="hidden" animate="show">
+
       {/* Hero */}
-      <div style={{ fontSize:64, lineHeight:1, animation:'pop-in .6s cubic-bezier(0.34, 1.56, 0.64, 1)' }}>
+      <motion.div variants={staggerItem} style={{ fontSize:64, lineHeight:1 }}>
         {tierDef.emoji}
-      </div>
+      </motion.div>
       <h1 style={{
         fontFamily: "'Playfair Display', serif",
         fontStyle: 'italic',
@@ -90,7 +102,7 @@ export function ResultScreen() {
       )}
 
       {/* Stats strip */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:8, margin:'4px 0' }}>
+      <motion.div variants={staggerItem} style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gap:8, margin:'4px 0' }}>
         {[
           { value: score,                   label: t('result.points'),  gold: true  },
           { value: `${correct}/${total}`,   label: t('result.correct'), gold: false },
@@ -121,11 +133,11 @@ export function ResultScreen() {
             </div>
           </div>
         ))}
-      </div>
+      </motion.div>
 
       {/* Wrong list */}
       {wrongList.length > 0 && (
-        <div style={{ textAlign:'left', marginTop:22 }}>
+        <motion.div variants={staggerItem} style={{ textAlign:'left', marginTop:22 }}>
           <div style={{
             fontFamily: "'DM Mono', monospace",
             fontSize: 10,
@@ -161,19 +173,20 @@ export function ResultScreen() {
               )
             })}
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/* Share button */}
-      <button
+      <motion.button variants={staggerItem}
         onClick={handleShare}
-        style={{ display:'block', width:'100%', marginTop:20, padding:'12px 8px', border:'1px solid var(--gold)', background:'rgba(184,135,42,0.08)', color:'var(--gold)', fontFamily:"'DM Mono', monospace", fontSize:10.5, letterSpacing:'0.28em', textTransform:'uppercase', cursor:'pointer', transition:'all .2s' }}
+        whileHover={{ scale:1.02 }} whileTap={{ scale:0.97 }}
+        style={{ display:'block', width:'100%', marginTop:20, padding:'12px 8px', border:'1px solid var(--gold)', background:'rgba(184,135,42,0.08)', color:'var(--gold)', fontFamily:"'DM Mono', monospace", fontSize:10.5, letterSpacing:'0.28em', textTransform:'uppercase', cursor:'pointer' }}
       >
         {copied ? t('result.copied') : `↑ ${t('result.share')}`}
-      </button>
+      </motion.button>
 
       {/* Action buttons */}
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginTop:10 }}>
+      <motion.div variants={staggerItem} style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginTop:10 }}>
         <button
           onClick={goHome}
           style={{
@@ -206,14 +219,9 @@ export function ResultScreen() {
         >
           {t('result.again')}
         </button>
-      </div>
+      </motion.div>
 
-      <style>{`
-        @keyframes pop-in {
-          from { transform: translateY(6px) scale(0.8); opacity: 0; }
-          to   { transform: translateY(0) scale(1);     opacity: 1; }
-        }
-      `}</style>
+      </motion.div>
     </div>
   )
 }

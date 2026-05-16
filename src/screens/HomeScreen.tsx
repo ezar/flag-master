@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { motion } from 'framer-motion'
 import { startAmbient, stopAmbient } from '../audio/audioEngine'
 import { CompassRose }    from '../components/CompassRose'
 import { StatCard }       from '../components/StatCard'
@@ -105,11 +106,11 @@ export function HomeScreen() {
 
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8 }}>
         {DIFFICULTIES.map(d => (
-          <button key={d.id} onClick={() => setStage(d.id)} style={{ background: stage===d.id ? 'var(--chrome-bg)' : 'transparent', border:'1px solid var(--rule)', padding:'12px 8px 10px', cursor:'pointer', textAlign:'center', color: stage===d.id ? 'var(--chrome-text)' : 'var(--ink)', transition:'all .18s ease', boxShadow: stage===d.id ? '0 6px 18px -10px rgba(26,18,9,0.6)' : 'none' }}>
+          <motion.button key={d.id} onClick={() => setStage(d.id)} whileHover={{ y:-3, boxShadow:'0 8px 20px -10px rgba(26,18,9,0.4)' }} whileTap={{ scale:0.95 }} transition={{ type:'spring', stiffness:400, damping:20 }} style={{ background: stage===d.id ? 'var(--chrome-bg)' : 'transparent', border:'1px solid var(--rule)', padding:'12px 8px 10px', cursor:'pointer', textAlign:'center', color: stage===d.id ? 'var(--chrome-text)' : 'var(--ink)', boxShadow: stage===d.id ? '0 6px 18px -10px rgba(26,18,9,0.6)' : 'none' }}>
             <div style={{ fontSize:20, lineHeight:1 }}>{d.icon}</div>
             <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:14, marginTop:6 }}>{d.name}</div>
             <div style={{ fontFamily:"'DM Mono', monospace", fontSize:9, letterSpacing:'0.18em', color: stage===d.id ? 'rgba(245,237,214,0.7)' : 'var(--ink-soft)', marginTop:3 }}>{d.sub}</div>
-          </button>
+          </motion.button>
         ))}
       </div>
     </>
@@ -127,26 +128,28 @@ export function HomeScreen() {
       </div>
       <div style={{ display:'grid', gap:isDesktop ? 7 : 9, gridTemplateColumns: isDesktop ? '1fr 1fr' : '1fr' }}>
         {MODES.map(m => (
-          <button key={m.id} onClick={() => m.id === 'study' ? goStudy() : setMode(m.id)} style={{ display:'flex', alignItems:'center', gap:14, padding:'12px 14px', border: mode===m.id ? '1px solid var(--gold)' : '1px solid var(--rule)', background: mode===m.id ? 'var(--surface-input)' : 'var(--surface)', cursor:'pointer', textAlign:'left', color:'var(--ink)', transition:'all .18s ease' }}>
+          <motion.button key={m.id} onClick={() => m.id === 'study' ? goStudy() : setMode(m.id)} whileHover={{ x:3 }} whileTap={{ scale:0.97 }} transition={{ type:'spring', stiffness:400, damping:22 }} style={{ display:'flex', alignItems:'center', gap:14, padding:'12px 14px', border: mode===m.id ? '1px solid var(--gold)' : '1px solid var(--rule)', background: mode===m.id ? 'var(--surface-input)' : 'var(--surface)', cursor:'pointer', textAlign:'left', color:'var(--ink)' }}>
             <div style={{ fontFamily:"'Playfair Display', serif", fontStyle:'italic', fontSize:22, color:'var(--gold)', width:26, textAlign:'center', lineHeight:1 }}>{m.roman}</div>
             <div style={{ flex:1 }}>
               <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:15 }}>{m.title}</div>
               <div style={{ fontSize:11.5, color:'var(--ink-soft)', marginTop:2, fontStyle:'italic' }}>{m.desc}</div>
             </div>
             <div style={{ fontFamily:"'Playfair Display', serif", fontSize:20, color: mode===m.id ? 'var(--gold)' : 'var(--ink-soft)' }}>→</div>
-          </button>
+          </motion.button>
         ))}
       </div>
     </>
   )
 
   const zarparBtn = (
-    <button
+    <motion.button
       onClick={startGame}
       style={{ display:'block', width:'100%', marginTop:22, background:'var(--chrome-bg)', color:'var(--gold)', border:'none', padding:'16px 8px', fontFamily:"'DM Mono', monospace", fontSize:11, letterSpacing:'0.32em', textTransform:'uppercase', cursor:'pointer', boxShadow:'0 6px 18px -10px rgba(26,18,9,0.6)' }}
+      whileHover={{ scale:1.02, boxShadow:'0 12px 28px -10px rgba(26,18,9,0.7)' }}
+      whileTap={{ scale:0.97 }}
     >
       {t('home.sail')}
-    </button>
+    </motion.button>
   )
 
   // ── DESKTOP: two-column layout ─────────────────────────────────────────
@@ -226,13 +229,13 @@ export function HomeScreen() {
                 { icon:'📊', label: t('home.stats'),  desc: language==='en' ? 'Mastery by region, hardest flags' : 'Maestría por región, más difíciles', action: goStats  },
                 { icon:'📖', label: t('home.review'), desc: language==='en' ? 'Browse all 147 flags'             : 'Navega las 147 banderas',            action: goReview },
               ].map(({ icon, label, desc, action }) => (
-                <button key={label} onClick={action} style={{ display:'flex', alignItems:'center', gap:14, border:'1px solid var(--rule)', background:'var(--surface)', padding:'14px 16px', cursor:'pointer', textAlign:'left', transition:'all .15s', color:'var(--ink)' }}>
+                <motion.button key={label} onClick={action} whileHover={{ x:5 }} whileTap={{ scale:0.97 }} transition={{ type:'spring', stiffness:400, damping:22 }} style={{ display:'flex', alignItems:'center', gap:14, border:'1px solid var(--rule)', background:'var(--surface)', padding:'14px 16px', cursor:'pointer', textAlign:'left', color:'var(--ink)' }}>
                   <span style={{ fontSize:26, lineHeight:1, flexShrink:0 }}>{icon}</span>
                   <div>
                     <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:15 }}>{label}</div>
                     <div style={{ fontFamily:"'Libre Baskerville', serif", fontStyle:'italic', fontSize:11, color:'var(--ink-soft)', marginTop:2 }}>{desc}</div>
                   </div>
-                </button>
+                </motion.button>
               ))}
             </div>
 

@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
+import { motion, animate as fmAnimate } from 'framer-motion'
 import { useGameStore } from '../store/gameStore'
 import { FlagStage }      from '../components/FlagStage'
 import { OptionsGrid }    from '../components/OptionsGrid'
@@ -30,6 +31,34 @@ export function GameScreen() {
   const [lastPointsEarned,  setLastPointsEarned]  = useState(0)
   const [writeValue,        setWriteValue]         = useState('')
   const [writeFeedback,     setWriteFeedback]      = useState<string | null>(null)
+
+  // Score count-up animation
+  const [displayScore, setDisplayScore] = useState(score)
+  const displayScoreRef = useRef(score)
+  useEffect(() => {
+    const start = displayScoreRef.current
+    const end   = score
+    if (start === end) return
+    const t0 = performance.now()
+    const step = () => {
+      const t = Math.min((performance.now() - t0) / 500, 1)
+      const e = 1 - Math.pow(1 - t, 3)
+      setDisplayScore(Math.round(start + (end - start) * e))
+      if (t < 1) requestAnimationFrame(step)
+      else displayScoreRef.current = end
+    }
+    requestAnimationFrame(step)
+  }, [score])
+
+  // Streak pulse
+  const streakRef   = useRef<HTMLDivElement>(null)
+  const prevStreak  = useRef(streak)
+  useEffect(() => {
+    if (streak > prevStreak.current && streakRef.current) {
+      fmAnimate(streakRef.current, { scale: [1, 1.55, 1] }, { duration: 0.38, ease: [0.34, 1.56, 0.64, 1] })
+    }
+    prevStreak.current = streak
+  }, [streak])
 
   const handleTimeout = useCallback(() => {
     if (!answered) {
@@ -94,14 +123,14 @@ export function GameScreen() {
 
       <div style={{ display:'flex', alignItems:'center', gap:16, marginTop:10 }}>
         <div>
-          <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:20, lineHeight:1, color:'var(--gold-light)' }}>{score}</div>
+          <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:20, lineHeight:1, color:'var(--gold-light)' }}>{displayScore}</div>
           <div style={{ fontFamily:"'DM Mono', monospace", fontSize:9, letterSpacing:'0.18em', color:'rgba(245,237,214,0.55)', textTransform:'uppercase' }}>{t('game.points')}</div>
         </div>
         <div>
-          <div style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:20, lineHeight:1, color:'var(--chrome-text)', display:'flex', alignItems:'center', gap:4 }}>
+          <motion.div ref={streakRef} style={{ fontFamily:"'Playfair Display', serif", fontWeight:700, fontSize:20, lineHeight:1, color:'var(--chrome-text)', display:'flex', alignItems:'center', gap:4 }}>
             <span style={{ color:'var(--gold-light)', fontSize:14, animation:'flicker 1.4s ease-in-out infinite' }}>✦</span>
             {streak}
-          </div>
+          </motion.div>
           <div style={{ fontFamily:"'DM Mono', monospace", fontSize:9, letterSpacing:'0.18em', color:'rgba(245,237,214,0.55)', textTransform:'uppercase' }}>{t('game.streak')}</div>
         </div>
         {mode === 'marathon' ? (
